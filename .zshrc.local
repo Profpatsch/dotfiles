@@ -1,0 +1,42 @@
+# Own aliases
+# Git
+alias gs='git status '
+alias gh='git hist '
+alias gha='git hist --all '
+alias ga='git add '
+alias gb='git branch '
+alias gc='git commit '
+alias gd='git diff '
+alias go='git checkout '
+alias gk='gitk --all&'
+alias gx='gitx --all '
+alias gcam='git commit -a -m '
+# Install programs
+alias sapti='sudo aptitude install '
+# Music
+alias cd2flac='abcde -c ~/.abcde_flac.conf'
+# Install programs
+alias sa='sudo aptitude '
+alias sapti='sudo aptitude install '
+# vim
+alias gvim='gvim --remote-silent '
+# graphics magick
+alias gmc='gm convert '
+alias crop='gm convert - -gravity Center -crop '
+# makes you look busy
+alias busy='rnd_file=$(find /usr/include -type f -size +5k | sort -R | head -n 1) && vim +$((RANDOM%$(wc -l $rnd_file | cut -f1 -d" "))) $rnd_file'
+
+# system
+alias standby='systemctl suspend'
+
+# Arch
+alias pacman='pacman-color'
+
+# Environment variables
+# Path
+export PATH=$PATH:/home/philip/.neo
+export PATH=$PATH:/home/philip/scripts
+
+# vim fanatic
+export VISUAL=vim
+export EDITOR=vim
