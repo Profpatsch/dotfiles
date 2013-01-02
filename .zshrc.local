@@ -1,3 +1,4 @@
+# Own zshrc config adding to the grml-zshrc. Download it with your package manager.
 # Own aliases
 # Git
 alias gs='git status '
@@ -31,6 +32,8 @@ alias standby='systemctl suspend'
 
 # Arch
 alias pacman='pacman-color'
+compdef _pacman pacman-color=pacman
+compdef _yaourt yaourt=pacman
 
 # Environment variables
 # Path
