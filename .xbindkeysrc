@@ -73,6 +73,14 @@
 "shutter -s"
   control + Print
 
+# Map standby to the standby key (sigh).
+" i3lock --color=000000 --dpms && systemctl suspend"
+  XF86Sleep
+
+# Lock the screen via i3lock.
+"i3lock --color=000000 --dpms"
+  Mod4 + Super_L
+
 
 ##################################
 # End of xbindkeys configuration #
