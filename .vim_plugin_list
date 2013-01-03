@@ -1,0 +1,17 @@
+ack
+command-t
+fugitive
+git
+gundo
+minibufexpl
+nerdtree
+pep8
+py.test
+pydoc
+ropevim
+snipmate
+supertab
+surround
+tasklist
+vim-pandoc
+pyflakes-pathogen'
