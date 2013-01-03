@@ -1,0 +1,47 @@
+#!/bin/sh
+
+# colour definitions
+normal="\033[0m"
+red="\033[31m"
+orange="\033[33m"
+green="\033[32m"
+
+if [ "foo`echo -e bar`" = "foobar" ];then
+  # GNU echo
+  ECHO_e="echo -e"
+else
+  # POSIX echo
+  ECHO_e="echo"
+fi
+
+die() {
+	$ECHO_e "${red}$@${normal}" >&2
+	exit 1
+}
+
+if [ -f "${NEO_CONFIG}" ]; then
+	. "${NEO_CONFIG}" || die "Failed to source ${NEO_CONFIG}"
+elif [ -f "${HOME}"/.neorc ]; then
+	. "${HOME}"/.neorc || die "Failed to source ${HOME}/.neorc"
+elif [ -f /etc/neo.conf ]; then
+	. /etc/neo.conf || die "Failed to source /etc/neo.conf"
+else
+	echo "No configuration file found. Using default values, this might fail!"
+fi
+
+NEO_REFERENCE=${NEO_REFERENCE:-/home/philip/neo/neo20.txt}
+
+if [ 0 = $# ]; then
+	grep -m 1 -B 15 "┴───────┘" "${NEO_REFERENCE}"
+else 
+	for NUM in $@; do
+		if [ $(($NUM)) -ge 1  -a $(($NUM)) -le 6 ]; then
+			grep -B 11 -m "$NUM" "└───────┴───┴───┘" "${NEO_REFERENCE}" | tail -n 12
+		else
+			echo "Benutzung: `basename $0` [1-6]"
+			echo "           Wenn der Aufruf ohne Zahl erfolgt, werden alle Ebenen ausgegeben."
+			echo "           Ansonsten werden nur die Ebenen ausgegeben, die angegeben sind."
+			exit 1
+		fi
+	done
+fi

@@ -1,0 +1,4 @@
+PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/usr/bin/core_perl:/home/philip/neo
+export PATH
+echo "Die Belegung wird nun auf Neo geändert…"
+asdf

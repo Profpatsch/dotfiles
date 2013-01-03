@@ -1,0 +1,154 @@
+#!/bin/bash
+# 
+# Dieses Skript unterstützt die Benutzung der Neo-Tastatur
+# Als Argument kann ein einzelnes Zeichen oder eine Beschreibung eines Zeichens übergeben werden
+#
+# Dieses Skript stammt von:
+#      Pascal Hauck <pascal dot hauck at web dot de>
+# 
+# Kontakt zu den Entwicklern der Neo-Tastatur:
+#      <diskussion at neo-layout dot org>
+
+
+# Benutze die beutzerspezifische Compose-Datei (wenn vorhanden); ansonsten die des Systems
+if [ -f $HOME/.XCompose ]; then
+	COMPOSE=$HOME/.XCompose
+else
+	COMPOSE=/usr/share/X11/locale/en_US.UTF-8/Compose
+fi
+
+# Benutze die von installiere_neo installierte Referenz-Datei (wenn vorhanden); ansonsten die aus dem SVN
+if [ -f /home/philip/neo/neo20.txt ]; then
+	REFERENZ=/home/philip/neo/neo20.txt
+else
+	REFERENZ=../../A-REFERENZ-A/neo20.txt
+fi
+
+VON[1]=7; BIS[1]=82; RAND[1]="┌─────┬──";   ORT[1]=""			# HAUPTTASTATUR=1
+VON[2]=1; BIS[2]=33; RAND[2]="┌───────┬──"; ORT[2]="auf dem Keypad"	# KEYPAD=2
+
+
+
+zeichen=$1								# suche nach diesem Zeichen
+typeset -i z s e j							# z=zeile, s=spalte, e=Ebene
+
+
+# als TASTATURTEL wird immer 1 für die Haupttastatur und 2 für das Keypad verwendet
+
+bild () {	# Aufruf: bild TASTATURTEIL
+# erzeugt das Bild des Tastaturteils wie die Skripte neo und num
+	grep -m 1 -A 15 ${RAND[$1]} $REFERENZ | cut -c ${VON[$1]}-${BIS[$1]}
+}
+
+position () {	# Aufruf: position TASTATURTEIL ZEILE SPALTE
+# gibt das Zeichen aus, das an der durch $TASTATURTEIL, $ZEILE und $SPALTE spezifizierten stelle liegt
+	bild $1 | head -$2 | tail -1 | cut -c $3
+}
+
+such_auf_tastatur () { # Aufruf: such_auf_tastatur ZEICHEN
+# sucht, ob das Zeichen $ZEICHEN irgendwo auf der Tastatur (Haupttastatur oder Keypad) zu finden ist
+	zeichen=$1							# zu suchendes Zeichen
+	j=0								# j=3, sobald das Zeichen gefunden wurde
+	for tastatur in 1 2						# durchsuche beide Tastaturteile
+	do
+
+		anzahl=`bild $tastatur | grep -n [│\ ]$zeichen[│\ ] | wc -l`	# wie häufig ist $zeichen auf der Tastatur?
+
+		if [ $anzahl -ge 1 ]
+		then
+#		$zeichen gibt es direkt auf der Tastatur bei Ebene $e auf der Taste $ursprung
+		[ $j -le 2 ] && echo • $zeichen gibt es  direkt auf der Neo-Tastatur: && j=3
+
+			for i in $(seq 1 $anzahl)			# eventuell mehrfach auf der Tastatur vorhanden
+			do
+				j=j+1
+				z=`bild $tastatur | grep -n [│\ ]$zeichen[│\ ] | head -$i | tail -1 | cut -f1 -d:`
+#				Zeile, an der das gesuchte Zeichen gefunden worden ist
+				s=`bild $tastatur | grep [│\ ]$zeichen[│\ ] | head -$i | tail -1 | cut -f1 -d $zeichen | wc -m`
+#				Spalte, an der das gesuchte Zeichen gefunden worden ist
+
+				e=0					# e gibt am Ende die Ebene an, in der das gesuchte Zeichen liegt
+				test=`position $tastatur $z $s`
+				while [ ! "$test" = "─" ] && [ ! "$test" = "┬" ]
+#				suche in dem Kästchen bis der untere Rand gefunden ist
+#				Beispiel:	┬────┴┬
+#						│N 4 ℕ│
+#						│n ( ν│
+#						┴──┬──┴
+				do
+#				finde Zeile z von $ursprung (=Tastenname, im Beispiel also ›n‹), berechne die Ebene $e von $zeichen
+					z=z+1
+					e=e+1
+					ursprung=$test
+					test=`position $tastatur $z $s`
+				done
+				z=z-1
+
+				ehilfe="1"				# ehilfe="1" - es gibt kein Leerzeichen neben dem Rand
+				test=$ursprung
+				while [ ! "$test" = "│" ]
+#				suche in dem Kästchen bis der linke Rand gefunden ist
+				do
+					if [ "$test" = " " ]
+					then
+						ehilfe="0"		# ehilfe="0" - es gibt kein Leerzeichen - neben dem Rand?
+					elif [ "$ehilfe" = "0" ]
+					then
+						e=e+2; ehilfe=1
+						ursprung=$test
+					fi
+				
+					s=s-1
+					test=`position $tastatur $z $s`
+				done	
+				ursprung=`echo $ursprung ${ORT[$tastatur]}`
+
+#				gebe Position eines gefundenen Zeichens aus
+				case $e in
+					1)
+						echo $zeichen ist eine eigene Taste ${ORT[$tastatur]}
+						;;
+					2)
+						echo $zeichen erreicht man mit Shift+$ursprung
+						;;
+					3)
+						echo $zeichen erreicht man mit Mod3+$ursprung
+						;;
+					4)
+						echo $zeichen erreicht man mit Mod4+$ursprung
+						;;
+					5)
+						echo $zeichen erreicht man mit Shift+Mod3+$ursprung
+						;;
+					6)
+						echo ›$zeichen erreicht man mit Mod3+Mod4+$ursprung
+						;;
+				esac
+	
+			done
+
+		else
+# 		$zeichen gibt es nicht direkt auf der Haupttastatur
+			[ $j -eq 2 ] && echo • $zeichen gibt es nicht direkt auf der Neo-Tastatur && j=3
+		fi
+	done
+}
+
+
+
+such_auf_tastatur $zeichen
+
+
+
+find=`grep "\"$zeichen\"" $COMPOSE | head -1 | cut -f1 -d \ `
+if [ $find ]
+then
+# $zeichen gibt es als Compose
+	echo
+	echo  • $zeichen ist über Compose folgendermaßen darstellbar:
+	grep ^\<.*"\"$zeichen\"" $COMPOSE | cut -f1 -d: | sed -e 's/> </> + </g'
+else
+# $zeichen gibt es nicht als Compose
+	echo
+	echo • $zeichen kann man nicht über Compose erzeugen
+fi
