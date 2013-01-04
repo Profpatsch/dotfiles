@@ -74,12 +74,29 @@
   control + Print
 
 # Map standby to the standby key (sigh).
-" i3lock --color=000000 --dpms && systemctl suspend"
+"i3lock -u --image=/home/philip/.i3/lock_thearcher.png && systemctl suspend"
   XF86Sleep
 
 # Lock the screen via i3lock.
-"i3lock --color=000000 --dpms"
-  Mod4 + Super_L
+"i3lock -u --image=/home/philip/.i3/lock_thearcher.png"
+  Mod4 + l
+
+# Control Volume
+# Speaker
+"amixer -M set Speaker 1dB+"
+  XF86AudioRaiseVolume
+"amixer -M set Speaker 1dB-"
+  XF86AudioLowerVolume
+# Headphones
+"amixer -M set Headphone 1dB+"
+  Control + XF86AudioRaiseVolume
+"amixer -M set Headphone 1dB-"
+  Control + XF86AudioLowerVolume
+# Master
+"amixer -M set Master 1dB+"
+  Shift + XF86AudioRaiseVolume
+"amixer -M set Master 1dB-"
+  Shift + XF86AudioLowerVolume
 
 
 ##################################
