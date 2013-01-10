@@ -99,10 +99,6 @@ let g:SuperTabLongestEnhanced = 1
 let g:SuperTabLongestHighlight = 1
 "----------------------------------------
 
-"" Enable filetype plugins and indention
-filetype on
-filetype plugin on
-
 "" Save files
 setglobal fileencoding=utf-8 "Everything else should be dead or running…"
 
@@ -304,7 +300,10 @@ endif
 set gcr=a:blinkon0
 
 syntax on
+"" Enable filetype plugins and indention
 filetype plugin indent on
+filetype on
+filetype plugin on
 
 " For solarized colors
 if $COLORTERM == 'gnome-terminal'

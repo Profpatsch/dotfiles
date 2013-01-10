@@ -21,6 +21,16 @@ xbindkeys
 # touchpad
 xinput set-ptr-feedback 13 	18 	   13 	  5
 
+# Autostart
+# music playing daemon
+mpd
+# mpd scrobbler
+mpdscribble
+# dropbox
+dropboxd &
+# skype
+skype &
+
 # exec gnome-session
 # exec startkde
 # exec startxfce4
