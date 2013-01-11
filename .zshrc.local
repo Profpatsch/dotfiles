@@ -2,6 +2,8 @@
 # Own aliases
 # Git
 alias gs='git status '
+#show only staged (first m) and changed files
+alias gss='gs -s| grep "^[^?][^?]"'
 alias gh='git hist '
 alias gha='git hist --all '
 alias ga='git add '
