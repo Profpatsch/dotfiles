@@ -17,9 +17,12 @@ xset r rate 250 35
 # execute program for shortcut assigning (runs as daemon)
 xbindkeys
 
+# set general mouse speed
+# Accel: 8/3 (2,666) Threshold: ?
+xset m 8/3
 # set mouse speeds      device  threshold  accel  deccel
 # touchpad
-xinput set-ptr-feedback 13 	18 	   13 	  5
+#xinput set-ptr-feedback 13 	18 	   13 	  5
 
 # Autostart
 # music playing daemon
