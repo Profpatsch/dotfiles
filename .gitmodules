@@ -1,0 +1,3 @@
+[submodule "/home/philip/.config/terminator/solarized"]
+	path = /home/philip/.config/terminator/solarized
+	url = https://github.com/huyz/dircolors-solarized.git

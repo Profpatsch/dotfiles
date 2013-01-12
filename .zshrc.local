@@ -45,3 +45,6 @@ export PATH=$PATH:/home/philip/scripts
 # vim fanatic
 export VISUAL=vim
 export EDITOR=vim
+
+# ls colors solarized
+eval `dircolors ~/.config/terminator/solarized/dircolors.ansi-dark`
