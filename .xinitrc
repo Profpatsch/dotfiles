@@ -33,6 +33,8 @@ mpdscribble
 dropboxd &
 # skype
 skype &
+# pidgin
+pidgin &
 
 # exec gnome-session
 # exec startkde
