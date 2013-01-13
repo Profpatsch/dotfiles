@@ -82,22 +82,32 @@
   Mod4 + l
 
 # Control Volume
-# Speaker
-"amixer -M set Speaker 1dB+"
-  XF86AudioRaiseVolume
-"amixer -M set Speaker 1dB-"
-  XF86AudioLowerVolume
-# Headphones
-"amixer -M set Headphone 1dB+"
-  Control + XF86AudioRaiseVolume
-"amixer -M set Headphone 1dB-"
-  Control + XF86AudioLowerVolume
-# Master
-"amixer -M set Master 1dB+"
-  Shift + XF86AudioRaiseVolume
-"amixer -M set Master 1dB-"
-  Shift + XF86AudioLowerVolume
 
+# alsa
+# Speaker
+#"amixer -M set Speaker 1dB+"
+#  XF86AudioRaiseVolume
+#"amixer -M set Speaker 1dB-"
+#  XF86AudioLowerVolume
+# Headphones
+#"amixer -M set Headphone 1dB+"
+#  Control + XF86AudioRaiseVolume
+#"amixer -M set Headphone 1dB-"
+#  Control + XF86AudioLowerVolume
+# Master
+#"amixer -M set Master 1dB+"
+#  Shift + XF86AudioRaiseVolume
+#"amixer -M set Master 1dB-"
+#  Shift + XF86AudioLowerVolume
+
+# pulse
+"pactl set-sink-volume 1 -- +2dB"
+  XF86AudioRaiseVolume
+"pactl set-sink-volume 1 -- -2dB"
+  XF86AudioLowerVolume
+# No mute toogle. Failed big time, Poettering.
+#"pactl set-sink-mute 1"
+	
 
 ##################################
 # End of xbindkeys configuration #
