@@ -1,5 +1,9 @@
 # Own zshrc config adding to the grml-zshrc. Download it with your package manager.
 # Own aliases
+# Convenience
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
 # Git
 alias gs='git status '
 #show only staged (first m) and changed files
