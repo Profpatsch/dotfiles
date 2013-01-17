@@ -6,6 +6,7 @@
 [core]
 	autocrlf = input
 	safecrlf = true
+	excludesfile = /home/philip/.git_global.gitignore
 
 [merge]
     tool = meld 
