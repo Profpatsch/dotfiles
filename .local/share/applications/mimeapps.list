@@ -12,12 +12,15 @@ text/xhtml=chromium.desktop
 image/jpeg=userapp-eog-GXTDQW.desktop
 application/x-ms-dos-executable=file-roller.desktop
 audio/flac=easytag.desktop
+image/png=userapp-eog-GXTDQW.desktop
+application/octet-stream=libreoffice-startcenter.desktop
 
 [Added Associations]
 x-scheme-handler/mailto=userapp-Thunderbird-JH9LQW.desktop;
 message/rfc822=userapp-Thunderbird-JH9LQW.desktop;
 application/x-extension-eml=userapp-Thunderbird-JH9LQW.desktop;
-image/png=eog.desktop;
+image/png=eog.desktop;userapp-eog-GXTDQW.desktop;
 image/jpeg=eog.desktop;userapp-eog-GXTDQW.desktop;
 application/x-ms-dos-executable=file-roller.desktop;
 audio/flac=easytag.desktop;
+application/octet-stream=libreoffice-startcenter.desktop;

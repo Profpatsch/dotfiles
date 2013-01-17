@@ -19,7 +19,7 @@ cups-StpCyanDensity=None
 cups-StpCyanBalance=None
 cups-StpBrightness=None
 cups-StpImageType=TextGraphics
-duplex=simplex
+duplex=horizontal
 cups-StpDensity=None
 cups-StpFineDensity=None
 cups-StpFineLightCyanTrans=None
@@ -68,7 +68,7 @@ evince-print-setting-page-scale=1
 cups-StpFineYellowBalance=None
 cover-after=none
 cups-StpFineMagentaDensity=None
-cups-Duplex=None
+cups-Duplex=DuplexNoTumble
 resolution=603
 cups-StpFineMagentaBalance=None
 cups-StpFineGCRLower=None
@@ -76,6 +76,9 @@ cups-StpFineLightYellowTrans=None
 cups-StpFineBlackDensity=None
 cups-StpFineBlackTrans=None
 cups-StpLightMagentaTrans=None
+
+cups-number-up-layout=lrtb
+number-up-layout=lrtb
 
 [Page Setup]
 PPDName=A4
