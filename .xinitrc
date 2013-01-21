@@ -36,6 +36,8 @@ export GNOME_KEYRING_CONTROL
 export GNOME_KEYRING_PID
 
 # Autostart
+# file manager daemon
+thunar --daemon &
 # music playing daemon
 mpd
 # mpd scrobbler
