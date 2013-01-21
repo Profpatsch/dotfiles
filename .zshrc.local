@@ -26,7 +26,10 @@ alias cd2flac='abcde -c ~/.abcde_flac.conf'
 alias sa='sudo aptitude '
 alias sapti='sudo aptitude install '
 # vim
+# open new files in already running session of gvim
 alias gvim='gvim --remote-silent '
+# open the session file (I always name these .sess)
+alias vims='vim -S .sess '
 # graphics magick
 alias gmc='gm convert '
 alias crop='gm convert - -gravity Center -crop '
