@@ -99,6 +99,10 @@ let g:SuperTabLongestEnhanced = 1
 let g:SuperTabLongestHighlight = 1
 "----------------------------------------
 
+"" Tags
+set tags+=~/.vim/tags/opencv.tags
+set tags+=~/.vim/tags/opencv2.tags
+
 "" Save files
 setglobal fileencoding=utf-8 "Everything else should be dead or running…"
 
@@ -183,8 +187,7 @@ autocmd FileType rst setlocal expandtab shiftwidth=4 tabstop=4 softtabstop=4
 " C#
 autocmd FileType cs setlocal tabstop=8 softtabstop=4 shiftwidth=4 expandtab
 
-" C/Obj-C/C++
-autocmd FileType c setlocal tabstop=4 softtabstop=4 shiftwidth=4 expandtab
+" /Obj-C/C++
 autocmd FileType cpp setlocal tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 autocmd FileType objc setlocal tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 let c_no_curly_error=1
