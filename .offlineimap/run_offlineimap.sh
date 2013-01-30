@@ -1,4 +1,7 @@
 #!/bin/bash
+
+ACCOUNTS="Privat Mail"
+
 read -r pid < ~/.offlineimap/pid
 rm ~/.offlineimap/.new_mail #> /dev/null
 
@@ -10,10 +13,15 @@ fi
 
 offlineimap -o -u quiet
 
+for ACCOUNT in $(echo $ACCOUNTS)
+do
+  ACCOUNT=$MAIL"/"$ACCOUNT
+  ACC_LIST=$ACC_LIST" "$ACCOUNT
+done
+
 # Check, how many new messages there are.
-NEW=$(find $MAIL -type f -wholename '*/new/*' | wc -l)
+NEW=$(find $ACC_LIST -type f -wholename '*/new/*' | wc -l)
 # Check, how many unread messages there are.
-UNREAD=$(find $MAIL -type f -regex '.*/cur/.*2,[^S]*$' | wc -l)
-echo "N: "$NEW" | U: "$UNREAD
+UNREAD=$(find $ACC_LIST -type f -regex '.*/cur/.*2,[^S]*$' | wc -l)
 echo $NEW > ~/.offlineimap/.new_mail
 echo $UNREAD >> ~/.offlineimap/.new_mail
