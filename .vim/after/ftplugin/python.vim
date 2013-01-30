@@ -5,7 +5,7 @@ setlocal textwidth=79
 setlocal smarttab
 setlocal expandtab
 setlocal nosmartindent
-setlocal formatoptions+=crqj
+setlocal formatoptions+=tcrqj
 
 
 " Execute file being edited with <Shift> + e:

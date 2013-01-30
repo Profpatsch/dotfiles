@@ -1,7 +1,11 @@
+set nocompatible
+
 "" Pathogen (plugin management)
 call pathogen#runtime_append_all_bundles()
 call pathogen#helptags()
 call pathogen#infect()
+"" Enable filetype plugins and indention
+filetype plugin indent on
 
 "" Mappings
 "----------------------------------------
@@ -258,10 +262,6 @@ endif
 set gcr=a:blinkon0
 
 syntax on
-"" Enable filetype plugins and indention
-filetype plugin indent on
-filetype on
-filetype plugin on
 
 " For solarized colors
 if $COLORTERM == 'gnome-terminal'
