@@ -1,0 +1,32 @@
+# Help for the parameters at /usr/share/offlineimap/
+
+[general]
+accounts = Privat, Mail, Derpymail, EQP_Payment, EQP_Profpatsch, EQP_Signup, Songbeamer, Profpatsch_aol, Stuff, CZ_Medien, CZ_Youth, CZ_Songbeamer
+
+maxsyncaccounts = 15
+ui = blinkenlights
+pythonfile = ~/.offlineimap/offlineimap-helpers.py
+socktimeout = 120
+
+
+[Account ACNAME]
+localrepository = ACNAMELocal
+remoterepository = ACNAMERemote
+# maxage = x_days
+status_backend = sqlite
+
+[Repository ACNAMELocal]
+type = Maildir
+localfolders = ~/.Mail/ACNAME
+# sep = / #Evolution
+
+[Repository ACNAMERemote]
+type = IMAP
+remotehost = examplehost
+remoteuser = exampleusername
+remotepasseval = get_password('examplehost', 'exampleusername')
+ssl = yes
+remoteport = 993
+idlefolders = ['INBOX', 'INBOX.Alerts']
+maxconnections = 2
+cert_fingerprint = 
