@@ -1,7 +1,7 @@
 [Default Applications]
 application/pdf=evince.desktop
 x-scheme-handler/mailto=userapp-Thunderbird-JH9LQW.desktop
-message/rfc822=thunderbird.desktop
+message/rfc822=userapp-Thunderbird-JH9LQW.desktop
 application/x-extension-eml=userapp-Thunderbird-JH9LQW.desktop
 application/x-browser=chromium.desktop
 x-scheme-handler/http=chromium.desktop
@@ -14,13 +14,20 @@ application/x-ms-dos-executable=file-roller.desktop
 audio/flac=easytag.desktop
 image/png=userapp-eog-GXTDQW.desktop
 application/octet-stream=libreoffice-startcenter.desktop
+video/x-matroska=vlc.desktop
+image/bmp=userapp-eog-GXTDQW.desktop
+audio/mpeg=vlc.desktop
+application/x-bzip-compressed-tar=file-roller.desktop
 
 [Added Associations]
-x-scheme-handler/mailto=userapp-Thunderbird-JH9LQW.desktop;
+x-scheme-handler/mailto=userapp-Thunderbird-JH9LQW.desktop;userapp-Evolution-62DVRW.desktop;
 message/rfc822=userapp-Thunderbird-JH9LQW.desktop;
-application/x-extension-eml=userapp-Thunderbird-JH9LQW.desktop;
 image/png=eog.desktop;userapp-eog-GXTDQW.desktop;
 image/jpeg=eog.desktop;userapp-eog-GXTDQW.desktop;
 application/x-ms-dos-executable=file-roller.desktop;
 audio/flac=easytag.desktop;
 application/octet-stream=libreoffice-startcenter.desktop;
+video/x-matroska=vlc.desktop;
+image/bmp=userapp-eog-GXTDQW.desktop;
+audio/mpeg=vlc.desktop;
+application/x-bzip-compressed-tar=file-roller.desktop;
