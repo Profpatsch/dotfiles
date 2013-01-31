@@ -37,9 +37,12 @@ def get_mail_count():
     """ Get the count of the current mail, stored in ~/.offlineimap/.new_mail,
     as done in ~/.offlineimap/run_offlineimap.sh
     """
-    with open(os.path.expanduser("~/.offlineimap/.new_mail")) as f:
-        return "Mail: N:{} U:{} ".format(
-                *[l.strip('\n') for l in f.readlines()])
+    try:
+        with open(os.path.expanduser("~/.offlineimap/.new_mail")) as f:
+            return "Mail: N:{} U:{} ".format(
+                    *[l.strip('\n') for l in f.readlines()])
+    except FileNotFoundError:
+        return ""
 
 def print_line(message):
     """ Non-buffered printing to stdout. """
