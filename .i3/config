@@ -201,7 +201,7 @@ bar {
 	# Tray icons
 	tray_output LVDS
 	output LVDS
-        status_command ~/.i3/i3status_mailwrapper.sh
+        status_command i3status --config ~/.i3/i3status.conf | ~/.i3/i3status_mailwrapper.py
 	# hide the bar, shows with modifier
 	#mode hide
 	#modifier $mod
