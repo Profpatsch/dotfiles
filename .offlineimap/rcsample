@@ -1,7 +1,7 @@
 # Help for the parameters at /usr/share/offlineimap/
 
 [general]
-accounts = Privat, Mail, Derpymail, EQP_Payment, EQP_Profpatsch, EQP_Signup, Songbeamer, Profpatsch_aol, Stuff, CZ_Medien, CZ_Youth, CZ_Songbeamer
+accounts = ACNAME, ACNAME2, …
 
 maxsyncaccounts = 15
 ui = blinkenlights
