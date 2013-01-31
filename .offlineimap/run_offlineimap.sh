@@ -1,21 +1,39 @@
 #!/bin/bash
 
-ACCOUNTS="Privat Mail"
+read -d '' USAGE << EOF
+USAGE:
+  -b#: Run a backup with Back in Time (backup job number #, should ideally
+       include the maildir ~/.offlineimap.
+  -c : String with names of accounts which mails should be counted.
+       If omitted all accounts are.
+  -q : Run a quick sync.
+EOF
 
+ACCOUNTS="."
 QUICK=no
 BACKUP=no
 BACKUP_NR=
-while getopts "qb:" opt; do
+while getopts ":b:c:q" opt; do
   case $opt in
-    q)
-      QUICK=yes;;
     b)
       BACKUP=yes
-      BACKUP_NR=$OPTARG
-      ;;
+      BACKUP_NR=$OPTARG;;
+    c)
+      if [ ! -z $OPTARG ]; then
+        ACCOUNTS="$OPTARG"
+      fi;;
+    q)
+      QUICK=yes;;
+    \?)
+      echo "$USAGE"
+      exit 1;;
   esac
 done
-
+shift $(($OPTIND - 1))
+if [ ! -z "$@" ]; then
+  echo "$USAGE"
+  exit 1
+fi
 
 # OFFLINEIMAP
 read -r pid < ~/.offlineimap/pid
