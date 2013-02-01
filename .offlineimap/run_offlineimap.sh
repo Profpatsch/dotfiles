@@ -7,6 +7,8 @@ USAGE:
   -c : String with names of accounts which mails should be counted.
        If omitted all accounts are.
   -q : Run a quick sync.
+  
+  Requires the MAIL environment variable to be set.
 EOF
 
 ACCOUNTS="."
@@ -19,7 +21,7 @@ while getopts ":b:c:q" opt; do
       BACKUP=yes
       BACKUP_NR=$OPTARG;;
     c)
-      if [ ! -z $OPTARG ]; then
+      if [ -n "$OPTARG" ]; then
         ACCOUNTS="$OPTARG"
       fi;;
     q)
@@ -35,20 +37,25 @@ if [ ! -z "$@" ]; then
   exit 1
 fi
 
+echo "Starting imap sync."
+date
+
 # OFFLINEIMAP
 read -r pid < ~/.offlineimap/pid
 
 # Kill old session, if still running
 if ps $pid &>/dev/null; then
-  echo "offlineimap ($pid): another instance running." >&2
+  echo "ERROR: offlineimap ($pid): another instance running." >&2
   kill -9 $pid
 fi
 
 # Quick sync?
 if [ "$QUICK" == "yes" ]
 then
+  echo "Doing a quick sync."
   offlineimap -o -u quiet -q
 else
+  echo "Doing a full sync."
   offlineimap -o -u quiet
 fi
 # -------------
@@ -60,15 +67,16 @@ do
   ACC_LIST=$ACC_LIST" "$ACCOUNT
 done
 
+echo "Searching for new and unread mails in $ACC_LIST"
 # Check, how many new messages there are.
 NEW=$(find $ACC_LIST -type f -wholename '*/new/*' | wc -l)
 # Check, how many unread messages there are.
 UNREAD=$(find $ACC_LIST -type f -regex '.*/cur/.*2,[^S]*$' | wc -l)
-if [ "$NEW" -eq "0" ]; then
-  if [ "$UNREAD" -eq "0" ]; then
-    rm ~/.offlineimap/.new_mail &> /dev/null
-  fi
+if [[ "$NEW" -eq "0" && "$UNREAD" -eq "0" ]]; then
+  echo "No new mail."
+  rm ~/.offlineimap/.new_mail &> /dev/null
 else
+  echo "$NEW new and $UNREAD unread mails."
   echo $NEW > ~/.offlineimap/.new_mail
   echo $UNREAD >> ~/.offlineimap/.new_mail
 fi
@@ -76,6 +84,9 @@ fi
 
 # MAKE BACKUP
 if [ "$BACKUP" == "yes" ]; then
-  nice -n 19 ionice -c2 -n7 /usr/bin/backintime --profile-id $BACKUP_NR --backup-job >/dev/null 2>&1
+  echo "Doing a backup, backup profile #$BACKUP_NR."
+  nice -n 19 ionice -c2 -n7 /usr/bin/backintime --profile-id $BACKUP_NR --backup-job >/dev/null
 fi
 # -------------
+
+echo
