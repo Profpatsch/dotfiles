@@ -1,3 +1,6 @@
 [submodule "/home/philip/.config/terminator/solarized"]
 	path = /home/philip/.config/terminator/solarized
 	url = https://github.com/huyz/dircolors-solarized.git
+[submodule ".mutt/solarized-colors"]
+	path = .mutt/solarized-colors
+	url = git@github.com:altercation/mutt-colors-solarized.git
