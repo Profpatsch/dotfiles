@@ -1,0 +1,56 @@
+## PKGBUILD [plain_text]
+# Contributor: tobias [tobias [at] archlinux.org]
+# Additional : Profpatsch [https://bbs.archlinux.org/misc.php?email=68112]
+
+pkgname=mutt-sidebar
+pkgver=1.5.21
+pkgrel=8
+pkgdesc='Small but very powerful text-based mail client'
+url='http://www.mutt.org/'
+license=('GPL')
+backup=('etc/Muttrc')
+arch=('i686' 'x86_64')
+conflicts=('mutt')
+optdepends=('smtp-forwarder: to send mail')
+depends=('gpgme' 'ncurses' 'openssl' 'libsasl' 'gdbm' 'libidn' 'mime-types' 'krb5')
+provides=('mutt')
+conflicts=('mutt')
+source=("ftp://ftp.mutt.org/mutt/devel/mutt-${pkgver}.tar.gz"
+"http://dbg.download.sourcemage.org/grimoire/codex/stable/mail/mutt/patches/trash_folder/trash_folder-1.5.18.patch.bz2"
+"http://lunar-linux.org/~tchan/mutt/patch-1.5.21.sidebar.20120829.txt")
+
+md5sums=('a29db8f1d51e2f10c070bf88e8a553fd'
+         '9d95c08295f8ec5171f774f776ef8413'
+         'e4bb3b47ebf56da15bbd778b8e1ce002')
+
+build() {
+        cd "${srcdir}/mutt-${pkgver}"
+
+        msg "Patching... Lunar Linux Sidebar"
+        mv ${srcdir}/../patch-1.5.21.sidebar.20120829.txt ${srcdir}/patch-1.5.21.sidebar.20120829.patch
+        patch -p1 -i ${srcdir}/patch-1.5.21.sidebar.20120829.patch
+
+        msg "Patching... Trashfolder"
+        patch -p1 -i ${srcdir}/trash_folder-1.5.18.patch
+
+        ./configure \
+                --prefix=/usr \
+                --sysconfdir=/etc \
+                --enable-gpgme \
+                --enable-hcache \
+                --with-curses=/usr \
+                --with-regex \
+                --with-idn \
+
+        make
+}
+
+package() {
+        cd "${srcdir}/mutt-${pkgver}"
+        make DESTDIR="${pkgdir}" install
+
+        rm "${pkgdir}"/usr/bin/{flea,muttbug}
+        rm "${pkgdir}"/usr/share/man/man1/{flea,muttbug}.1
+        rm "${pkgdir}"/etc/mime.types{,.dist}
+        install -Dm644 contrib/gpg.rc "${pkgdir}"/etc/Muttrc.gpg.dist
+}
