@@ -1,3 +1,5 @@
+setlocal textwidth=72
+
 " Some tricks for mutt
 " F1 through F3 re-wraps paragraphs in useful ways
 augroup MUTT

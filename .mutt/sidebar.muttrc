@@ -1,0 +1,34 @@
+# set up the sidebar, default not visible
+set sidebar_width=30
+set sidebar_visible=no
+set sidebar_delim='|'
+
+set sidebar_format="%B %N"
+
+# color of folders with new mail
+color sidebar_new yellow default
+
+# Keybindings
+bind index \Cl     sidebar-prev
+bind index \Ca     sidebar-next
+bind index \Co     sidebar-open
+bind pager \Cl     sidebar-prev
+bind pager \Ca     sidebar-next
+bind pager \Co     sidebar-open
+
+# I don’t need these. just for documentation purposes. See below.
+# sidebar-scroll-up
+# sidebar-scroll-down
+
+# b toggles sidebar visibility
+macro index b '<enter-command>toggle sidebar_visible<enter>'
+macro pager b '<enter-command>toggle sidebar_visible<enter>'
+
+# Remap bounce-message function to “B”
+bind index B bounce-message
+
+#
+# Mario Holbe suggests:
+# macro index b ‘<enter-command>toggle sidebar_visible<enter><refresh>’
+# macro pager b ‘<enter-command>toggle sidebar_visible<enter><redraw-screen>’
+#

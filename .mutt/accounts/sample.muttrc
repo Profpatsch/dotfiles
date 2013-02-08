@@ -1,0 +1,19 @@
+###
+# ACCOUNT specific options
+###
+color status green default
+
+set from      = "MAILADDRESS"
+set realname  = "NAME"
+
+# Special Folders
+set record    = "+/ACCOUNT/INBOX.Sent"
+set postponed = "+/ACCOUNT/INBOX.Drafts"
+
+# How to send mail
+set sendmail  = "/usr/bin/msmtp -a ACCOUNT"
+
+
+macro index S \
+    "<save-message>+/ACCOUNT/Spam<enter>"  \
+        "mark message as spam"

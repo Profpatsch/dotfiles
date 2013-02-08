@@ -40,6 +40,11 @@ fi
 echo "Starting imap sync."
 date
 
+# Check for gnome keyring env, if not try to get it from ~/.Xdbus
+if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
+  source ~/.Xdbus
+fi
+
 # OFFLINEIMAP
 read -r pid < ~/.offlineimap/pid
 

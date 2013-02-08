@@ -27,7 +27,6 @@ xset m 8/3
 # touchpad
 #xinput set-ptr-feedback 13 	18 	   13 	  5
 
-# Gnome Keyring
 # Start a D-Bus session
 source /etc/X11/xinit/xinitrc.d/30-dbus
 # Start GNOME Keyring
@@ -37,19 +36,24 @@ export SSH_AUTH_SOCK
 export GPG_AGENT_INFO
 export GNOME_KEYRING_CONTROL
 export GNOME_KEYRING_PID
-
-# Autostart
-# file manager daemon
-thunar --daemon &
-# music playing daemon
-mpd
-# mpd scrobbler
-mpdscribble
-# dropbox
-dropboxd &
-# skype
-skype &
-# pidgin
+# Export the dbus session address on startup so it can be used by cron
+touch ~/.Xdbus
+chmod 600 ~/.Xdbus
+env | grep DBUS_SESSION_BUS_ADDRESS > ~/.Xdbus
+echo 'export DBUS_SESSION_BUS_ADDRESS' >> ~/.Xdbus 
+  
+  # Autostart
+  # file manager daemon
+  #thunar --daemon & # No significant speed-up
+  # music playing daemon
+  mpd
+  # mpd scrobbler
+  mpdscribble
+  # dropbox
+  dropboxd &
+  # skype
+  skype &
+  # pidgin
 pidgin &
 
 # exec gnome-session

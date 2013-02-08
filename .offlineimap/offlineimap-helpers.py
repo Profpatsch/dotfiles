@@ -2,7 +2,6 @@
 
 import re
 import sys
-import gtk
 import gnomekeyring as gkey
 
 class Keyring(object):
@@ -22,7 +21,7 @@ class Keyring(object):
 
     def get_password(self, user):
         attrs = {"server": self._server, "protocol": self._protocol,
-                 "user": user}
+                "user": user}
         items = gkey.find_items_sync(gkey.ITEM_NETWORK_PASSWORD, attrs)
         return items[0].secret
 
