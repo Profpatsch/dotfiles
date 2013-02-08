@@ -1,3 +1,7 @@
+# Environment variables
+MAIL=/home/philip/.Mail
+DISPLAY=:0.0
+
 #   minute (0-59),
 #   |   hour (0-23),
 #   |   |   day of the month (1-31),
@@ -6,9 +10,12 @@
 #   |   |   |   |   |   commands
 
 # Update mail, quick every 5min and slow with maildir backup every hour.
-    */5 *   *   *   *   ~/.offlineimap/run_offlineimap.sh -q
-@ 1h 			~/.offlineimap/run_offlineimap.sh -b2
+ACCOUNTS="Privat Mail"
+#@ 5   			~/.offlineimap/run_offlineimap.sh -q -c "$ACCOUNTS" &>> ~/.logs/offlineimap.log
+#@ 1h 			~/.offlineimap/run_offlineimap.sh -b2 -c "$ACCOUNTS" &>> ~/.logs/offlineimap.log
 
+# Do a full backup (depending on the “fullness” of the script.
+@ 1h 			nice -n 19 ionice -c2 -n7 ~/scripts/full_backup.sh &>> ~/.logs/backup.log
 
-#Back In Time system entry, this will be edited by the gui:
-*/10 * * * * nice -n 19 ionice -c2 -n7 /usr/bin/backintime  --backup-job >/dev/null 2>&1
+# Spin those b*tches.
+@ 1d 			logrotate ~/.logrotate.conf --state ~/.logs/logrotate.status &>> ~/.logs/logrotate.log
