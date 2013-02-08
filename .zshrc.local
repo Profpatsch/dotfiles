@@ -4,6 +4,7 @@
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias .....='cd ../../../..'
+alias findn='find . -iname '
 # Git
 alias gs='git status '
 #show only staged (first m) and changed files
@@ -45,14 +46,6 @@ alias pacman='pacman-color'
 compdef _pacman pacman-color=pacman
 compdef _yaourt yaourt=pacman
 
-# Environment variables
-# Path
-export PATH=$PATH:/home/philip/.neo
-export PATH=$PATH:/home/philip/scripts
-
-# vim fanatic
-export VISUAL=vim
-export EDITOR=vim
-
 # ls colors solarized
 eval `dircolors ~/.config/terminator/solarized/dircolors.ansi-dark`
+
