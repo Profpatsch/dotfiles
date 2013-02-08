@@ -200,7 +200,7 @@ bindsym $mod+Shift+f move workspace to output right
 bar {
 	# Tray icons
 	tray_output LVDS
-	output LVDS
+	output LVDS1
         status_command i3status --config ~/.i3/i3status.conf | ~/.i3/i3status_mailwrapper.py
 	# hide the bar, shows with modifier
 	#mode hide
@@ -213,3 +213,4 @@ bar {
 	status_command i3status --config ~/.i3/i3status_other_monitors.conf
 	font pango:Inconsolata 10
 }
+
