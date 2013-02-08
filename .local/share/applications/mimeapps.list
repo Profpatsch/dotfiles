@@ -18,6 +18,11 @@ video/x-matroska=vlc.desktop
 image/bmp=userapp-eog-GXTDQW.desktop
 audio/mpeg=vlc.desktop
 application/x-bzip-compressed-tar=file-roller.desktop
+video/mp4=vlc.desktop
+video/x-flv=vlc.desktop
+image/gif=userapp-eog-GXTDQW.desktop
+video/mpeg=vlc.desktop
+video/x-msvideo=vlc.desktop
 
 [Added Associations]
 x-scheme-handler/mailto=userapp-Thunderbird-JH9LQW.desktop;userapp-Evolution-62DVRW.desktop;
@@ -31,3 +36,8 @@ video/x-matroska=vlc.desktop;
 image/bmp=userapp-eog-GXTDQW.desktop;
 audio/mpeg=vlc.desktop;
 application/x-bzip-compressed-tar=file-roller.desktop;
+video/mp4=vlc.desktop;
+video/x-flv=vlc.desktop;
+image/gif=userapp-eog-GXTDQW.desktop;
+video/mpeg=vlc.desktop;
+video/x-msvideo=vlc.desktop;
