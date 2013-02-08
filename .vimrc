@@ -110,6 +110,11 @@ set tags+=~/.vim/tags/opencv2.tags
 "" Save files
 setglobal fileencoding=utf-8 "Everything else should be dead or running…"
 
+"" Set filetypes for extensions
+autocmd BufNewFile,BufRead *.muttrc setlocal filetype=muttrc
+
+"" Language support (should be in .vim/after/ftplugin/)
+"" ----------------------------------------------------
 
 " ruby support
 " ------------
@@ -238,6 +243,7 @@ autocmd FileType lua setlocal shiftwidth=2 tabstop=2 softtabstop=2
 " rust
 " ----
 autocmd FileType rust setlocal expandtab shiftwidth=4 tabstop=8 softtabstop=4
+" ---------------------------------------------------t
 
 
 "" GUI
