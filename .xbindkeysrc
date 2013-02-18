@@ -74,11 +74,11 @@
   control + Print
 
 # Map standby to the standby key (sigh).
-"i3lock -u --image=/home/philip/.i3/lock_thearcher.png && systemctl suspend"
+"i3lock -u --image=/home/philip/.i3/spike_spiegel.jpg.png && systemctl suspend"
   XF86Sleep
 
 # Lock the screen via i3lock.
-"i3lock -u --image=/home/philip/.i3/lock_thearcher.png"
+"i3lock -u --image=/home/philip/.i3/spike_spiegel.jpg.png"
   Mod4 + l
 
 # Control Volume
