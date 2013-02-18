@@ -38,6 +38,11 @@ nnoremap <leader>ck <Esc>:Ack!
 " Filetype mappings (should be made file-specific if too many)
 " markdown headers
 nnoremap <leader>m1 VypVr=
+" Spelling
+nnoremap <leader>sen :set spell spelllang=en_us<CR>
+nnoremap <leader>sde :set spell spelllang=de_de<CR>
+" Generate tags for current folder
+nnoremap <leader>gtcpp :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
 "----------------------------------------
 
 " Doesn’t overwrite old files :(
@@ -104,14 +109,17 @@ let g:SuperTabLongestHighlight = 1
 "----------------------------------------
 
 "" Tags
-set tags+=~/.vim/tags/opencv.tags
-set tags+=~/.vim/tags/opencv2.tags
+set tags+=~/.vim/tags/cpplib
+set tags+=~/.vim/tags/includes
+set tags+=~/.vim/opencv2
+autocmd BufNewFile,BufRead * setlocal tags+=./tags " Set tags of the current folder
 
 "" Save files
 setglobal fileencoding=utf-8 "Everything else should be dead or running…"
 
 "" Set filetypes for extensions
 autocmd BufNewFile,BufRead *.muttrc setlocal filetype=muttrc
+autocmd BufNewFile,BufRead *.mail setlocal filetype=mail
 
 "" Language support (should be in .vim/after/ftplugin/)
 "" ----------------------------------------------------
@@ -284,30 +292,30 @@ let g:pydoc_cmd = 'python -m pydoc'
 
 let g:pyflakes_use_quickfix = 0
 
-" cscope
-
-if has('cscope')
-  set cscopetag cscopeverbose
-
-  if has('quickfix')
-    set cscopequickfix=s-,c-,d-,i-,t-,e-
-  endif
-
-  cnoreabbrev <expr> csa
-        \ ((getcmdtype() == ':' && getcmdpos() <= 4)? 'cs add'  : 'csa')
-  cnoreabbrev <expr> csf
-        \ ((getcmdtype() == ':' && getcmdpos() <= 4)? 'cs find' : 'csf')
-  cnoreabbrev <expr> csk
-        \ ((getcmdtype() == ':' && getcmdpos() <= 4)? 'cs kill' : 'csk')
-  cnoreabbrev <expr> csr
-        \ ((getcmdtype() == ':' && getcmdpos() <= 4)? 'cs reset' : 'csr')
-  cnoreabbrev <expr> css
-        \ ((getcmdtype() == ':' && getcmdpos() <= 4)? 'cs show' : 'css')
-  cnoreabbrev <expr> csh
-        \ ((getcmdtype() == ':' && getcmdpos() <= 4)? 'cs help' : 'csh')
-
-  command -nargs=0 Cscope cs add $VIMSRC/src/cscope.out $VIMSRC/src
-endif
+" " cscope
+" 
+" if has('cscope')
+"   set cscopetag cscopeverbose
+" 
+"   if has('quickfix')
+"     set cscopequickfix=s-,c-,d-,i-,t-,e-
+"   endif
+" 
+"   cnoreabbrev <expr> csa
+"         \ ((getcmdtype() == ':' && getcmdpos() <= 4)? 'cs add'  : 'csa')
+"   cnoreabbrev <expr> csf
+"         \ ((getcmdtype() == ':' && getcmdpos() <= 4)? 'cs find' : 'csf')
+"   cnoreabbrev <expr> csk
+"         \ ((getcmdtype() == ':' && getcmdpos() <= 4)? 'cs kill' : 'csk')
+"   cnoreabbrev <expr> csr
+"         \ ((getcmdtype() == ':' && getcmdpos() <= 4)? 'cs reset' : 'csr')
+"   cnoreabbrev <expr> css
+"         \ ((getcmdtype() == ':' && getcmdpos() <= 4)? 'cs show' : 'css')
+"   cnoreabbrev <expr> csh
+"         \ ((getcmdtype() == ':' && getcmdpos() <= 4)? 'cs help' : 'csh')
+" 
+"   command -nargs=0 Cscope cs add $VIMSRC/src/cscope.out $VIMSRC/src
+" endif
 
 " TagList
 let Tlist_Process_File_Always=1 
