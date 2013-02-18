@@ -190,17 +190,18 @@ bindsym $mod+c mode "resize"
 # moves the current workspace to the next output
 bindsym $mod+Shift+q move workspace to output right
 # moves current window to the next output
-bindsym $mod+Shift+f move workspace to output right
+bindsym $mod+Shift+f move container to output right
 
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 
+
 # Laptop monitor
 bar {
 	# Tray icons
-	tray_output LVDS
 	output LVDS
+	tray_output LVDS
         status_command i3status --config ~/.i3/i3status.conf | ~/.i3/i3status_mailwrapper.py
 	# hide the bar, shows with modifier
 	#mode hide
@@ -209,7 +210,8 @@ bar {
 # Any other monitors
 bar {
 	output VGA-0
-	output HDMI-0
-	status_command i3status --config ~/.i3/i3status_other_monitors.conf
-	font pango:Inconsolata 10
+	tray_output none
+	position bottom
+	#output HDMI-0
+	status_command .i3/i3status_other_monitor_wrapper.sh
 }
