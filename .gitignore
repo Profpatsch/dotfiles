@@ -19,6 +19,7 @@
 .config/enchant
 .config/eog
 .config/evolution
+.config/evince/print-settings
 .config/gmpc/
 !.config/gmpc/gmpc.cfg
 .config/gtk-2.0/
