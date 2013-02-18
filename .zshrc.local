@@ -38,6 +38,9 @@ alias crop='gm convert - -gravity Center -crop '
 # makes you look busy
 alias busy='rnd_file=$(find /usr/include -type f -size +5k | sort -R | head -n 1) && vim +$((RANDOM%$(wc -l $rnd_file | cut -f1 -d" "))) $rnd_file'
 
+# typos
+alias l¿='ls ' # Haha, Neo. ;)
+
 # system
 alias standby='systemctl suspend'
 
