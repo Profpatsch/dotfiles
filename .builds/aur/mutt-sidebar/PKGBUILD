@@ -4,7 +4,7 @@
 
 pkgname=mutt-sidebar
 pkgver=1.5.21
-pkgrel=8
+pkgrel=9
 pkgdesc='Small but very powerful text-based mail client'
 url='http://www.mutt.org/'
 license=('GPL')
@@ -17,7 +17,9 @@ provides=('mutt')
 conflicts=('mutt')
 source=("ftp://ftp.mutt.org/mutt/devel/mutt-${pkgver}.tar.gz"
 "http://dbg.download.sourcemage.org/grimoire/codex/stable/mail/mutt/patches/trash_folder/trash_folder-1.5.18.patch.bz2"
-"http://lunar-linux.org/~tchan/mutt/patch-1.5.21.sidebar.20120829.txt")
+"http://lunar-linux.org/~tchan/mutt/patch-1.5.21.sidebar.20120829.txt"
+)
+#"build.patch")
 
 md5sums=('a29db8f1d51e2f10c070bf88e8a553fd'
          '9d95c08295f8ec5171f774f776ef8413'
@@ -26,9 +28,9 @@ md5sums=('a29db8f1d51e2f10c070bf88e8a553fd'
 build() {
         cd "${srcdir}/mutt-${pkgver}"
 
-        msg "Patching... Lunar Linux Sidebar"
-        mv ${srcdir}/../patch-1.5.21.sidebar.20120829.txt ${srcdir}/patch-1.5.21.sidebar.20120829.patch
-        patch -p1 -i ${srcdir}/patch-1.5.21.sidebar.20120829.patch
+        msg "Patching... Sidebar"
+        patch -p1 -i ${srcdir}/patch-1.5.21.sidebar.20120829.txt
+        echo "sidebar-1.5.21-6.2 (debian-version)" >> PATCHES
 
         msg "Patching... Trashfolder"
         patch -p1 -i ${srcdir}/trash_folder-1.5.18.patch
