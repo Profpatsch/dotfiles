@@ -1,10 +1,16 @@
 # Own zshrc config adding to the grml-zshrc. Download it with your package manager.
+
 # Own aliases
 # Convenience
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias .....='cd ../../../..'
 alias findn='find . -iname '
+# Own “programs” (fancy for: cheap alias names)
+alias todo='vim ~/.todo'
+alias cd2flac='abcde -c ~/.abcde_flac.conf'
+
+# Make these programs act sane
 # Git
 alias gs='git status '
 #show only staged (first m) and changed files
@@ -20,13 +26,6 @@ alias go='git checkout '
 alias gk='gitk --all&'
 alias gx='gitx --all '
 alias gcam='git commit -a -m '
-# Install programs
-alias sapti='sudo aptitude install '
-# Music
-alias cd2flac='abcde -c ~/.abcde_flac.conf'
-# Install programs
-alias sa='sudo aptitude '
-alias sapti='sudo aptitude install '
 # vim
 # open new files in already running session of gvim
 alias gvim='gvim --remote-silent '
@@ -48,6 +47,10 @@ alias standby='systemctl suspend'
 alias pacman='pacman-color'
 compdef _pacman pacman-color=pacman
 compdef _yaourt yaourt=pacman
+
+# Debian-like
+alias sa='sudo aptitude '
+alias sapti='sudo aptitude install '
 
 # ls colors solarized
 eval `dircolors ~/.config/terminator/solarized/dircolors.ansi-dark`
