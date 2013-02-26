@@ -1,0 +1,35 @@
+#!/bin/bash
+# Moves temporary files mutt creates to a new place so that programs can show
+# them without blocking mutt (mutt removes tempfiles instantly otherwise)
+# Courtesy of Stephane Chazelas
+# http://unix.stackexchange.com/questions/65381/how-to-tell-mutt-not-to-wait-for-an-attachment-program-to-return/65399#65399
+
+nargs=$#
+nfiles=0
+for i do
+  case $i in
+    ("$TMPDIR"/*)
+      new_file=$(mktemp -ut "XXXXX${i##*/}") &&
+        mv -- "$i" "$new_file" &&
+        nfiles=$(($nfiles + 1)) &&
+        set -- "$new_file" "$@" "$new_file" &&
+        continue
+  esac
+  set -- "$@" "$i"
+done
+
+run_command() (
+  shift "$(($nargs + $nfiles))"
+  exec "$@"
+)
+
+(
+  run_command "$@"
+  while [ "$nfiles" -gt 0 ]; do
+    set -- "$@" "$1"
+    shift
+    nfiles=$(($nfiles - 1))
+  done
+  shift "$((2*$nargs))"
+  rm -f -- "$@"
+) &
