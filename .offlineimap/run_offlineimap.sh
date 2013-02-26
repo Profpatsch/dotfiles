@@ -15,6 +15,7 @@ ACCOUNTS="."
 QUICK=no
 BACKUP=no
 BACKUP_NR=
+ERROR=0
 while getopts ":b:c:q" opt; do
   case $opt in
     b)
@@ -54,14 +55,15 @@ if ps $pid &>/dev/null; then
   kill -9 $pid
 fi
 
+
 # Quick sync?
 if [ "$QUICK" == "yes" ]
 then
   echo "Doing a quick sync."
-  offlineimap -o -u quiet -q
+  offlineimap -o -u quiet -q || ERROR=1
 else
   echo "Doing a full sync."
-  offlineimap -o -u quiet
+  offlineimap -o -u quiet || ERROR=1
 fi
 # -------------
 
@@ -81,9 +83,14 @@ if [[ "$NEW" -eq "0" && "$UNREAD" -eq "0" ]]; then
   echo "No new mail."
   rm ~/.offlineimap/.new_mail &> /dev/null
 else
-  echo "$NEW new and $UNREAD unread mails."
-  echo $NEW > ~/.offlineimap/.new_mail
-  echo $UNREAD >> ~/.offlineimap/.new_mail
+  if [[ $ERROR == 0 ]]; then
+    echo "$NEW new and $UNREAD unread mails."
+    echo $NEW > ~/.offlineimap/.new_mail
+    echo $UNREAD >> ~/.offlineimap/.new_mail
+  else
+    echo "ERROR!"
+    echo -e "ERROR\nERROR" > ~/.offlineimap/.new_mail
+  fi
 fi
 # -------------
 
