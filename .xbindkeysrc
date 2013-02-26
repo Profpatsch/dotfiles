@@ -66,12 +66,16 @@
 #  Control + b:2 + Release
 
 # Take Screenshot
-# ~ Full Screen
-"shutter -f"
+# Selection
+"import ~/Pictures/screenshot.jpg"
   Print
-# ~ Selection
-"shutter -s"
+"import ~/Pictures/screenshot.jpg; pinta ~/Pictures/screenshot.jpg"
+  Shift + Print
+# Full Screen
+"import -window root ~/Pictures/screenshot.jpg"
   control + Print
+"import -window root ~/Pictures/screenshot.jpg; pinta ~/Pictures/screenshot.jpg"
+  control + shift + Print
 
 # Map standby to the standby key (sigh).
 "i3lock -u --image=/home/philip/.i3/spike_spiegel.jpg.png && systemctl suspend"
