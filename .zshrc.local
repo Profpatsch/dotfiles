@@ -1,14 +1,20 @@
 # Own zshrc config adding to the grml-zshrc. Download it with your package manager.
 
+# set up mime types as suffix aliases
+autoload -U zsh-mime-setup
+zsh-mime-setup
+
 # Own aliases
 # Convenience
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias .....='cd ../../../..'
 alias findn='find . -iname '
+alias diff='colordiff '
 # Own “programs” (fancy for: cheap alias names)
 alias todo='vim ~/.todo'
 alias cd2flac='abcde -c ~/.abcde_flac.conf'
+alias deb='cgdb ' # I can’t remember that name…
 
 # Make these programs act sane
 # Git
@@ -54,4 +60,3 @@ alias sapti='sudo aptitude install '
 
 # ls colors solarized
 eval `dircolors ~/.config/terminator/solarized/dircolors.ansi-dark`
-
