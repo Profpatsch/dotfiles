@@ -10,12 +10,14 @@ DISPLAY=:0.0
 #   |   |   |   |   |   commands
 
 # Update mail, quick every 5min and slow with maildir backup every hour.
-ACCOUNTS="Privat Mail"
-#@ 5   			~/.offlineimap/run_offlineimap.sh -q -c "$ACCOUNTS" &>> ~/.logs/offlineimap.log
-#@ 1h 			~/.offlineimap/run_offlineimap.sh -b2 -c "$ACCOUNTS" &>> ~/.logs/offlineimap.log
+ACCOUNTS="Privat Mail Derpymail"
+@ 5     ~/.offlineimap/run_offlineimap.sh -q -c "$ACCOUNTS" &>> ~/.logs/offlineimap.log
+@ 1h    ~/.offlineimap/run_offlineimap.sh -b2 -c "$ACCOUNTS" &>> ~/.logs/offlineimap.log
+# Update mailindex every hour
+@ 1h    notmuch new &>> ~/.logs/notmuch.log
 
 # Do a full backup (depending on the “fullness” of the script.
 @ 1h 			nice -n 19 ionice -c2 -n7 ~/scripts/full_backup.sh &>> ~/.logs/backup.log
 
 # Spin those b*tches.
-@ 1d 			logrotate ~/.logrotate.conf --state ~/.logs/logrotate.status &>> ~/.logs/logrotate.log
+@ 1d 			/usr/sbin/logrotate ~/.logrotate.conf --state ~/.logs/logrotate.status &>> ~/.logs/logrotate.log
