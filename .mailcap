@@ -1,0 +1,7 @@
+text/html; chromium %s; nametemplate=%s.html
+text/html; elinks -dump-charset utf-8 -dump %s; nametemplate=%s.html; copiousoutput
+
+image/*; eog %s;
+
+application/pdf; evince %s; nametemplate=%s.pdf
+

@@ -19,6 +19,7 @@
 .config/enchant
 .config/eog
 .config/evolution
+.config/evince/print-settings
 .config/gmpc/
 !.config/gmpc/gmpc.cfg
 .config/gtk-2.0/
@@ -32,6 +33,12 @@
 .config/pulse
 .config/sonata
 .config/Skype
+.config/Tomahawk/
+.config/Kitware/
+.config/Pinta/
+.config/mono.addins
+.config/performous
+.config/
 .config/transmission
 .config/Trolltech.conf
 .config/user-dirs.dirs
@@ -39,6 +46,16 @@
 .config/vlc
 .config/xfce4
 
+.npm
+.subversion
+.p7zip
+.tgdb/
+.unison/
+.ultrastardx/
+.XCompose
+.audacity-data/
+.cgdb/readline_history.txt
+.builds/
 .dropbox
 .easytag
 !.easytag/easytagrc
@@ -63,6 +80,7 @@
 .mpdscribble
 .msmtprc
 .mutt/accounts
+!.mutt/accounts/sample_account.muttrc
 .mutt/alias
 .mutt/cache
 .mutt/mailinglists.muttrc
@@ -95,6 +113,8 @@
 .vim/.gitmodules
 .vim/after/ftp
 .viminfo
+.vim/.netrwhist
+.notmuch-config
 .weechat
 .Xauthority
 .Xdbus

@@ -62,4 +62,4 @@ pidgin &
 # ...or the Window Manager of your choice
 # exec xterm
 # exec enlightenment_start
-exec i3 -V >> ~/.i3/i3log 2>&1 #i3 with logging
+exec i3 -V >> ~/.logs/i3.log 2>&1 #i3 with logging

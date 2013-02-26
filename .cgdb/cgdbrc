@@ -1,0 +1,10 @@
+set arrowstyle=long
+
+# Mappings
+map <F5> irun<CR>y<CR><Esc>
+map c <F6>
+map f <F7>
+map n <F8>
+map s <F10>
+map u iu<CR><Esc>
+map r :e<CR>

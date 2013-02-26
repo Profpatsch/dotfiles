@@ -1,0 +1,16 @@
+###
+# ACCOUNT specific options
+###
+color status green default
+
+set from        = "MAILADDRESS"
+set realname    = "NAME"
+set pgp_sign_as = "GPG_KEYID"
+
+set my_account         = "ACCOUNT"
+set my_account_inbox   = "INBOX"
+set my_account_archive = "INBOX.Archive"
+set my_account_drafts  = "INBOX.Drafts"
+set my_account_spam    = "INBOX.Spam"
+
+source ~/.mutt/accounts/account_global.muttrc

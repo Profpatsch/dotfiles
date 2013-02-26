@@ -1,1 +1,0 @@
-text/html; elinks -dump-charset utf-8 -dump %s; nametemplate=%s.html; copiousoutput

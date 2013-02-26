@@ -1,20 +1,21 @@
 # set up the sidebar, default not visible
-set sidebar_width=30
+set sidebar_width=20
 set sidebar_visible=no
 set sidebar_delim='|'
+set sidebar_folderindent=yes
 
-set sidebar_format="%B %N"
+set sidebar_format="%B %*\  %N"
 
 # color of folders with new mail
 color sidebar_new yellow default
 
 # Keybindings
-bind index \Cl     sidebar-prev
-bind index \Ca     sidebar-next
-bind index \Co     sidebar-open
-bind pager \Cl     sidebar-prev
-bind pager \Ca     sidebar-next
-bind pager \Co     sidebar-open
+bind index \Cx     sidebar-prev
+bind index \Cv     sidebar-next
+bind index \Cl     sidebar-open
+bind pager \Cx     sidebar-prev
+bind pager \Cv     sidebar-next
+bind pager \Cl     sidebar-open
 
 # I don’t need these. just for documentation purposes. See below.
 # sidebar-scroll-up

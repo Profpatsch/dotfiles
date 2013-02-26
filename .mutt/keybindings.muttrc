@@ -1,16 +1,52 @@
-# Mailindex
+### Mailindex ###
+#################
+
 bind index gg          first-entry
 bind index G           last-entry
 bind index i           noop
 bind index <space>     collapse-thread # Toggle thread
 macro index c    <change-folder>?  "Directly jump to folder list, please. Thankyou."
 
-macro index ä  "!offlineimap -q\n"  "Get the latest mail."
+macro index ä  "<enter-command>unset wait_key<enter>!offlineimap -q<enter><enter-command>set wait_key<enter>"  "Get the latest mail."
 
-bind index,pager <delete>  delete-message
-bind index,pager R         group-reply
+# Search all mail with notmuch-mutt
+macro index <F8> \
+          "<enter-command>unset wait_key<enter><shell-escape>/usr/bin/notmuch-mutt -r --prompt search<enter><change-folder-readonly>~/.cache/notmuch/mutt/results/<enter>" \
+          "search mail (using notmuch)"
+# Construct a thread ouf of the marked mail (or something like that, doesn’t work atm (errors out))
+    macro index <F9> \
+          "<enter-command>unset wait_key<enter><pipe-message>/usr/bin/notmuch-mutt -r thread<enter><change-folder-readonly>~/.cache/notmuch/mutt/results/<enter><enter-command>set wait_key<enter>" \
+          "search and reconstruct owning thread (using notmuch)"
 
-# Pager
+# Go to account folder (ga is go to archive…)
+# Example:
+# macro index gfa \
+# 	"<change-folder>+ACCOUNT/INBOX<enter>" \
+# 	"change to account ACCOUNT"
+source ~/.mutt/accounts/account_macros.muttrc
+
+###################
+
+
+### Index & Pager ###
+#####################
+
+bind index,pager  <delete>  delete-message
+bind index,pager  R         group-reply
+# Everything else was already taken…
+bind index,pager  <ESC>f    bounce-message 
+
+# Archive all messages in thread (archive bound in account .muttrcs)
+macro index,pager  "\Ca"       <tag-thread><tag-prefix>a  "archive all messages in thread"
+# Set alias to A, default a (bound to archive)
+bind index,pager  A         create-alias
+
+#####################
+
+
+### Pager ###
+#############
+
 bind pager /           search
 bind pager <up>        previous-line
 bind pager <down>      next-line
@@ -18,3 +54,14 @@ bind pager gg          top
 bind pager G           bottom
 bind pager 0           previous-page
 # bind index i           flag_message
+
+#############
+
+
+### Attachment ###
+##################
+
+macro attach S <save-entry><kill-line>~/Downloads/
+macro attach s <save-entry><kill-line>~/Downloads/<enter>y
+
+##################
