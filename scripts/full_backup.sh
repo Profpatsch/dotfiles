@@ -13,7 +13,10 @@ date
 # crontab
 crontab -l > ~/.backup/crontab
 
+# package lists
+pacman -Qqe | grep -vx "$(pacman -Qqm)" | sort > ~/.backup/packages
+pacman -Qqm |sort > ~/.backup/packages.aur
 
 # AUTOMATIC BACKUP
-backintime --backup-job
+backintime --backup-job 1
 
