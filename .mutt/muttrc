@@ -5,7 +5,7 @@
 # directories and commands
 set alias_file       = ~/.mutt/alias         # alias file
 set header_cache     = ~/.mutt/cache/headers # where to store headers        
-set mailcap_path     = ~/.mutt/mailcap       # entrys for filetypes
+set mailcap_path     = ~/.mailcap            # entrys for filetypes
 set signature        = ~/.mutt/sig           # my signature file
 set tmpdir           = ~/.mutt/temp          # where to keep temp files
 set editor           = "/usr/bin/vim +/^$"   # use vim and skip to first blank line
@@ -20,10 +20,10 @@ set sort_alias      = alias           # sort alias file by alias
 set reverse_alias                     # show names from alias file in index
 unset move                            # Want to do this manually
 set delete          = ask-yes         
-# unset confirmappend                   # don't ask, just do!
-set quit                              # don't ask, just do!!
+unset confirmappend                   # don't ask, just do!
+#set quit                              # don't ask, just do!!
 # unset mark_old                        # read/new is good enough for me
-set pipe_decode                       # strip headers and eval mimes when piping
+#set pipe_decode                       # strip headers and eval mimes when piping ATTENTION! notmuch-mutt doesn’t like this.
 set thorough_search                   # strip headers and eval mimes before searching
 
 # index options
@@ -42,7 +42,7 @@ set smart_wrap              # don't split words
 set tilde                   # show tildes like in vim
 unset markers               # no ugly plus signs
 auto_view text/html         # view html automatically
-alternative_order text/plain text/enriched text/html
+alternative_order text/enriched text/plain text/html
 set quote_regexp = "^( {0,4}[>|:#%]| {0,4}[a-z0-9]+[>|]+)+"
 
 # formats
@@ -54,12 +54,12 @@ set alias_format    = "%4n %t %-20a  %r"
 set realname        = "Profpatsch"       # who am i?
 set sig_dashes                           # dashes before my sig... sweet
 set edit_headers                         # show headers when composing
-#set fast_reply                           # skip to compose when replying
+set fast_reply                           # skip to compose when replying
 
 # send mail
 set use_from
 set envelope_from                        # which from?
-set sendmail_wait   = -1                 # don't wait for sending... to complete
+set sendmail_wait   = 30                 # don't wait for sending... to complete
 
 set askcc                                # ask for CC:
 set fcc_attach                           # save attachments with the body
@@ -72,28 +72,37 @@ set reverse_name                         # reply as whomever it was to
 set include                              # include message in replies
 set forward_quote                        # include message in forwards
 
+# GPG options
+set fcc_clear                            # Save an unencrypted copy
+
+
 # headers to show
 ignore *                                 # ignore all headers
 unignore from: to: cc: date: subject:    # show only these
 hdr_order from: to: cc: date: subject:   # and in this order
-
-# always sourced
-source $alias_file                 # required for functionality
-source ~/.mutt/solarized-colors/mutt-colors-solarized-dark-16.muttrc   # source colors file
-source ~/.mutt/sidebar.muttrc      # any muttng options are here
-source ~/.mutt/keybindings.muttrc  # all keybindings
-source ~/.mutt/mailinglists.muttrc # subscribed and known mailinglists
 
 # account specific sources
 # Example:
 # folder-hook GMail/* source ~/.mutt/gmail.muttrc
 folder-hook /Privat/* source ~/.mutt/accounts/Privat.muttrc
 folder-hook /Mail/*   source ~/.mutt/accounts/Mail.muttrc
+folder-hook /Derpymail/* source ~/.mutt/accounts/Derpymail.muttrc
+
+# always sourced
+source $alias_file                        # required for functionality
+source ~/.mutt/solarized-colors/mutt-colors-solarized-dark-16.muttrc   # source colors file
+source ~/.mutt/sidebar.muttrc             # any muttng options are here
+source ~/.mutt/keybindings.muttrc         # all keybindings
+source ~/.mutt/mailinglists.muttrc        # subscribed and known mailinglists
+source /usr/share/doc/mutt/samples/gpg.rc # gpg options
+set pgp_getkeys_command="/usr/bin/gpg --recv-key %r"
+set pgp_good_sign="`gettext -d gnupg -s 'Good signature from "' | tr -d '"'`"
+# and check for old-style pgp messages
+message-hook '!(~g|~G) ~b"^-----BEGIN\ PGP\ (SIGNED\ )?MESSAGE"' "exec check-traditional-pgp"
 
 # macros
 macro index \Cr "<tag-prefix><clear-flag>N" "mark tagged messages as read"
 macro index B   "<limit>~b "                "search message bodies"
-macro index I   "<change-folder>!<enter>"   "go to Inbox"
 
 # save a decoded copy in ~
 macro index P   "<pipe-message>cat > ~/"    "save message as"
