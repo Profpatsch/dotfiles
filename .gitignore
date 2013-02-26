@@ -113,6 +113,8 @@
 .vim/.gitmodules
 .vim/after/ftp
 .viminfo
+.vim/.netrwhist
+.notmuch-config
 .weechat
 .Xauthority
 .Xdbus
