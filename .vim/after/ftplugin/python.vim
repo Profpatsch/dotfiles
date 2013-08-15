@@ -11,13 +11,17 @@ setlocal formatoptions+=tcrqj
 " Execute file being edited with <Shift> + e:
 map <buffer> <F10>:w<CR>:!/usr/bin/env python3 % <CR>
 
+" Map rope refactoring
+nnoremap <localleader>rr :RopeRename<CR>
+nnoremap <localleader>rem :RopeExtractMethod<CR>
+
 " Indent Python in the Google way.
 
 setlocal indentexpr=GetGooglePythonIndent(v:lnum)
 
 let s:maxoff = 50 " maximum number of lines to look backwards.
 
-function GetGooglePythonIndent(lnum)
+function! GetGooglePythonIndent(lnum)
 
   " Indent inside parens.
   " Align with the open paren unless it is at the end of the line.

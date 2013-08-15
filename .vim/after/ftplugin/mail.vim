@@ -5,7 +5,7 @@ nmap  G     /\n--\ \n<Return>o<ESC>O
 nmap  dG    d/\n--\ \n<Return>o<ESC>O
 
 " Give me my signature
-imap <C-S>  ~Profpatsch<ESC>
+imap <C>s  ~Profpatsch<ESC>
 
 " Some tricks for mutt
 " F1 through F3 re-wraps paragraphs in useful ways
