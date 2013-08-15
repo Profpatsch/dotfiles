@@ -70,6 +70,9 @@
 "i3lock -u --image=/home/philip/.i3/spike_spiegel.jpg.png && systemctl suspend"
   XF86Sleep
 
+"xkill"
+  XF86Battery
+
 # Lock the screen via i3lock.
 "i3lock -u --image=/home/philip/.i3/spike_spiegel.jpg.png"
   Mod4 + l
