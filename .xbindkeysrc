@@ -78,7 +78,7 @@
 
 # Lock the screen via i3lock.
 "i3lock -u --image=/home/philip/.i3/spike_spiegel.jpg.png"
-  Mod4 + l
+  XF86ScreenSaver
 
 # Screenshots (ARGH!)
 # Normal
