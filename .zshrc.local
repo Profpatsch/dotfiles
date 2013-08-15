@@ -11,10 +11,19 @@ alias ....='cd ../../..'
 alias .....='cd ../../../..'
 alias findn='find . -iname '
 alias diff='colordiff '
+#alias cl='wc -l ' # Count Lines
 # Own “programs” (fancy for: cheap alias names)
 alias todo='vim ~/.todo'
 alias cd2flac='abcde -c ~/.abcde_flac.conf'
 alias deb='cgdb ' # I can’t remember that name…
+alias follow='tail -n50 -f '
+alias followl='tail -n50 -f ~/.logs/*'
+alias syncnyx='unison nyx -logfile ~/.logs/unison.log'
+alias busy='rnd_file=$(find /usr/include -type f -size +5k | sort -R | head -n 1) && vim +$((RANDOM%$(wc -l $rnd_file | cut -f1 -d" "))) $rnd_file' # makes you look busy
+alias cf='find | wc -l ' # Count Files in directory recursively
+
+# Global convenience stuff
+alias -g G='| grep '
 
 # Make these programs act sane
 # Git
@@ -32,26 +41,35 @@ alias go='git checkout '
 alias gk='gitk --all&'
 alias gx='gitx --all '
 alias gcam='git commit -a -m '
+alias gl='git lola'
+# git-svn
+alias gsd='git svn dcommit'
+alias gsr='git svn rebase'
+alias grc='git rebase --continue'
+alias gra='git rebase --abort'
+# svn
+alias sc='svn commit '
+alias scm='svn commit -m '
+alias ss='svn status ' # Don’t need no sockets. ;)
 # vim
 # open new files in already running session of gvim
-alias gvim='gvim --remote-silent '
+alias gvim='choose-editor '
 # open the session file (I always name these .sess)
 alias vims='vim -S .sess '
 # graphics magick
 alias gmc='gm convert '
 alias crop='gm convert - -gravity Center -crop '
-# makes you look busy
-alias busy='rnd_file=$(find /usr/include -type f -size +5k | sort -R | head -n 1) && vim +$((RANDOM%$(wc -l $rnd_file | cut -f1 -d" "))) $rnd_file'
 
 # typos
 alias l¿='ls ' # Haha, Neo. ;)
 
 # system
 alias standby='systemctl suspend'
+alias sudo='sudo '
 
 # Arch
-alias pacman='pacman-color'
-compdef _pacman pacman-color=pacman
+alias pacclean='pacman -Rs $(pacman -Qqtd)' # Removes all orphan packages
+alias install='sudo pacman -S '
 compdef _yaourt yaourt=pacman
 
 # Debian-like
