@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+grep '^File[0-9]*' $1 | head -n1 | sed -e 's/^File[0-9]*=//' | mpc insert
+mpc next
+mpc play

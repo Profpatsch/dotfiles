@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# Open gvim if on X, use the same instance for files if it’s already running.
+# If there is no X, use plain old vim.
+if [ -n "$DISPLAY" ]; then
+  if [ -z "$*" ]; then
+    gvim
+  else
+    gvim --remote-silent "$@"
+  fi
+else
+  vim "$@"
+fi

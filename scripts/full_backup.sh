@@ -14,8 +14,9 @@ date
 crontab -l > ~/.backup/crontab
 
 # package lists
-pacman -Qqe | grep -vx "$(pacman -Qqm)" | sort > ~/.backup/packages
+pacman -Qqe | grep -vx "$(pacman -Qqm)" | sort > ~/.backup/packages.pac
 pacman -Qqm |sort > ~/.backup/packages.aur
+~/scripts/installed-programs ~/.backup/permanent_packages > ~/.backup/installed_packages
 
 # AUTOMATIC BACKUP
 backintime --backup-job 1
