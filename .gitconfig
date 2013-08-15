@@ -7,9 +7,14 @@
 	autocrlf = input
 	safecrlf = true
 	excludesfile = /home/philip/.git_global.gitignore
+	editor = vim
 
 [merge]
-    tool = meld 
+	tool = splice
+
+[mergetool "splice"]
+	cmd = "gvim -f $BASE $LOCAL $REMOTE $MERGED -c 'SpliceInit'"
+	trustExitCode = true
 
 [alias]
 	co = checkout
@@ -35,3 +40,5 @@
 
 [credential]
 	helper = cache
+[diff]
+	tool = gvimdiff
