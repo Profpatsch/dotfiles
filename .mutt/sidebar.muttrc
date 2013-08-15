@@ -1,8 +1,9 @@
 # set up the sidebar, default not visible
-set sidebar_width=20
+set sidebar_width=30
 set sidebar_visible=no
 set sidebar_delim='|'
 set sidebar_folderindent=yes
+set sidebar_shortpath=yes
 
 set sidebar_format="%B %*\  %N"
 

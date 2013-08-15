@@ -1,0 +1,15 @@
+1. Offlineimap
+ - Add account to .offlineimaprc
+ - Add password to keyring
+ - Add cert fingerprint
+
+2. Mutt
+ - Add account config
+ - Add folders that should be shown
+
+3. msmtp
+ - Add account to config
+ - Add password to keyring
+
+4. crontab
+ - Add accounts that should show up in the status bar
