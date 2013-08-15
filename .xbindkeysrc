@@ -94,6 +94,17 @@
 "import -window root $SCREENSHOT.jpg && imup $SCREENSHOT.jpg | xclip -selection clipboard"
   Control + Alt + Print
 
+# Music (mpd)
+"mpc toggle"
+  XF86AudioMute
+"mpc next"
+  XF86AudioNext
+"mpc prev"
+  XF86AudioPrev
+"mpc random"
+  XF86AudioPlay
+"mpc single"
+  XF86AudioStop
 
 # Control Volume
 
