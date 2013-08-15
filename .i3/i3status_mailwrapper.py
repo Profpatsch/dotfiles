@@ -27,11 +27,14 @@
 import sys
 import os
 import json
+import subprocess
+
 
 def get_governor():
     """ Get the current governor for cpu0, assuming all CPUs use the same. """
     with open('/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor') as fp:
         return fp.readlines()[0].strip()
+
 
 def get_mail_count():
     """ Get the count of the current mail, stored in ~/.offlineimap/.new_mail,
@@ -40,14 +43,21 @@ def get_mail_count():
     try:
         with open(os.path.expanduser("~/.offlineimap/.new_mail")) as f:
             return "Mail: N:{} U:{} ".format(
-                    *[l.strip('\n') for l in f.readlines()])
+                *[l.strip('\n') for l in f.readlines()])
     except FileNotFoundError:
         return ""
+
+
+def get_sfttime():
+    """ Get the current SFT time from script in path"""
+    return subprocess.check_output(['sfttime']).decode().strip()
+
 
 def print_line(message):
     """ Non-buffered printing to stdout. """
     sys.stdout.write(message + '\n')
     sys.stdout.flush()
+
 
 def read_line():
     """ Interrupted respecting reader for stdin. """
@@ -62,6 +72,20 @@ def read_line():
     except KeyboardInterrupt:
         sys.exit()
 
+
+def get_input_block():
+    line, prefix = read_line(), ''
+    # ignore comma at start of lines
+    if line.startswith(','):
+        line, prefix = line[1:], ','
+
+    j = json.loads(line)
+    return prefix, j
+
+
+#def insert_in_block(block, pos, json_array):
+
+
 if __name__ == '__main__':
     # Skip the first line which contains the version header.
     print_line(read_line())
@@ -70,16 +94,13 @@ if __name__ == '__main__':
     print_line(read_line())
 
     while True:
-        line, prefix = read_line(), ''
-        # ignore comma at start of lines
-        if line.startswith(','):
-            line, prefix = line[1:], ','
-
-        j = json.loads(line)
+        prefix, j = get_input_block()
 
         # insert information into the start of the json, but could be anywhere
         # CHANGE THIS LINE TO INSERT SOMETHING ELSE
-        j.insert(0, {'full_text' : "{}".format(get_mail_count()) ,
-                'name' : 'mail'})
+        j.insert(0, {'full_text': "{}".format(get_mail_count()),
+                     'name': 'mail'})
+        j.insert(99, {'full_text': "{}".format(get_sfttime()),
+                      'name': "sfttime"})
         # and echo back new encoded json
         print_line(prefix+json.dumps(j))
