@@ -46,7 +46,7 @@
 #"xterm"
 #  c:41 + m:0x4
 
-# specify a mouse button
+#"specify a mouse button
 #"xterm"
 #  control + b:2
 
@@ -65,17 +65,6 @@
 #"rxvt"
 #  Control + b:2 + Release
 
-# Take Screenshot
-# Selection
-"import ~/Pictures/screenshot.jpg"
-  Print
-"import ~/Pictures/screenshot.jpg; pinta ~/Pictures/screenshot.jpg"
-  Shift + Print
-# Full Screen
-"import -window root ~/Pictures/screenshot.jpg"
-  control + Print
-"import -window root ~/Pictures/screenshot.jpg; pinta ~/Pictures/screenshot.jpg"
-  control + shift + Print
 
 # Map standby to the standby key (sigh).
 "i3lock -u --image=/home/philip/.i3/spike_spiegel.jpg.png && systemctl suspend"
@@ -84,6 +73,21 @@
 # Lock the screen via i3lock.
 "i3lock -u --image=/home/philip/.i3/spike_spiegel.jpg.png"
   Mod4 + l
+
+# Screenshots (ARGH!)
+# Normal
+"import $SCREENSHOT.jpg"
+  Print
+# Full screen
+"import -window root $SCREENSHOT.jpg"
+  Control + Print
+# With upload
+"import $SCREENSHOT.jpg && imup $SCREENSHOT.jpg | xclip -selection clipboard"
+  Alt + Print
+# Fullscreen With upload
+"import -window root $SCREENSHOT.jpg && imup $SCREENSHOT.jpg | xclip -selection clipboard"
+  Control + Alt + Print
+
 
 # Control Volume
 
