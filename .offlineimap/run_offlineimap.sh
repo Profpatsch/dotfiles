@@ -49,10 +49,10 @@ fi
 # OFFLINEIMAP
 read -r pid < ~/.offlineimap/pid
 
-# Kill old session, if still running
+# Exit, if other session already running
 if ps $pid &>/dev/null; then
   echo "ERROR: offlineimap ($pid): another instance running." >&2
-  kill -9 $pid
+  exit 1
 fi
 
 
@@ -60,10 +60,10 @@ fi
 if [ "$QUICK" == "yes" ]
 then
   echo "Doing a quick sync."
-  offlineimap -o -u quiet -q || ERROR=1
+  offlineimap -o -u quiet -q | grep ERROR && ERROR=1
 else
   echo "Doing a full sync."
-  offlineimap -o -u quiet || ERROR=1
+  offlineimap -o -u quiet | grep ERROR && ERROR=1
 fi
 # -------------
 
