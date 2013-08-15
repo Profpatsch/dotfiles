@@ -45,19 +45,21 @@ chmod 600 ~/.Xdbus
 env | grep DBUS_SESSION_BUS_ADDRESS > ~/.Xdbus
 echo 'export DBUS_SESSION_BUS_ADDRESS' >> ~/.Xdbus 
   
-  # Autostart
-  # file manager daemon
-  #thunar --daemon & # No significant speed-up
-  # music playing daemon
-  mpd
-  # mpd scrobbler
-  mpdscribble
-  # dropbox
-  dropboxd &
-  # skype
-  skype &
-  # pidgin
+# Autostart
+# file manager daemon
+#thunar --daemon & # No significant speed-up
+# music playing daemon
+mpd
+# mpd scrobbler
+mpdscribble
+# dropbox
+dropboxd &
+# skype
+skype &
+# pidgin
 pidgin &
+# redshift (auto color temperature for night.)
+toggle-redshift
 
 # exec gnome-session
 # exec startkde
