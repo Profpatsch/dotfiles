@@ -27,6 +27,9 @@ xset m 8/3
 # touchpad
 #xinput set-ptr-feedback 13 	18 	   13 	  5
 
+# Set X program settings
+[[ -f ~/.Xresources ]] && xrdb -merge ~/.Xresources
+
 # Start a D-Bus session
 source /etc/X11/xinit/xinitrc.d/30-dbus
 # Start GNOME Keyring
