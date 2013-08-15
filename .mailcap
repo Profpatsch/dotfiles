@@ -3,5 +3,12 @@ text/html; elinks -dump-charset utf-8 -dump %s; nametemplate=%s.html; copiousout
 
 image/*; eog %s;
 
-application/pdf; evince %s; nametemplate=%s.pdf
+application/pdf; zathura %s; nametemplate=%s.pdf
+application/rar; file-roller %s
 
+# LibreOffice
+application/vnd.oasis.opendocument.text; libreoffice %s
+application/vnd.oasis.opendocument.spreadsheet; libreoffice %s
+# M$ Office Crap
+application/vnd.openxmlformats-officedocument.wordprocessingml.document; libreoffice %s
+application/msword; libreoffice %s
