@@ -17,7 +17,7 @@ ACCOUNTS="Privat Mail Derpymail EQP_Profpatsch"
     4   *   *   *   *   notmuch new &>> ~/.logs/notmuch.log
 
 # Do a full backup (depending on the ¿fullness¿ of the script.
-    5   *   *   *   *   ~/scripts/full_backup.sh &>> ~/.logs/backup.log
+    5   */3 *   *   *   ~/scripts/full_backup.sh &>> ~/.logs/backup.log
 
 # Spin those b*tches.
 @ 1d     logrotate -v --state ~/.logs/logrotate.state ~/.logrotate.conf &>> ~/.logs/logrotate.log
