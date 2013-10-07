@@ -75,7 +75,16 @@ set forward_quote                        # include message in forwards
 
 # GPG options
 set fcc_clear                            # Save an unencrypted copy
-
+# Use GPGME
+set crypt_use_gpgme = yes
+# Sign replies to signed email
+set crypt_replysign = yes
+# Encrypt replies to encrypted email
+set crypt_replyencrypt = yes
+# Encrypt and sign replies to encrypted and signed email
+set crypt_replysignencrypted = yes
+# Attempt to verify email signatures automatically
+set crypt_verify_sig = yes
 
 # headers to show
 ignore *                                 # ignore all headers
@@ -95,11 +104,6 @@ source ~/.mutt/solarized-colors/mutt-colors-solarized-dark-16.muttrc   # source 
 source ~/.mutt/sidebar.muttrc             # any muttng options are here
 source ~/.mutt/keybindings.muttrc         # all keybindings
 source ~/.mutt/mailinglists.muttrc        # subscribed and known mailinglists
-source /usr/share/doc/mutt/samples/gpg.rc # gpg options
-set pgp_getkeys_command="/usr/bin/gpg --recv-key %r"
-set pgp_good_sign="`gettext -d gnupg -s 'Good signature from "' | tr -d '"'`"
-# and check for old-style pgp messages
-message-hook '!(~g|~G) ~b"^-----BEGIN\ PGP\ (SIGNED\ )?MESSAGE"' "exec check-traditional-pgp"
 
 # macros
 macro index \Cr "<tag-prefix><clear-flag>N" "mark tagged messages as read"
