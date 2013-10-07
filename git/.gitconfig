@@ -39,6 +39,8 @@
         status = auto
 
 [credential]
-	helper = cache
+	helper = gnome-keyring
 [diff]
 	tool = gvimdiff
+[push]
+	default = simple
