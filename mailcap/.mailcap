@@ -12,3 +12,6 @@ application/vnd.oasis.opendocument.spreadsheet; libreoffice %s
 # M$ Office Crap
 application/vnd.openxmlformats-officedocument.wordprocessingml.document; libreoffice %s
 application/msword; libreoffice %s
+application/vnd.ms-excel; libreoffice %s
+
+#application/*; xdg-open %s
