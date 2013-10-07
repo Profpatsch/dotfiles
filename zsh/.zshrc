@@ -1,8 +1,16 @@
-# Own zshrc config adding to the grml-zshrc. Download it with your package manager.
+# Oh My Zsh!
+source ~/.zshrc.oh-my-zsh
+
+export PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/android-sdk/platform-tools:/opt/android-sdk/tools:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/philip/.neo:/home/philip/scripts:/home/philip/.gem/ruby/1.9.1/bin/
 
 # set up mime types as suffix aliases
 autoload -U zsh-mime-setup
 zsh-mime-setup
+
+# fasd
+alias v='f -e choose-editor' # quick opening files with the enabled editor
+alias m='f -e vlc' # quick opening files with mplayer
+alias o='a -e xdg-open' # quick opening files with xdg-open
 
 # Own aliases
 # Convenience
@@ -42,6 +50,8 @@ alias gk='gitk --all&'
 alias gx='gitx --all '
 alias gcam='git commit -a -m '
 alias gl='git lola'
+alias gpo='git push origin'
+alias gpom='git push origin master '
 # git-svn
 alias gsd='git svn dcommit'
 alias gsr='git svn rebase'
@@ -83,3 +93,5 @@ eval `dircolors ~/.config/terminator/solarized/dircolors.ansi-dark`
 go_libs="-lm"
 go_flags="-g -Wall -include ~/scripts/allheaders.h -O3"
 alias goc="c99 -xc '-' $go_libs $go_flags"
+
+# Clojure
