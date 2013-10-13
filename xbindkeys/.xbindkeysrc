@@ -46,7 +46,7 @@
 #"xterm"
 #  c:41 + m:0x4
 
-#"specify a mouse button
+# specify a mouse button
 #"xterm"
 #  control + b:2
 
@@ -96,15 +96,11 @@
 
 # Music (mpd)
 "mpc toggle"
-  XF86AudioMute
+  XF86Mail
 "mpc next"
-  XF86AudioNext
+  XF86Launch2
 "mpc prev"
-  XF86AudioPrev
-"mpc random"
-  XF86AudioPlay
-"mpc single"
-  XF86AudioStop
+  XF86HomePage
 
 # Control Volume
 
@@ -126,9 +122,9 @@
 #  Shift + XF86AudioLowerVolume
 
 # pulse
-"pactl set-sink-volume 0 -- +2dB"
+"pactl set-sink-volume 1 -- +2dB"
   XF86AudioRaiseVolume
-"pactl set-sink-volume 0 -- -2dB"
+"pactl set-sink-volume 1 -- -2dB"
   XF86AudioLowerVolume
 # No mute toogle. Failed big time, Poettering.
 #"pactl set-sink-mute 1"
