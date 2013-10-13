@@ -67,4 +67,5 @@ toggle-redshift
 # ...or the Window Manager of your choice
 # exec xterm
 # exec enlightenment_start
+~/.i3/config-config
 exec i3 -V >> ~/.logs/i3.log 2>&1 #i3 with logging
