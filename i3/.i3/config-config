@@ -1,0 +1,15 @@
+#! /bin/env bash
+
+i3_env_vars="EDITOR MAIL PATH SCREENSHOT VISUAL"
+i3_folder=~/.i3
+i3_env_file=${i3_folder}/config.env
+
+# Empty file
+> ${i3_env_file}
+# Appends all the specified environment variables to 
+for env in ${i3_env_vars}; do
+  eval echo ${env}=\$${env} >> ${i3_env_file}
+done
+
+# append the i3 config to the environment vars
+cat ${i3_env_file} ${i3_folder}/config.own > ${i3_folder}/config
