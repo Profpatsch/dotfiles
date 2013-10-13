@@ -219,8 +219,8 @@ bindsym $mod+Shift+f move container to output right
 # Laptop monitor {{{
 bar {
 	# Tray icons
-	output LVDS1
-	tray_output LVDS1
+	output LVDS
+	tray_output LVDS
     status_command i3status --config ~/.i3/i3status.conf | ~/.i3/i3status_mailwrapper.py
 	# hide the bar, shows with modifier
 	#mode hide
@@ -229,8 +229,8 @@ bar {
 # }}}
 # Any other monitors {{{
 bar {
-	output VGA1
-	output HDMI1
+	output VGA-0
+	output HDMI-0
 	tray_output none
 	position bottom
 	status_command .i3/i3status_other_monitor_wrapper.sh
