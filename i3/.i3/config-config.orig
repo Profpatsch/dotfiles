@@ -8,7 +8,11 @@ i3_env_file=${i3_folder}/config.env
 > ${i3_env_file}
 # Appends all the specified environment variables to 
 for env in ${i3_env_vars}; do
+<<<<<<< HEAD
   eval echo set ${env}=\$${env} >> ${i3_env_file}
+=======
+  eval echo ${env}=\$${env} >> ${i3_env_file}
+>>>>>>> d88ba3660506c66f0d3dd64fc0b03c003a3983d9
 done
 
 # append the i3 config to the environment vars
