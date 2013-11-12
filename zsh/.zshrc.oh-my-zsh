@@ -58,4 +58,6 @@ plugins=(
 	 #virtualenvwrapper
 	 web-search
 	 )
+
+
 source $ZSH/oh-my-zsh.sh

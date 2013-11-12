@@ -1,6 +1,8 @@
 # Oh My Zsh!
 source ~/.zshrc.oh-my-zsh
 
+setopt extendedglob # Heck yeah.
+
 export PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/bin:/opt/android-sdk/platform-tools:/opt/android-sdk/tools:/usr/bin/vendor_perl:/usr/bin/core_perl:/home/philip/.neo:/home/philip/scripts:/home/philip/.gem/ruby/1.9.1/bin/
 
 # set up mime types as suffix aliases
@@ -21,8 +23,8 @@ alias findn='find . -iname '
 alias diff='colordiff '
 #alias cl='wc -l ' # Count Lines
 # Own “programs” (fancy for: cheap alias names)
-alias todo='vim ~/.todo'
 alias cd2flac='abcde -c ~/.abcde_flac.conf'
+alias copy='rsync -a --progress --stats '
 alias deb='cgdb ' # I can’t remember that name…
 alias follow='tail -n50 -f '
 alias followl='tail -n50 -f ~/.logs/*'
@@ -35,6 +37,8 @@ alias -g G='| grep '
 
 # Make these programs act sane
 # Git
+# gm stays graphics magick, please.
+unalias gm
 alias gs='git status '
 #show only staged (first m) and changed files
 alias gss='gs -s| grep "^[^?][^?]"'
@@ -57,10 +61,6 @@ alias gsd='git svn dcommit'
 alias gsr='git svn rebase'
 alias grc='git rebase --continue'
 alias gra='git rebase --abort'
-# svn
-alias sc='svn commit '
-alias scm='svn commit -m '
-alias ss='svn status ' # Don’t need no sockets. ;)
 # vim
 # open new files in already running session of gvim
 alias gvim='choose-editor '
@@ -95,3 +95,6 @@ go_flags="-g -Wall -include ~/scripts/allheaders.h -O3"
 alias goc="c99 -xc '-' $go_libs $go_flags"
 
 # Clojure
+
+# OPAM configuration
+. /home/philip/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
