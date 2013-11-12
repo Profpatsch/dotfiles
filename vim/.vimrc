@@ -17,7 +17,8 @@ Bundle 'gmarik/vundle'
 " Bundles {{{
 " Editor Extensions {{{
 " Awesome status line
-Bundle 'Lokaltog/powerline'
+"Bundle 'Lokaltog/powerline'
+Bundle 'bling/vim-airline'
 " Well, it’s the NERD tree. No explanation needed.
 Bundle 'vim-scripts/The-NERD-tree.git'
 " small buffer list
@@ -43,21 +44,14 @@ Bundle 'tpope/vim-surround'
 Bundle 'tpope/vim-repeat'
 " Match more than single letters with %, e.g. XML tags
 Bundle 'Spaceghost/vim-matchit'
-" complete everything by tab
-Bundle 'ervandew/supertab.git'
 " Autoclose brackets (like Eclipse does)
-Bundle 'Townk/vim-autoclose'
+"Bundle 'Townk/vim-autoclose'
 " Comment lines out quickly
 Bundle 'scrooloose/nerdcommenter'
 " Snippets! So many snippets!
-"Bundle 'MarcWeber/ultisnips'
-"Bundle 'ALX-Liu-Xiao/ultisnips'
-"Bundle 'honza/vim-snippets'
 Bundle 'SirVer/ultisnips'
-Bundle 'MarcWeber/vim-addon-mw-utils.git'
-Bundle 'tomtom/tlib_vim.git'
 " Handling of URLs
-Bundle 'vim-scripts/utl.vim.git'
+"Bundle 'vim-scripts/utl.vim.git'
 " Wisely add “end” in ruby, vim, bash, VB, C/C++ preprop, Lua
 Bundle 'tpope/vim-endwise'
 " Adds indent text object
@@ -80,18 +74,17 @@ Bundle 'tpope/vim-fugitive.git'
 Bundle 'mileszs/ack.vim.git'
 " }}}
 " Languages {{{
+" Auto completion {{{
+Bundle "Valloric/YouCompleteMe"
+" }}}
 " Vim-Orgmode"{{{
 Bundle 'jceb/vim-orgmode'
 "}}}
-" C++"{{{
-Bundle 'Rip-Rip/clang_complete'
-"}}}
 " python"{{{
 " Uber plugin
-Bundle 'klen/python-mode'
-" Show documentation in preview window
-Bundle 'fs111/pydoc.vim.git'
-" Bundle 'alfredodeza/pytest.vim.git' " Run pytest tests within vim"}}}
+"Bundle "davidhalter/jedi-vim"
+" Bundle 'alfredodeza/pytest.vim.git' " Run pytest tests within vim"
+" }}}
 " Clojure {{{
 " syntax, indent, filetype settings
 Bundle 'guns/vim-clojure-static'
@@ -299,9 +292,6 @@ nnoremap <leader>fb :call EditorSetFontSize(float2nr(str2float(fontsize)+str2flo
 nnoremap <leader>fh :call EditorSetFontSize(float2nr(fontsize+4*str2float(fontsizestep)))<CR>
 " }}}
 " External commands {{{
-" Generate tags for current folder (mostly C++ I guess, kind of redundant with
-" the clang plugin
-nnoremap <leader>gtcpp :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
 " Opens dir of current file in ranger in urxvt
 nnoremap <silent> <leader>rf  :!urxvt -e ranger --selectfile="%:p" &<CR><CR>
 " }}}
@@ -559,6 +549,9 @@ autocmd FileType rust setlocal expandtab shiftwidth=4 tabstop=8 softtabstop=4
 " ---------------------------------------
 " Powerline {{{
 set rtp+=~/.vim/bundle/powerline/powerline/bindings/vim
+" }}}
+" Airline {{{
+let g:airline_powerline_fonts=1
 " }}}
 " Splice {{{
 let g:splice_prefix = "<localleader>"
@@ -886,17 +879,24 @@ au Syntax * RainbowParenthesesLoadBraces
 " }}}
 " UltiSnips {{{
 "let g:UltiSnipsSnippetsDir="~/code/vim/vim-snippets-private/"
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<tab>"
-let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+let g:UltiSnipsSnippetDirectories=["UltiSnips", "ultisnips"]
+let g:UltiSnipsExpandTrigger="<C-c>"
+let g:UltiSnipsJumpForwardTrigger="<C-n>"
+let g:UltiSnipsJumpBackwardTrigger="<C-p>"
 let g:UltiSnipsListSnippets="<leader>mm"
-" }}}
-" Python-Mode {{{
 " }}}
 " Paredit {{{
 let g:paredit_smartjump = 1
 "let g:paredit_leader = "\\"
 let g:paredit_shortmaps = 1
+" }}}
+" Jedi {{{
+let g:jedi#completions_command = "<C-N>"
+"let g:jedi#popup_on_dot = 0
+let g:jedi#popup_select_first = 0
+" }}}
+" You Complete Me {{{
+let g:ycm_filetype_blacklist={'python':1, 'c':1, 'cpp':1}
 " }}}
 " ------------------------------------}}}
 
