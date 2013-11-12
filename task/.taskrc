@@ -29,3 +29,5 @@ search.case.sensitive=no
 dateformat=d.m.Y
 dateformat.report=d.m.Y
 dateformat.annotation=d.m.Y
+dateformat.info=d.m.Y H:N:S
+weekstart=monday
