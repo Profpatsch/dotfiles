@@ -4,5 +4,5 @@
 i3status --config .i3/i3status_other_monitors.conf | while :
 do
        read line
-       echo "applepie@soarin | $line" || exit 1
+       echo "nightmare@nyx | $line" || exit 1
 done

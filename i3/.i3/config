@@ -174,7 +174,7 @@ bindsym $mod+f exec thunar
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.
-bindsym $mod+a exec --no-startup-id i3-dmenu-desktop
+bindsym $mod+a exec --no-startup-id j4-dmenu-desktop #--display-binary
 # }}}
 # Screenshot {{{
 set $ftsc jpg
@@ -225,7 +225,7 @@ bar {
 	# Tray icons
 	output LVDS1
 	tray_output LVDS1
-    status_command i3status --config ~/.i3/i3status.conf | ~/.i3/i3status_mailwrapper.py
+    status_command i3status --config ~/.i3/i3status.conf
 	# hide the bar, shows with modifier
 	#mode hide
 	#modifier $mod

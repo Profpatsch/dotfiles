@@ -103,4 +103,4 @@ if __name__ == '__main__':
         j.insert(99, {'full_text': "{}".format(get_sfttime()),
                       'name': "sfttime"})
         # and echo back new encoded json
-        print_line(prefix+json.dumps(j))
+        print_line("{}{}".format(prefix, json.dumps(j)))
