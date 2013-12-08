@@ -1,6 +1,21 @@
 ;;;; GENERAL
 
+(defun ensure-package-installed (&rest packages)
+  "Assure every package is installed, ask for installation if it’s not.
+Return a list of installed packages or nil for every package not installed."
+  (mapcar
+   (lambda (package)
+     (package-installed-p 'evil)
+     (if (package-installed-p package)
+         package
+       (if (y-or-n-p (format "Package %s is missing. Install it? " package))
+           (package-install package)
+         nil)))
+   packages))
+ 
+
 ;;; MELPA package repository
+)
 (require 'package)
 (add-to-list 'package-archives
   '("melpa" . "http://melpa.milkbox.net/packages/") t)
@@ -10,6 +25,8 @@
 
 
 ;;;; LOOK
+(ensure-package-installed 'powerline 'solarized-theme)
+
 (set-face-attribute 'default nil :font "Inconsolata" :height 130)
 (blink-cursor-mode 0)
 (load-theme 'solarized-dark t)
@@ -62,17 +79,6 @@
  (add-hook 'on-blur-hook #'(lambda () (save-some-buffers t)))
  (on-blur--refresh))
 
-;;;; ido
-(ido-mode t)
-(setq ido-enable-flex-matching t)
-
-;;; shadows find-file with this dispatch-lambda
-(setq native-find-file-func (symbol-function 'find-file)) ;; original find-file code
-(fset 'find-file (lambda (filename &optional wildcards)
-                   (if filename
-                       (native-find-file-func filename wildcards)
-                     (ido-find-file))))
-(defalias 'switch-buffer 'ido-switch-buffer) ;; use better buffer switcher
 
 ;;; scroll one line at a time (less "jumpy" than defaults)
 (setq mouse-wheel-scroll-amount '(2 ((shift) . 1))) ;; two lines at a time
@@ -87,10 +93,6 @@
 ;;; show matching parens
 (show-paren-mode 1)
 (setq show-paren-delay 0)
-;(deffacedd paren-match) TODO
-;(set-face-background 'paren-match "#000000")
-;(set-face-background 'show-paren-match "#073642")
-;(set-face-foreground 'show-paren-match (face-foreground 'default))
 
 ;;; more powerful commands
 (global-set-key (kbd "M-/") 'hippie-expand)
@@ -116,10 +118,17 @@
 
 ;;;; MODES
 
-;;;; Info
 
+;;;; Info
 (add-hook 'Info-mode-hook 'turn-off-evil-mode)
+
+
+;;;; eldoc
+(eldoc-mode 1) ; enable globally
+
+
 ;;;; auto-complete
+(ensure-package-installed 'auto-complete)
 
 (require 'auto-complete-config)
 (ac-config-default)
@@ -128,11 +137,14 @@
 (define-key ac-mode-map (kbd "TAB") 'auto-complete)
 
 
+
 ;;;; LANGUAGES
+
 
 (defun add-hooks-to-mode (mode-hook functions)
   (dolist (hook functions)
     (add-hook mode-hook hook)))
+
 
 ;;;; elisp
 (add-hooks-to-mode 'emacs-lisp-mode-hook
@@ -141,7 +153,10 @@
 (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
 
+
 ;;;; Clojure
+(ensure-package-installed 'cider)
+
 (require 'cider)
 (add-hooks-to-mode 'cider-mode-hook
 		   '(cider-turn-on-eldoc-mode
@@ -149,17 +164,6 @@
 		     paredit-mode))
 (setq cider-popup-stacktraces nil) ;; Disable error popup when not in repl
 (setq cider-repl-popup-stacktraces nil) ;; Disable error buffer in repl
-
-;;;; Asciidoc
-;; use Vim, stupid
-
-;;;; Markdown
-(autoload 'markdown-mode "markdown-mode"
-   "Major mode for editing Markdown files" t)
-(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.mdown\\'" . markdown-mode))
-
 
 ;;; completion
 (require 'ac-nrepl)
@@ -210,9 +214,50 @@
                                (list (concat (expand-file-name virtualenv-root) "/" virtualenv-workon-session "/")))))
               (setq jedi:server-args args))))
 
+;;;; Asciidoc
+;; use Vim, stupid
+
+;;;; Markdown
+(ensure-package-installed 'markdown-mode)
+
+(autoload 'markdown-mode "markdown-mode"
+   "Major mode for editing Markdown files" t)
+(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.mdown\\'" . markdown-mode))
+
+
+
 ;;;; PLUGINS
 
+
+;;;; ido
+(ensure-package-installed 'ido 'smex)
+
+(ido-mode t)
+(setq ido-enable-flex-matching t)
+
+;;; shadows find-file with this dispatch-lambda
+(setq native-find-file-func (symbol-function 'find-file)) ;; original find-file code
+(fset 'find-file (lambda (filename &optional wildcards)
+                   (if filename
+                       (funcall native-find-file-func filename wildcards)
+                     (ido-find-file))))
+(defalias 'switch-buffer 'ido-switch-buffer) ;; use better buffer switcher
+
+;;; smex
+(require 'smex)
+(smex-initialize)
+(global-set-key (kbd "M-x") 'smex)
+(global-set-key (kbd "M-X") 'smex-major-mode-commands)
+;; This is your old M-x.
+(global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
+(smex-auto-update 60)
+(setq smex-save-file "~/.emacs.d/smex-items")
+
+
 ;;;; Evil (Vim)
+(ensure-package-installed 'evil 'evil-leader 'surround 'evil-nerd-commenter)
 (require 'evil-leader) ;; Needs execution order to work in every buffer …
 (require 'evil)
 ; Normal State
@@ -277,23 +322,13 @@
 
 
 
-;;;; smex
-(require 'smex)
-(smex-initialize)
-(global-set-key (kbd "M-x") 'smex)
-(global-set-key (kbd "M-X") 'smex-major-mode-commands)
-;; This is your old M-x.
-(global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
-(smex-auto-update 60)
-(setq smex-save-file "~/.emacs.d/smex-items")
-
-
 ;;;; scpaste
+(ensure-package-installed 'scpaste)
+
 (require 'scpaste)
 (setq scpaste-http-destination "https://bigmac.caelum.uberspace.de/paste"
       scpaste-scp-destination "bigmac@uberspace:html/paste"
       scpaste-user-name "Profpatsch"
       scpaste-user-address "http://profpatsch.de")
 
-;;;; eldoc
-(eldoc-mode 1) ; enable globally
+
