@@ -203,6 +203,10 @@ Return a list of installed packages or nil for every package not installed."
 (setq virtualenv-root "~/.virtualenvs")
 
 ;;; jedi.el
+;;; To make this work, go into the jedi dir and run `make requirements`.
+;;; To make it work for py3k, change the virtualenv and python variables
+;;; in the Makefile first. The other way around for systems with py3k
+;;; default (Archlinux).
 (add-hook 'python-mode-hook 'jedi:setup)
 (setq jedi:complete-on-dot t)
 ;;; change jedi to the virtualenv with virtualenv.el
