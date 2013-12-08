@@ -178,6 +178,38 @@
 (eval-after-load "cider"
   '(define-key cider-mode-map (kbd "C-c C-d") 'ac-nrepl-popup-doc))
 
+
+;;;; Python
+(ensure-package-installed 'virtualenv 'jedi)
+
+;;; python shell options
+(setq
+ python-shell-interpreter "ipython2"
+ python-shell-interpreter-args ""
+ python-shell-prompt-regexp "In \\[[0-9]+\\]: "
+ python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
+ python-shell-completion-setup-code
+ "from IPython.core.completerlib import module_completion"
+ python-shell-completion-module-string-code
+ "';'.join(module_completion('''%s'''))\n"
+ python-shell-completion-string-code
+ "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
+
+;;; folder with the virtualenvs
+(setq virtualenv-root "~/.virtualenvs")
+
+;;; jedi.el
+(add-hook 'python-mode-hook 'jedi:setup)
+(setq jedi:complete-on-dot t)
+;;; change jedi to the virtualenv with virtualenv.el
+(add-hook 'virtualenv-minor-mode-hook
+          ;; restart the jedi server in the venv
+          (lambda ()
+            (jedi:stop-server)
+            (let ((args (append'("--virtual-env")
+                               (list (concat (expand-file-name virtualenv-root) "/" virtualenv-workon-session "/")))))
+              (setq jedi:server-args args))))
+
 ;;;; PLUGINS
 
 ;;;; Evil (Vim)
