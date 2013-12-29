@@ -5,7 +5,6 @@
 Return a list of installed packages or nil for every package not installed."
   (mapcar
    (lambda (package)
-     (package-installed-p 'evil)
      (if (package-installed-p package)
          package
        (if (y-or-n-p (format "Package %s is missing. Install it? " package))
@@ -15,12 +14,25 @@ Return a list of installed packages or nil for every package not installed."
  
 
 ;;; MELPA package repository
-)
 (require 'package)
 (add-to-list 'package-archives
   '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (setq package-enable-at-startup nil)
 (package-initialize)
+
+(ensure-package-installed 'melpa)
+;; TODO write a function to make this local (argument to ensure-package-installed?)
+(setq package-archive-enable-alist '(("melpa" melpa powerline jedi)))
+
+;; Marmalade package repository
+(add-to-list 'package-archives 
+    '("marmalade" .
+      "http://marmalade-repo.org/packages/"))
+(package-initialize)
+
+(ensure-package-installed 'evil 'evil-leader)
+(require 'evil)
+(require 'evil-leader)
 
 
 
@@ -47,6 +59,7 @@ Return a list of installed packages or nil for every package not installed."
 
 
 ;;;; FEEL
+(setq x-super-keysym 'meta)
 (global-set-key (kbd "RET") 'newline-and-indent) ;; Return should indent
 (setq undo-limit 3600) ;; Some more undo steps
 (defalias 'yes-or-no-p 'y-or-n-p) ;; No typing yes please
@@ -134,101 +147,32 @@ Return a list of installed packages or nil for every package not installed."
 (ac-config-default)
 (setq ac-auto-show-menu t) ;; Don’t show the menu automatically
 (setq ac-auto-start 4)       ;; Autocomplete after 4 letters
+(setq ac-quick-help-delay 0.3) ;; Show the help faster
+(setq ac-use-fuzzy t) ;; fuzzy matching!
 (define-key ac-mode-map (kbd "TAB") 'auto-complete)
 
+;;;; paredit
+(ensure-package-installed 'paredit)
+(require 'paredit)
+(define-key paredit-mode-map
+  (kbd "C-M-q") 'paredit-reindent-defun)
 
+(evil-define-key 'normal paredit-mode-map
+  "D" 'paredit-kill
+  "W" 'paredit-forward
+  "B" 'paredit-backward
+  ">" 'paredit-forward-slurp-sexp
+  "<" 'paredit-forward-barf-sexp
+  )
 
-;;;; LANGUAGES
+(evil-leader/set-key-for-mode 'paredit-mode
+  "w" 'paredit-wrap-round
+  "s" 'paredit-split-sexp
+  "r" 'paredit-raise-sexp
+  "j" 'paredit-join-sexps)
 
-
-(defun add-hooks-to-mode (mode-hook functions)
-  (dolist (hook functions)
-    (add-hook mode-hook hook)))
-
-
-;;;; elisp
-(add-hooks-to-mode 'emacs-lisp-mode-hook
-		   '(enable-paredit-mode
-		     turn-on-eldoc-mode))
-(add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
-(add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
-
-
-;;;; Clojure
-(ensure-package-installed 'cider)
-
-(require 'cider)
-(add-hooks-to-mode 'cider-mode-hook
-		   '(cider-turn-on-eldoc-mode
-		     subword-mode
-		     paredit-mode))
-(setq cider-popup-stacktraces nil) ;; Disable error popup when not in repl
-(setq cider-repl-popup-stacktraces nil) ;; Disable error buffer in repl
-
-;;; completion
-(require 'ac-nrepl)
-(add-hook 'cider-repl-mode-hook 'ac-nrepl-setup)
-(add-hook 'cider-mode-hook 'ac-nrepl-setup)
-(eval-after-load "auto-complete"
-  '(add-to-list 'ac-modes 'cider-repl-mode))
-
-;; trigger in nrepl buffers
-(defun set-auto-complete-as-completion-at-point-function ()
-  (setq completion-at-point-functions '(auto-complete)))
-(add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function)
-(add-hook 'cider-repl-mode-hook 'set-auto-complete-as-completion-at-point-function)
-
-;; use ac-nrepl’s popup instead of nrepl-doc
-(eval-after-load "cider"
-  '(define-key cider-mode-map (kbd "C-c C-d") 'ac-nrepl-popup-doc))
-
-
-;;;; Python
-(ensure-package-installed 'virtualenv 'jedi)
-
-;;; python shell options
-(setq
- python-shell-interpreter "ipython2"
- python-shell-interpreter-args ""
- python-shell-prompt-regexp "In \\[[0-9]+\\]: "
- python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
- python-shell-completion-setup-code
- "from IPython.core.completerlib import module_completion"
- python-shell-completion-module-string-code
- "';'.join(module_completion('''%s'''))\n"
- python-shell-completion-string-code
- "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
-
-;;; folder with the virtualenvs
-(setq virtualenv-root "~/.virtualenvs")
-
-;;; jedi.el
-;;; To make this work, go into the jedi dir and run `make requirements`.
-;;; To make it work for py3k, change the virtualenv and python variables
-;;; in the Makefile first. The other way around for systems with py3k
-;;; default (Archlinux).
-(add-hook 'python-mode-hook 'jedi:setup)
-(setq jedi:complete-on-dot t)
-;;; change jedi to the virtualenv with virtualenv.el
-(add-hook 'virtualenv-minor-mode-hook
-          ;; restart the jedi server in the venv
-          (lambda ()
-            (jedi:stop-server)
-            (let ((args (append'("--virtual-env")
-                               (list (concat (expand-file-name virtualenv-root) "/" virtualenv-workon-session "/")))))
-              (setq jedi:server-args args))))
-
-;;;; Asciidoc
-;; use Vim, stupid
-
-;;;; Markdown
-(ensure-package-installed 'markdown-mode)
-
-(autoload 'markdown-mode "markdown-mode"
-   "Major mode for editing Markdown files" t)
-(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.mdown\\'" . markdown-mode))
+(evil-define-key 'insert paredit-mode-map
+  (kbd "C-w") 'paredit-backward-kill-word)
 
 
 
@@ -336,3 +280,141 @@ Return a list of installed packages or nil for every package not installed."
       scpaste-user-address "http://profpatsch.de")
 
 
+;;;; Yasnippet
+(ensure-package-installed 'yasnippet)
+(require 'yasnippet)
+(yas-global-mode 1)
+;; (defun ac-common-setup ()
+;;   (setq ac-sources (append ac-sources '(ac-source-yasnippet))))
+;; (add-hook 'auto-complete-mode-hook 'ac-common-setup)
+
+;;;; LANGUAGES
+
+
+(defun add-hooks-to-mode (mode-hook functions)
+  (dolist (hook functions)
+    (add-hook mode-hook hook)))
+
+
+;;;; elisp
+(add-hooks-to-mode 'emacs-lisp-mode-hook
+		   '(enable-paredit-mode
+		     turn-on-eldoc-mode))
+(add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
+(add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
+
+
+;;;; Clojure
+(ensure-package-installed 'cider)
+
+(add-hook 'clojure-mode-hook 'paredit-mode)
+(require 'cider)
+(add-hooks-to-mode 'cider-mode-hook
+		   '(cider-turn-on-eldoc-mode
+		     subword-mode
+		     paredit-mode))
+(setq cider-popup-stacktraces nil) ;; Disable error popup when not in repl
+(setq cider-repl-popup-stacktraces nil) ;; Disable error buffer in repl
+
+;;; evaluate the ns form if cider is running (enabling autocompletion from the get-go)
+(add-hook 'clojure-mode-hook (lambda ()
+                               (when (member 'cider-mode minor-mode-list)
+                                 (cider-eval-ns-form))))
+
+(evil-define-key 'normal clojure-mode-map
+  "K" 'ac-nrepl-popup-doc ;; this is sweet, the docs pop up in the auto-complete box
+  "]d" 'cider-src ;; I don’t know why I still use these awkward vim bindings …
+  "]j" 'cider-javadoc
+  )
+(evil-define-key 'insert clojure-mode-map
+  (kbd "C-j") 'cider-switch-to-relevant-repl-buffer)
+(evil-leader/set-key-for-mode 'clojure-mode
+  "d" 'clojure-fill-docstring
+  "r" 'lisp-eval-region
+  "t" 'clojure-jump-between-tests-and-code
+  "j" 'cider-switch-to-relevant-repl-buffer
+  "cj" 'cider-jack-in
+  "cs" 'cider
+  "pp" 'cider-pprint-eval-last-sexp
+  )
+
+(evil-define-key 'normal cider-mode-map
+  "K" 'ac-nrepl-popup-doc
+  "]d" 'cider-src
+  "]j" 'cider-javadoc
+  (kbd "C-c C-e") (lambda () (interactive)
+                    (evil-append 1)
+                    (cider-eval-last-sexp)
+                    (evil-normal-state)))
+(evil-define-key 'insert cider-mode-map
+  (kbd "C-j") 'cider-switch-to-last-clojure-buffer)
+(evil-leader/set-key-for-mode 'cider-repl-mode
+  "j" 'cider-switch-to-last-clojure-buffer
+  "m" 'cider-macroexpand-1
+  )
+
+;;; completion
+(ensure-package-installed 'ac-nrepl)
+(require 'ac-nrepl)
+(add-hook 'cider-repl-mode-hook 'ac-nrepl-setup)
+(add-hook 'cider-mode-hook 'ac-nrepl-setup)
+(eval-after-load "auto-complete"
+  '(add-to-list 'ac-modes 'cider-repl-mode))
+
+;; trigger in nrepl buffers
+(defun set-auto-complete-as-completion-at-point-function ()
+  (setq completion-at-point-functions '(auto-complete)))
+(add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function)
+(add-hook 'cider-repl-mode-hook 'set-auto-complete-as-completion-at-point-function)
+
+;; use ac-nrepl’s popup instead of nrepl-doc
+(eval-after-load "cider"
+  '(define-key cider-mode-map (kbd "C-c C-d") 'ac-nrepl-popup-doc))
+
+
+;;;; Python
+(ensure-package-installed 'virtualenv 'jedi)
+
+;;; python shell options
+(setq
+ python-shell-interpreter "ipython2"
+ python-shell-interpreter-args ""
+ python-shell-prompt-regexp "In \\[[0-9]+\\]: "
+ python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
+ python-shell-completion-setup-code
+ "from IPython.core.completerlib import module_completion"
+ python-shell-completion-module-string-code
+ "';'.join(module_completion('''%s'''))\n"
+ python-shell-completion-string-code
+ "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
+
+;;; folder with the virtualenvs
+(setq virtualenv-root "~/.virtualenvs")
+
+;;; jedi.el
+;;; To make this work, go into the jedi dir and run `make requirements`.
+;;; To make it work for py3k, change the virtualenv and python variables
+;;; in the Makefile first. The other way around for systems with py3k
+;;; default (Archlinux).
+(add-hook 'python-mode-hook 'jedi:setup)
+(setq jedi:complete-on-dot t)
+;;; change jedi to the virtualenv with virtualenv.el
+(add-hook 'virtualenv-minor-mode-hook
+          ;; restart the jedi server in the venv
+          (lambda ()
+            (jedi:stop-server)
+            (let ((args (append'("--virtual-env")
+                               (list (concat (expand-file-name virtualenv-root) "/" virtualenv-workon-session "/")))))
+              (setq jedi:server-args args))))
+
+;;;; Asciidoc
+;; use Vim, stupid
+
+;;;; Markdown
+(ensure-package-installed 'markdown-mode)
+
+(autoload 'markdown-mode "markdown-mode"
+   "Major mode for editing Markdown files" t)
+(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.mdown\\'" . markdown-mode))
