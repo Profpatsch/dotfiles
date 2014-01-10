@@ -9,6 +9,7 @@ application/rar; file-roller %s
 # LibreOffice
 application/vnd.oasis.opendocument.text; libreoffice %s
 application/vnd.oasis.opendocument.spreadsheet; libreoffice %s
+application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; libreoffice %s
 # M$ Office Crap
 application/vnd.openxmlformats-officedocument.wordprocessingml.document; libreoffice %s
 application/msword; libreoffice %s
