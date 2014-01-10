@@ -75,14 +75,16 @@ Bundle 'mileszs/ack.vim.git'
 " }}}
 " Languages {{{
 " Auto completion {{{
-Bundle "Valloric/YouCompleteMe"
+"Bundle "Valloric/YouCompleteMe"
 " }}}
 " Vim-Orgmode"{{{
 Bundle 'jceb/vim-orgmode'
 "}}}
 " python"{{{
 " Uber plugin
-"Bundle "davidhalter/jedi-vim"
+Bundle "davidhalter/jedi-vim"
+" virtualenv support
+Bundle "jmcantrell/vim-virtualenv"
 " Bundle 'alfredodeza/pytest.vim.git' " Run pytest tests within vim"
 " }}}
 " Clojure {{{
@@ -95,7 +97,8 @@ Bundle 'vim-scripts/paredit.vim'
 " }}}
 " *ML"{{{
 " Crazy cool CSS-like syntax for html
-Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
+Bundle "mattn/emmet-vim"
+" 
 "}}}
 " pandoc"{{{
 " Syntax, snippets etc for pandoc’s markdown
@@ -362,7 +365,7 @@ syntax enable
 
 " Autocompletion {{{
 "----------------------------------------
-autocmd FileType python set omnifunc=python3complete#Complete
+autocmd FileType python set omnifunc=pythoncomplete#Complete
 autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
 autocmd FileType css set omnifunc=csscomplete#CompleteCSS
@@ -412,67 +415,9 @@ autocmd BufNewFile,BufRead *.mail setlocal filetype=mail"}}}
 " Language support (should be in .vim/after/ftplugin/) {{{
 "" ----------------------------------------------------
 
-" ruby support
-" ------------
-autocmd FileType ruby setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
-
-" go support
-" ----------
-autocmd BufNewFile,BufRead *.go setlocal ft=go
-autocmd FileType go setlocal expandtab shiftwidth=4 tabstop=8 softtabstop=4
-
-" php support
-" -----------
-autocmd FileType php setlocal shiftwidth=4 tabstop=8 softtabstop=4 expandtab
-
-" template language support (SGML / XML too)
-" ------------------------------------------
-" and disable taht stupid html rendering (like making stuff bold etc)
-
-fun! s:SelectHTML()
-let n = 1
-while n < 50 && n < line("$")
-  " check for jinja
-  if getline(n) =~ '{%\s*\(extends\|block\|macro\|set\|if\|for\|include\|trans\)\>'
-    set ft=htmljinja
-    return
-  endif
-  " check for mako
-    if getline(n) =~ '<%\(def\|inherit\)'
-      set ft=mako
-      return
-    endif
-    " check for genshi
-    if getline(n) =~ 'xmlns:py\|py:\(match\|for\|if\|def\|strip\|xmlns\)'
-      set ft=genshi
-      return
-    endif
-    let n = n + 1
-  endwhile
-  " go with html
-  set ft=html
-endfun
-
-autocmd FileType html,xhtml,xml,htmldjango,htmljinja,eruby,mako setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
-autocmd bufnewfile,bufread *.rhtml setlocal ft=eruby
-autocmd BufNewFile,BufRead *.mako setlocal ft=mako
-autocmd BufNewFile,BufRead *.tmpl setlocal ft=htmljinja
-autocmd BufNewFile,BufRead *.py_tmpl setlocal ft=python
-autocmd BufNewFile,BufRead *.html,*.htm  call s:SelectHTML()
-let html_no_rendering=1
-
-let g:closetag_default_xml=1
-autocmd FileType html,htmldjango,htmljinja,eruby,mako let b:closetag_html_style=1
-autocmd FileType html,xhtml,xml,htmldjango,htmljinja,eruby,mako source ~/.vim/scripts/closetag.vim
-
-" GLSL
-" ----
-autocmd bufnewfile,bufread *.frag,*.fragment,*.vert,*.vertex,*.shader,*.glsl setlocal ft=glsl
-autocmd FileType glsl setlocal expandtab shiftwidth=4 tabstop=8 softtabstop=4
-
-" Verilog
-" -------
-autocmd FileType verilog setlocal expandtab shiftwidth=2 tabstop=8 softtabstop=2
+" Clojure
+" ---
+autocmd BufNewFile,BufRead *.cljs,*.clj setlocal ft=clojure
 
 " CSS
 " ---
@@ -540,9 +485,6 @@ autocmd BufNewFile,BufRead *.sls setlocal ft=yaml
 " -----------
 autocmd FileType lua setlocal shiftwidth=2 tabstop=2 softtabstop=2
 
-" rust
-" ----
-autocmd FileType rust setlocal expandtab shiftwidth=4 tabstop=8 softtabstop=4
 " ------------------------------------}}}
 
 " Plugins {{{
@@ -607,6 +549,7 @@ let g:ctrlp_custom_ignore = '/\.cache/'
 let g:ctrlp_follow_symlinks = 1
 " }}}
 " AutoClose {{{
+Bundle 'Townk/vim-autoclose'
 "}}}
 " Pandoc {{{
 let g:pandoc_use_hard_wraps = 1
@@ -897,6 +840,10 @@ let g:jedi#popup_select_first = 0
 " }}}
 " You Complete Me {{{
 let g:ycm_filetype_blacklist={'python':1, 'c':1, 'cpp':1}
+" }}}
+" Emmet {{{
+let g:user_emmet_leader_key = '<C-y>'
+let g:user_emmet_expandabbr_key = '<C-e>'
 " }}}
 " ------------------------------------}}}
 
