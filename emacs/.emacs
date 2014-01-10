@@ -22,7 +22,7 @@ Return a list of installed packages or nil for every package not installed."
 
 (ensure-package-installed 'melpa)
 ;; TODO write a function to make this local (argument to ensure-package-installed?)
-(setq package-archive-enable-alist '(("melpa" melpa powerline jedi)))
+(setq package-archive-enable-alist '(("melpa" melpa powerline jedi auto-complete yasnippet)))
 
 ;; Marmalade package repository
 (add-to-list 'package-archives 
@@ -148,7 +148,7 @@ Return a list of installed packages or nil for every package not installed."
 (setq ac-auto-show-menu t) ;; Don’t show the menu automatically
 (setq ac-auto-start 4)       ;; Autocomplete after 4 letters
 (setq ac-quick-help-delay 0.3) ;; Show the help faster
-(setq ac-use-fuzzy t) ;; fuzzy matching!
+(setq ac-use-fuzzy nil) ;; fuzzy matching!
 (define-key ac-mode-map (kbd "TAB") 'auto-complete)
 
 ;;;; paredit
@@ -282,11 +282,27 @@ Return a list of installed packages or nil for every package not installed."
 
 ;;;; Yasnippet
 (ensure-package-installed 'yasnippet)
+
 (require 'yasnippet)
 (yas-global-mode 1)
-;; (defun ac-common-setup ()
-;;   (setq ac-sources (append ac-sources '(ac-source-yasnippet))))
-;; (add-hook 'auto-complete-mode-hook 'ac-common-setup)
+(defun ac-common-setup ()
+  (setq ac-sources (add-to-list 'ac-sources 'ac-source-yasnippet)))
+(add-hook 'auto-complete-mode-hook 'ac-common-setup)
+
+
+;;;; Autopair
+(ensure-package-installed 'autopair)
+(require 'autopair)
+(autopair-global-mode)
+
+;;;; fill-column-indicator
+(ensure-package-installed 'fill-column-indicator)
+(require 'fill-column-indicator)
+(define-globalized-minor-mode
+  global-fci-mode fci-mode (lambda () (fci-mode 1)))
+(global-fci-mode)
+(setq fci-rule-width 4)
+
 
 ;;;; LANGUAGES
 
@@ -374,10 +390,14 @@ Return a list of installed packages or nil for every package not installed."
 
 ;;;; Python
 (ensure-package-installed 'virtualenv 'jedi)
+(add-hook 'python-mode-hook
+          (lambda ()
+            (autopair-mode 't)
+            (set-fill-column 79)))
 
 ;;; python shell options
 (setq
- python-shell-interpreter "ipython2"
+ python-shell-interpreter "ipython"
  python-shell-interpreter-args ""
  python-shell-prompt-regexp "In \\[[0-9]+\\]: "
  python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
