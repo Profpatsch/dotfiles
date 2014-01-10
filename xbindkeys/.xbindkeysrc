@@ -1,139 +1,115 @@
-# For the benefit of emacs users: -*- shell-script -*-
 ###########################
 # xbindkeys configuration #
 ###########################
 #
-# Version: 1.8.5
+# Version: 0.1.3
 #
-# If you edit this file, do not forget to uncomment any lines
-# that you change.
+# If you edit this, do not forget to uncomment any lines that you change.
 # The pound(#) symbol may be used anywhere for comments.
 #
-# To specify a key, you can use 'xbindkeys --key' or
-# 'xbindkeys --multikey' and put one of the two lines in this file.
-#
-# The format of a command line is:
-#    "command to start"
-#       associated key
-#
-#
 # A list of keys is in /usr/include/X11/keysym.h and in
-# /usr/include/X11/keysymdef.h
-# The XK_ is not needed.
+# /usr/include/X11/keysymdef.h 
+# The XK_ is not needed. 
 #
-# List of modifier:
-#   Release, Control, Shift, Mod1 (Alt), Mod2 (NumLock),
-#   Mod3 (CapsLock), Mod4, Mod5 (Scroll).
+# List of modifier (on my keyboard): 
+#   Control, Shift, Mod1 (Alt), Mod2 (NumLock), 
+#   Mod3 (CapsLock), Mod4, Mod5 (Scroll). 
 #
+# Another way to specifie a key is to use 'xev' and set the 
+# keycode with c:nnn or the modifier with m:nnn where nnn is 
+# the keycode or the state returned by xev 
+#
+# This file is created by xbindkey_config 
+# The structure is : 
+# # Remark 
+# "command" 
+# m:xxx + c:xxx 
+# Shift+... 
 
-# The release modifier is not a standard X modifier, but you can
-# use it if you want to catch release events instead of press events
 
-# By defaults, xbindkeys does not pay attention with the modifiers
-# NumLock, CapsLock and ScrollLock.
-# Uncomment the lines above if you want to pay attention to them.
+
 
 #keystate_numlock = enable
+#keystate_scrolllock = enable
 #keystate_capslock = enable
-#keystate_scrolllock= enable
 
-# Examples of commands:
-
-#"xbindkeys_show" 
-#  control+shift + q
-
-# set directly keycode (here control + f with my keyboard)
-#"xterm"
-#  c:41 + m:0x4
-
-#"specify a mouse button
-#"xterm"
-#  control + b:2
-
-#"xterm -geom 50x20+20+20"
-#   Shift+Mod2+alt + s
-#
-## set directly keycode (here control+alt+mod2 + f with my keyboard)
-#"xterm"
-#  alt + c:0x29 + m:4 + mod2
-#
-## Control+Shift+a  release event starts rxvt
-#"rxvt"
-#  release+control+shift + a
-#
-## Control + mouse button 2 release event starts rxvt
-#"rxvt"
-#  Control + b:2 + Release
 
 
 # Map standby to the standby key (sigh).
 "i3lock -u --image=/home/philip/.i3/spike_spiegel.jpg.png && systemctl suspend"
-  XF86Sleep
+   XF86Sleep
 
+# Lock the screen via i3lock.and blank the screen
+"xset dpms force off && i3lock -u --image=/home/philip/.i3/spike_spiegel.jpg.png"
+   XF86ScreenSaver
+
+#Kill window
 "xkill"
-  XF86Battery
+   XF86Battery
 
+#Redshift
 "toggle-redshift"
-  XF86Display
+   XF86Display
 
-# Lock the screen via i3lock.
-"i3lock -u --image=/home/philip/.i3/spike_spiegel.jpg.png"
-  XF86ScreenSaver
+# Enable second screen right of this screen
+"xrandr --auto && xrandr --output VGA1 --right-of LVDS1"
+    m:0x40 + c:167
+    Mod4 + XF86Forward 
 
-# Screenshots (ARGH!)
-# Normal
+#screen autoconfig
+"xrandr --auto"
+    m:0x40 + c:166
+    Mod4 + XF86Back 
+
+#Screenshot
 "import $SCREENSHOT.jpg"
-  Print
-# Full screen
+   Print
+
+#Full screen
 "import -window root $SCREENSHOT.jpg"
-  Control + Print
-# With upload
+   Control + Print
+
+#With upload
 "import $SCREENSHOT.jpg && imup $SCREENSHOT.jpg | xclip -selection clipboard"
-  Alt + Print
-# Fullscreen With upload
+   Mod4 + Print
+
+#Full screen with upload
 "import -window root $SCREENSHOT.jpg && imup $SCREENSHOT.jpg | xclip -selection clipboard"
-  Control + Alt + Print
+   Control + Alt + Print
 
-# Music (mpd)
-"mpc toggle"
-  XF86AudioMute
-"mpc next"
-  XF86AudioNext
-"mpc prev"
-  XF86AudioPrev
-"mpc random"
-  XF86AudioPlay
-"mpc single"
-  XF86AudioStop
-
-# Control Volume
-
-# alsa
-# Speaker
-#"amixer -M set Speaker 1dB+"
-#  XF86AudioRaiseVolume
-#"amixer -M set Speaker 1dB-"
-#  XF86AudioLowerVolume
-# Headphones
-#"amixer -M set Headphone 1dB+"
-#  Control + XF86AudioRaiseVolume
-#"amixer -M set Headphone 1dB-"
-#  Control + XF86AudioLowerVolume
-# Master
-#"amixer -M set Master 1dB+"
-#  Shift + XF86AudioRaiseVolume
-#"amixer -M set Master 1dB-"
-#  Shift + XF86AudioLowerVolume
-
-# pulse
+#Raise volume
 "pactl set-sink-volume 0 -- +2dB"
-  XF86AudioRaiseVolume
-"pactl set-sink-volume 0 -- -2dB"
-  XF86AudioLowerVolume
-# No mute toogle. Failed big time, Poettering.
-#"pactl set-sink-mute 1"
-	
+   XF86AudioRaiseVolume
 
-##################################
-# End of xbindkeys configuration #
-##################################
+#Lower volume
+"pactl set-sink-volume 0 -- -2dB"
+    m:0x0 + c:122
+    XF86AudioLowerVolume 
+
+#mpd next
+"mpc next"
+    m:0x0 + c:171
+    XF86AudioNext 
+
+#mpd previous
+"mpc prev"
+    m:0x0 + c:173
+    XF86AudioPrev 
+
+#mpd single
+"mpc single"
+    m:0x0 + c:174
+    XF86AudioStop 
+
+#mpd play/pause
+"mpc toggle"
+    m:0x0 + c:121
+    XF86AudioMute 
+
+#mpd random toggle
+"mpc random"
+    m:0x0 + c:172
+    XF86AudioPlay 
+
+#
+# End of xbindkeys configuration
