@@ -31,3 +31,6 @@ dateformat.report=d.m.Y
 dateformat.annotation=d.m.Y
 dateformat.info=d.m.Y H:N:S
 weekstart=monday
+color.pri.H=bold yellow
+color.pri.M=bold green
+color.pri.L=bold blue
