@@ -21,10 +21,12 @@ alias ....='cd ../../..'
 alias .....='cd ../../../..'
 alias findn='find . -iname '
 alias diff='colordiff '
+alias news='newsbeuter '
 #alias cl='wc -l ' # Count Lines
 # Own “programs” (fancy for: cheap alias names)
 alias cd2flac='abcde -c ~/.abcde_flac.conf'
 alias copy='rsync -a --progress --stats '
+alias move='rsync -a --progress --stats --remove-source-files '
 alias deb='cgdb ' # I can’t remember that name…
 alias follow='tail -n50 -f '
 alias followl='tail -n50 -f ~/.logs/*'
@@ -36,6 +38,8 @@ alias cf='find | wc -l ' # Count Files in directory recursively
 alias -g G='| grep '
 
 # Make these programs act sane
+# cp
+alias cp='cp -r '
 # Git
 # gm stays graphics magick, please.
 unalias gm
@@ -61,6 +65,10 @@ alias gsd='git svn dcommit'
 alias gsr='git svn rebase'
 alias grc='git rebase --continue'
 alias gra='git rebase --abort'
+# svn
+alias sc='svn commit '
+alias scm='svn commit -m '
+alias ss='svn status ' # Don’t need no sockets. ;)
 # vim
 # open new files in already running session of gvim
 alias gvim='choose-editor '
@@ -75,7 +83,7 @@ alias l¿='ls ' # Haha, Neo. ;)
 
 # system
 alias standby='systemctl suspend'
-alias sudo='sudo '
+#alias sudo='sudo '
 
 # Arch
 alias pacclean='pacman -Rs $(pacman -Qqtd)' # Removes all orphan packages
@@ -94,7 +102,22 @@ go_libs="-lm"
 go_flags="-g -Wall -include ~/scripts/allheaders.h -O3"
 alias goc="c99 -xc '-' $go_libs $go_flags"
 
-# Clojure
-
 # OPAM configuration
 . /home/philip/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
+
+## Functions
+
+#f5# Create Directoy and \kbd{cd} to it
+mkcd() {
+    if (( ARGC != 1 )); then
+        printf 'usage: mkcd <new-directory>\n'
+        return 1;
+    fi
+    if [[ ! -d "$1" ]]; then
+        command mkdir -p "$1"
+    else
+        printf '`%s'\'' already exists: cd-ing.\n' "$1"
+    fi
+    builtin cd "$1"
+}
+
