@@ -31,6 +31,7 @@
 
 	# Remove submodule
 	rms = "!f(){ git rm --cached \"$1\";rm -r \"$1\";git config -f .gitmodules --remove-section \"submodule.$1\";git config -f .git/config --remove-section \"submodule.$1\";git add .gitmodules; }; f"
+	showtrackedignored = ls-files -i --exclude-standard
 
 [color]
         branch = auto
