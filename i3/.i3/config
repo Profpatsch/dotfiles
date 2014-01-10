@@ -1,9 +1,4 @@
 # vim:foldmethod=marker
-set $EDITOR vim
-set $MAIL /home/philip/.Mail
-set $PATH /usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/usr/lib/qt4/bin:/home/philip/.neo:/home/philip/scripts
-set $SCREENSHOT /home/philip/Pictures/screenshot
-set $VISUAL vim
 
 # General {{{
 # Should you change your keyboard layout somewhen, delete
@@ -12,7 +7,7 @@ set $VISUAL vim
 # i3 config file (v4)
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
-set $mod Mod1
+set $mod Mod4
 # }}}
 
 # Looks {{{
@@ -174,24 +169,25 @@ bindsym $mod+f exec thunar
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.
-bindsym $mod+a exec --no-startup-id j4-dmenu-desktop #--display-binary
+#bindsym $mod+a exec --no-startup-id i3-dmenu-desktop
+bindsym $mod+a exec --no-startup-id j4-dmenu-desktop --display-binary
 # }}}
 # Screenshot {{{
-set $ftsc jpg
-set $selsc import $SCREENSHOT.$ftsc
-set $selfsc import -window root $SCREENSHOT.$ftsc
-set $editsc pinta $SCREENSHOT.$ftsc
-set $uplsc imup $SCREENSHOT.$ftsc | loliclip -c
-set $kselfsc Control
-set $keditsc Shift
-set $kuplsc Mod1
+#set $ftsc jpg
+#set $selsc import $SCREENSHOT.$ftsc
+#set $selfsc import -window root $SCREENSHOT.$ftsc
+#set $editsc pinta $SCREENSHOT.$ftsc
+#set $uplsc imup $SCREENSHOT.$ftsc | loliclip -c
+#set $kselfsc Control
+#set $keditsc Shift
+#set $kuplsc Mod1
 
-bindsym Print exec $selsc
-bindsym $keditsc+Print exec $selsc && $editsc
-bindsym $kselfsc+Print exec $selfsc
-bindsym $kselfsc+$keditsc+Print exec $selfsc && $editsc
-bindsym $kuplsc+Print exec $selsc && $uplsc
-bindsym $kuplsc+$kselfsc+Print exec $selfsc && $uplsc
+#bindsym Print exec $selsc
+#bindsym $keditsc+Print exec $selsc && $editsc
+#bindsym $kselfsc+Print exec $selfsc
+#bindsym $kselfsc+$keditsc+Print exec $selfsc && $editsc
+#bindsym $kuplsc+Print exec $selsc && $uplsc
+#bindsym $kuplsc+$kselfsc+Print exec $selfsc && $uplsc
 # }}}
 # Goto {{{
 # Open on specific workspace
@@ -214,6 +210,10 @@ bindsym $mod+udiaeresis [urgent="latest"] focus
 bindsym $mod+Shift+q move workspace to output right
 # moves current window to the next output
 bindsym $mod+Shift+f move container to output right
+# Second screen right
+bindsym $mod+XF86Forward exec "xrandr --auto && xrandr --output VGA1 --right-of LVDS1"
+# Only one screen
+bindsym $mod+XF86Back exec "xrandr --auto"
 # }}}
 # }}}
 
@@ -225,7 +225,7 @@ bar {
 	# Tray icons
 	output LVDS1
 	tray_output LVDS1
-    status_command i3status --config ~/.i3/i3status.conf
+    status_command i3status --config ~/.i3/i3status.conf | ~/.i3/i3status_mailwrapper.py
 	# hide the bar, shows with modifier
 	#mode hide
 	#modifier $mod

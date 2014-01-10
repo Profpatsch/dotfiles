@@ -17,6 +17,9 @@ xset -b
 # set hold key delay
 xset r rate 250 35
 
+# swap Super (Win) and Alt
+setxkbmap -option altwin:swap_alt_win
+
 # execute program for shortcut assigning (runs as daemon)
 xbindkeys
 
@@ -52,14 +55,16 @@ echo 'export DBUS_SESSION_BUS_ADDRESS' >> ~/.Xdbus
 mpd
 # mpd scrobbler
 mpdscribble
-# dropbox
-dropboxd &
 # skype
-skype &
-# pidgin
+#skype &
+# pidgin chat
 pidgin &
 # redshift (auto color temperature for night.)
 toggle-redshift
+# Network manager
+#nm-applet &
+# dropbox
+dropboxd &
 
 # exec gnome-session
 # exec startkde
@@ -67,5 +72,7 @@ toggle-redshift
 # ...or the Window Manager of your choice
 # exec xterm
 # exec enlightenment_start
+
+# Put some environment variables in the config
 ~/.i3/config-config
-exec i3 -V >> ~/.logs/i3.log 2>&1 #i3 with logging
+exec i3 -c ~/.i3/config_catted -V >> ~/.logs/i3.log 2>&1 #i3 with logging

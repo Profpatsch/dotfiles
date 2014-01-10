@@ -1,5 +1,0 @@
-set $EDITOR vim
-set $MAIL /home/philip/.Mail
-set $PATH /usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/usr/lib/qt4/bin:/home/philip/.neo:/home/philip/scripts
-set $SCREENSHOT /home/philip/Pictures/screenshot
-set $VISUAL vim
