@@ -3,16 +3,18 @@ text/html; elinks -dump-charset utf-8 -dump %s; nametemplate=%s.html; copiousout
 
 image/*; eog %s;
 
-application/pdf; zathura %s; nametemplate=%s.pdf
-application/rar; file-roller %s
+application/*; mkdir -p /tmp/mailcap \; cp %s /tmp/mailcap \; xdg-open /tmp/mailcap/$(basename %s) &
 
-# LibreOffice
-application/vnd.oasis.opendocument.text; libreoffice %s
-application/vnd.oasis.opendocument.spreadsheet; libreoffice %s
-application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; libreoffice %s
-# M$ Office Crap
-application/vnd.openxmlformats-officedocument.wordprocessingml.document; libreoffice %s
-application/msword; libreoffice %s
-application/vnd.ms-excel; libreoffice %s
+#application/pdf; zathura %s; nametemplate=%s.pdf
+#application/rar; file-roller %s
 
-#application/*; xdg-open %s
+## LibreOffice
+#application/vnd.oasis.opendocument.text; libreoffice %s
+#application/vnd.oasis.opendocument.spreadsheet; libreoffice %s
+#application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; libreoffice %s
+## M$ Office Crap
+#application/vnd.openxmlformats-officedocument.wordprocessingml.document; libreoffice %s
+#application/msword; libreoffice %s
+#application/vnd.ms-excel; libreoffice %s
+
+##application/*; xdg-open %s
