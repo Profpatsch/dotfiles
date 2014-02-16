@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Generate list of installed packages (leaves in package dependency tree).
+# Generate list of installed packages (leafs in package dependency tree).
 # Give it a list with packages that should be ignored in the final list, each
 # package on a separate line.
 
