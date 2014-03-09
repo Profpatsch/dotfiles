@@ -43,6 +43,7 @@ plugins=(
 	 extract
 	 fasd
 	 git
+	 gitignore
 	 github
 	 heroku
 	 lein
