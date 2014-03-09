@@ -34,3 +34,7 @@ weekstart=monday
 color.pri.H=bold yellow
 color.pri.M=bold green
 color.pri.L=bold blue
+urgency.priority.coefficient=8.0
+urgency.scheduled.coefficient=5.0
+urgency.due.coefficient=10.0
+urgency.blocking.coefficient=5.0
