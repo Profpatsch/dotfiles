@@ -75,4 +75,4 @@ dropboxd &
 
 # Put some environment variables in the config
 ~/.i3/config-config
-exec i3 -c ~/.i3/config_catted -V >> ~/.logs/i3.log 2>&1 #i3 with logging
+exec i3 -c ~/.i3/config_catted >> ~/.logs/i3.log 2>&1 #i3 with logging
