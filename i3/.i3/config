@@ -37,11 +37,6 @@ workspace 9 output HDMI-0
 # }}}
 # }}}
 
-# Automation {{{
-# Startup programs (Mostly defined in ~/.xinitrc)
-# exec [--no-startup-id] command
-# # }}}
-
 # Mappings {{{
 # General {{{
 # i3 {{{
@@ -158,6 +153,12 @@ bindsym $mod+c mode "resize"
 # Kill focused window {{{
 bindsym $mod+Shift+x kill
 # }}}
+# Scratchpad {{{
+# move off-screen
+bindsym $mod+Shift+odiaeresis move scratchpad
+# toggle
+bindsym $mod+odiaeresis scratchpad show
+# }}}
 # # }}}
 # Start programs {{{
 # start a terminal
@@ -172,23 +173,6 @@ bindsym $mod+f exec thunar
 #bindsym $mod+a exec --no-startup-id i3-dmenu-desktop
 bindsym $mod+a exec --no-startup-id j4-dmenu-desktop --display-binary
 # }}}
-# Screenshot {{{
-#set $ftsc jpg
-#set $selsc import $SCREENSHOT.$ftsc
-#set $selfsc import -window root $SCREENSHOT.$ftsc
-#set $editsc pinta $SCREENSHOT.$ftsc
-#set $uplsc imup $SCREENSHOT.$ftsc | loliclip -c
-#set $kselfsc Control
-#set $keditsc Shift
-#set $kuplsc Mod1
-
-#bindsym Print exec $selsc
-#bindsym $keditsc+Print exec $selsc && $editsc
-#bindsym $kselfsc+Print exec $selfsc
-#bindsym $kselfsc+$keditsc+Print exec $selfsc && $editsc
-#bindsym $kuplsc+Print exec $selsc && $uplsc
-#bindsym $kuplsc+$kselfsc+Print exec $selfsc && $uplsc
-# }}}
 # Goto {{{
 # Open on specific workspace
 # assign <criteria> → workspace
@@ -198,10 +182,6 @@ bindsym $mod+a exec --no-startup-id j4-dmenu-desktop --display-binary
 bindsym $mod+b [class="Chromium"] focus
 # mail
 bindsym $mod+m [class="Thunderbird"] focus
-# vim
-bindsym $mod+z [title="vim"] focus
-# musicplayer
-bindsym $mod+adiaeresis [class="Clementine"] focus
 # urgent event
 bindsym $mod+udiaeresis [urgent="latest"] focus
 # }}}
@@ -225,7 +205,7 @@ bar {
 	# Tray icons
 	output LVDS1
 	tray_output LVDS1
-    status_command i3status --config ~/.i3/i3status.conf | ~/.i3/i3status_mailwrapper.py
+    status_command i3status --config ~/.i3/i3status.conf
 	# hide the bar, shows with modifier
 	#mode hide
 	#modifier $mod
