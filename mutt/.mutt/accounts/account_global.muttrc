@@ -1,0 +1,27 @@
+# Special Folders
+set record    = "+$my_account/$my_account_archive"
+set postponed = "+$my_account/$my_account_drafts"
+
+# How to send mail
+set sendmail  = "/usr/bin/msmtp -a $my_account"
+
+# GPG key header
+#my_hdr X-PGP-Key: http://address-to-asc
+
+macro index,pager S \
+    "<clear-flag>N<save-message>+$my_account/$my_account_spam<enter>"  \
+        "mark message as spam"
+
+macro index,pager a \
+    "<save-message>+$my_account/$my_account_archive<enter>" \
+	"archive message"
+
+macro index gi \
+    "<change-folder>+$my_account/$my_account_inbox<enter>" \
+	"change to inbox"
+macro index ga \
+    "<change-folder>+$my_account/$my_account_archive<enter>" \
+	"change to archive"
+macro index gd \
+    "<change-folder>+$my_account/$my_account_drafts<enter>" \
+	"change to drafts"
