@@ -12,9 +12,14 @@ Return a list of installed packages or nil for every package not installed."
          nil)))
    packages))
  
+(require 'package)
+;; Marmalade package repository
+(add-to-list 'package-archives 
+    '("marmalade" .
+      "http://marmalade-repo.org/packages/") t)
+(package-initialize)
 
 ;;; MELPA package repository
-(require 'package)
 (add-to-list 'package-archives
   '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (setq package-enable-at-startup nil)
@@ -22,24 +27,21 @@ Return a list of installed packages or nil for every package not installed."
 
 (ensure-package-installed 'melpa)
 ;; TODO write a function to make this local (argument to ensure-package-installed?)
-(setq package-archive-enable-alist '(("melpa" melpa powerline jedi auto-complete yasnippet)))
-
-;; Marmalade package repository
-(add-to-list 'package-archives 
-    '("marmalade" .
-      "http://marmalade-repo.org/packages/"))
-(package-initialize)
+(setq package-archive-enable-alist '(("melpa" melpa powerline yasnippet haskell-mode python-environment geiser)))
 
 (ensure-package-installed 'evil 'evil-leader)
 (require 'evil)
 (require 'evil-leader)
 
-
+;;; Start emacs as a server
+(server-start)
 
 ;;;; LOOK
 (ensure-package-installed 'powerline 'solarized-theme)
 
 (set-face-attribute 'default nil :font "Inconsolata" :height 130)
+; server font bug
+(add-to-list 'default-frame-alist '(font . "Inconsolata-12"))
 (blink-cursor-mode 0)
 (load-theme 'solarized-dark t)
 (require 'powerline)
@@ -61,7 +63,8 @@ Return a list of installed packages or nil for every package not installed."
 ;;;; FEEL
 (setq x-super-keysym 'meta)
 (global-set-key (kbd "RET") 'newline-and-indent) ;; Return should indent
-(setq undo-limit 3600) ;; Some more undo steps
+(setq undo-limit 10000) ;; Some more undo steps
+(global-undo-tree-mode)
 (defalias 'yes-or-no-p 'y-or-n-p) ;; No typing yes please
 (setq-default indent-tabs-mode nil) ;; Death to non-smart tabs
 
@@ -139,17 +142,26 @@ Return a list of installed packages or nil for every package not installed."
 ;;;; eldoc
 (eldoc-mode 1) ; enable globally
 
+;;;; company-mode
+(add-hook 'after-init-hook 'global-company-mode)
 
-;;;; auto-complete
-(ensure-package-installed 'auto-complete)
-
-(require 'auto-complete-config)
-(ac-config-default)
-(setq ac-auto-show-menu t) ;; Don’t show the menu automatically
-(setq ac-auto-start 4)       ;; Autocomplete after 4 letters
-(setq ac-quick-help-delay 0.3) ;; Show the help faster
-(setq ac-use-fuzzy nil) ;; fuzzy matching!
-(define-key ac-mode-map (kbd "TAB") 'auto-complete)
+;;;; auto-complete (replaced by company-mode
+;; (ensure-package-installed 'auto-complete)
+;; (require 'auto-complete-config)
+;; (ac-config-default)
+;; (custom-set-variables
+;;  '(ac-auto-show-menu t)
+;;  '(ac-auto-start 4)
+;;  '(ac-quick-help-delay 0.3)
+;;  '(ac-use-fuzzy nil)
+;;  ;'(ac-max-width 0.5)
+;;  )
+;; (setq ac-auto-show-menu t) ;; Don’t show the menu automatically
+;; (setq ac-auto-start 4)       ;; Autocomplete after 4 letters
+;; (setq ac-quick-help-delay 0.3) ;; Show the help faster
+;; (setq ac-use-fuzzy nil) ;; fuzzy matching!
+;; (setq ac)
+;; (define-key ac-mode-map (kbd "TAB") 'auto-complete)
 
 ;;;; paredit
 (ensure-package-installed 'paredit)
@@ -175,9 +187,9 @@ Return a list of installed packages or nil for every package not installed."
   (kbd "C-w") 'paredit-backward-kill-word)
 
 
-
 ;;;; PLUGINS
 
+(add-to-list 'load-path "~/.emacs.d/scripts")
 
 ;;;; ido
 (ensure-package-installed 'ido 'smex)
@@ -193,6 +205,11 @@ Return a list of installed packages or nil for every package not installed."
                      (ido-find-file))))
 (defalias 'switch-buffer 'ido-switch-buffer) ;; use better buffer switcher
 
+;;;; imenu
+
+(add-to-list 'load-path "~/.emacs.d/scripts/imenu-anywhere")
+(require 'imenu-anywhere)
+
 ;;; smex
 (require 'smex)
 (smex-initialize)
@@ -205,6 +222,7 @@ Return a list of installed packages or nil for every package not installed."
 
 
 ;;;; Evil (Vim)
+(global-evil-leader-mode)
 (ensure-package-installed 'evil 'evil-leader 'surround 'evil-nerd-commenter)
 (require 'evil-leader) ;; Needs execution order to work in every buffer …
 (require 'evil)
@@ -221,10 +239,19 @@ Return a list of installed packages or nil for every package not installed."
       (describe-function symb))
     (other-window 1)))
 
+(defun evil-undefine ()
+ (interactive)
+ (let (evil-mode-map-alist)
+   (call-interactively (key-binding (this-command-keys)))))
+
+(define-key evil-normal-state-map (kbd "TAB") 'evil-undefine)
 (setq normal-state-mappings '(
     ("RET" . evil-empty-line-below)
     ("K"   . describe-function-at-point-active-window)
-    ("]d"  . find-function-at-point)))
+    ("]d"  . find-function-at-point)
+    ("TAB" . evil-undefine) ;; Don’t block <tab>, damnit!
+    ("SPC" . evil-toggle-fold)
+    ))
 
 (let ((keys normal-state-mappings))
   (dolist (key keys)
@@ -245,7 +272,6 @@ Return a list of installed packages or nil for every package not installed."
 (setq evil-leader/in-all-states t)
 (evil-leader/set-leader ",")
 (evil-mode nil) ;; no idea
-(global-evil-leader-mode)
 (evil-mode 1)
 (evil-leader/set-key
   "a" 'evil-window-down
@@ -268,7 +294,8 @@ Return a list of installed packages or nil for every package not installed."
   "cp" 'evilnc-comment-or-uncomment-paragraphs
   "cr" 'comment-or-uncomment-region)
 
-
+;;;; undo-tree-mode
+(add-hook 'undo-tree-visualizer-hook 'turn-off-evil-mode)
 
 ;;;; scpaste
 (ensure-package-installed 'scpaste)
@@ -284,10 +311,9 @@ Return a list of installed packages or nil for every package not installed."
 (ensure-package-installed 'yasnippet)
 
 (require 'yasnippet)
-(yas-global-mode 1)
-(defun ac-common-setup ()
-  (setq ac-sources (add-to-list 'ac-sources 'ac-source-yasnippet)))
-(add-hook 'auto-complete-mode-hook 'ac-common-setup)
+;; (defun ac-common-setup ()
+;;   (setq ac-sources (add-to-list 'ac-sources 'ac-source-yasnippet)))
+;; (add-hook 'auto-complete-mode-hook 'ac-common-setup)
 
 
 ;;;; Autopair
@@ -302,6 +328,39 @@ Return a list of installed packages or nil for every package not installed."
   global-fci-mode fci-mode (lambda () (fci-mode 1)))
 (global-fci-mode)
 (setq fci-rule-width 4)
+
+;;;; FUEL (Factor)
+;; from the official distribution, since the MELPA-version isn’t up-to-date
+(add-to-list 'load-path "/usr/lib/factor/misc/fuel")
+;; (ensure-package-installed 'fuel)
+(require 'factor-mode)
+
+
+;;;; Flycheck
+
+(ensure-package-installed 'flycheck 'flycheck-haskell)
+(require 'flycheck)
+(require 'flycheck-haskell)
+(add-hook 'after-init-hook #'global-flycheck-mode)
+(custom-set-variables
+ '(flycheck-idle-check-delay 2))
+
+
+;;;; Emmet (fast XML)
+
+(ensure-package-installed 'emmet-mode)
+(require 'emmet-mode)
+(add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
+(add-hook 'html-mode-hook 'emmet-mode)
+(add-hook 'css-mode-hook  'emmet-mode)
+
+;;; La Carte
+
+;; Lets you see the existing menu items without using the GUI menu.
+;; Run lacarte-execute-command and hit TAB
+(ensure-package-installed 'lacarte)
+(require 'lacarte)
+(global-set-key (kbd "C-c m") 'lacarte-execute-command)
 
 
 ;;;; LANGUAGES
@@ -338,7 +397,7 @@ Return a list of installed packages or nil for every package not installed."
                                  (cider-eval-ns-form))))
 
 (evil-define-key 'normal clojure-mode-map
-  "K" 'ac-nrepl-popup-doc ;; this is sweet, the docs pop up in the auto-complete box
+  ;; "K" 'ac-nrepl-popup-doc ;; this is sweet, the docs pop up in the auto-complete box
   "]d" 'cider-src ;; I don’t know why I still use these awkward vim bindings …
   "]j" 'cider-javadoc
   )
@@ -355,7 +414,7 @@ Return a list of installed packages or nil for every package not installed."
   )
 
 (evil-define-key 'normal cider-mode-map
-  "K" 'ac-nrepl-popup-doc
+  ;; "K" 'ac-nrepl-popup-doc
   "]d" 'cider-src
   "]j" 'cider-javadoc
   (kbd "C-c C-e") (lambda () (interactive)
@@ -370,30 +429,32 @@ Return a list of installed packages or nil for every package not installed."
   )
 
 ;;; completion
-(ensure-package-installed 'ac-nrepl)
-(require 'ac-nrepl)
-(add-hook 'cider-repl-mode-hook 'ac-nrepl-setup)
-(add-hook 'cider-mode-hook 'ac-nrepl-setup)
-(eval-after-load "auto-complete"
-  '(add-to-list 'ac-modes 'cider-repl-mode))
+;; (ensure-package-installed 'ac-nrepl)
+;; (require 'ac-nrepl)
+;; (add-hook 'cider-repl-mode-hook 'ac-nrepl-setup)
+;; (add-hook 'cider-mode-hook 'ac-nrepl-setup)
+;; (eval-after-load "auto-complete"
+;;   '(add-to-list 'ac-modes 'cider-repl-mode))
 
 ;; trigger in nrepl buffers
-(defun set-auto-complete-as-completion-at-point-function ()
-  (setq completion-at-point-functions '(auto-complete)))
-(add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function)
-(add-hook 'cider-repl-mode-hook 'set-auto-complete-as-completion-at-point-function)
+;; (defun set-auto-complete-as-completion-at-point-function ()
+;;   (setq completion-at-point-functions '(auto-complete)))
+;; (add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function)
+;; (add-hook 'cider-repl-mode-hook 'set-auto-complete-as-completion-at-point-function)
 
 ;; use ac-nrepl’s popup instead of nrepl-doc
-(eval-after-load "cider"
-  '(define-key cider-mode-map (kbd "C-c C-d") 'ac-nrepl-popup-doc))
+;; (eval-after-load "cider"
+;;   '(define-key cider-mode-map (kbd "C-c C-d") 'ac-nrepl-popup-doc))
 
 
 ;;;; Python
-(ensure-package-installed 'virtualenv 'jedi)
-(add-hook 'python-mode-hook
-          (lambda ()
-            (autopair-mode 't)
-            (set-fill-column 79)))
+(ensure-package-installed 'virtualenv )
+
+(add-hooks-to-mode 'python-mode-hook
+                   '(yas-minor-mode-on
+                     (lambda ()
+                       (autopair-mode 't)
+                       (setq fill-column 80))))
 
 ;;; python shell options
 (setq
@@ -416,16 +477,56 @@ Return a list of installed packages or nil for every package not installed."
 ;;; To make it work for py3k, change the virtualenv and python variables
 ;;; in the Makefile first. The other way around for systems with py3k
 ;;; default (Archlinux).
-(add-hook 'python-mode-hook 'jedi:setup)
-(setq jedi:complete-on-dot t)
-;;; change jedi to the virtualenv with virtualenv.el
-(add-hook 'virtualenv-minor-mode-hook
-          ;; restart the jedi server in the venv
-          (lambda ()
-            (jedi:stop-server)
-            (let ((args (append'("--virtual-env")
-                               (list (concat (expand-file-name virtualenv-root) "/" virtualenv-workon-session "/")))))
-              (setq jedi:server-args args))))
+;; (add-hook 'python-mode-hook 'jedi:setup)
+;; (setq jedi:complete-on-dot t)
+;; ;;; change jedi to the virtualenv with virtualenv.el
+;; (add-hook 'virtualenv-minor-mode-hook
+;;           ;; restart the jedi server in the venv
+;;           (lambda ()
+;;             (jedi:stop-server)
+;;             (let ((args (append'("--virtual-env")
+;;                                (list (concat (expand-file-name virtualenv-root) "/" virtualenv-workon-session "/")))))
+;;               (setq jedi:server-args args))))
+
+(evil-define-key 'normal python-mode-map
+  "K" 'python-eldoc-function ;; this is sweet, the docs pop up in the auto-complete box
+  )
+(evil-leader/set-key-for-mode 'python-mode
+  "r" 'python-shell-send-buffer
+  )
+
+(ensure-package-installed 'flycheck-pyflakes)
+(add-hook 'python-mode-hook 'flycheck-mode)
+
+
+;;;; Haskell
+
+(ensure-package-installed 'haskell-mode)
+(add-hooks-to-mode 'haskell-mode-hook
+                   '(turn-on-haskell-indentation
+                     turn-on-haskell-doc-mode
+                     haskell-auto-insert-module-template))
+(custom-set-variables
+ '(haskell-process-suggest-remove-import t)
+ '(haskell-process-suggest-hoogle-imports t)
+ '(haskell-process-auto-import-loaded-modules t)
+ '(haskell-process-log t)
+ '(haskell-process-type 'ghci))
+(define-key haskell-mode-map (kbd "SPC") 'haskell-mode-contextual-space)
+(define-key haskell-mode-map (kbd "C-c C-i") 'haskell-process-do-info)
+(define-key haskell-mode-map (kbd "C-c C-t") 'haskell-process-do-type)
+(define-key haskell-interactive-mode-map (kbd "C-c C-i") 'haskell-process-do-info)
+(define-key haskell-interactive-mode-map (kbd "C-c C-t") 'haskell-process-do-type)
+(evil-define-key 'normal haskell-mode-map
+  "K" 'haskell-process-do-info
+  "]d" 'haskell-mode-jump-to-def)
+(evil-leader/set-key-for-mode 'haskell-mode
+  "r" 'haskell-process-load-or-reload
+  "t" 'haskell-process-do-type
+  "cb" 'haskell-process-cabal-build
+  "n" 'next-error
+  "p" 'previous-error)
+
 
 ;;;; Asciidoc
 ;; use Vim, stupid
@@ -438,3 +539,44 @@ Return a list of installed packages or nil for every package not installed."
 (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.mdown\\'" . markdown-mode))
+
+
+;;;; Javascript
+
+(ensure-package-installed 'js2-mode)
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+
+
+;;;; Coffeescript & Emberscript
+
+(ensure-package-installed 'coffee-mode)
+(require 'coffee-mode)
+(add-hook 'coffee-mode-hook 'flymake-coffee-load)
+(add-to-list 'auto-mode-alist '("\\.em\\'" . coffee-mode))
+(add-to-list 'auto-mode-alist '("\\.hbs\\'" . html-mode))
+
+;;;; Go
+
+(ensure-package-installed 'go-mode)
+(add-hook 'before-save-hook #'gofmt-before-save)
+
+(evil-define-key 'normal go-mode-map
+  "]d" 'godef-jump
+  "K" 'godoc 'word-at-point)
+
+;;;; C
+
+(evil-define-key 'normal c-mode-map
+  "]d" (lambda () (interactive)
+         (find-tag-other-window (symbol-name (symbol-at-point)))))
+
+;;;; Scheme
+
+(ensure-package-installed 'geiser)
+(add-hook 'scheme-mode-hook 'enabe-paredit-mode)
+
+
+
+
+(provide '.emacs)
+;;; .emacs ends here
