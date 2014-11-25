@@ -4,5 +4,5 @@
 
 pkill -x redshift
 if [ $? -eq 1 ]; then
-  redshift -l 48:10 -t 6000:3700 &
+  redshift -l 48:10 & # -t 6000:3700 &
 fi
