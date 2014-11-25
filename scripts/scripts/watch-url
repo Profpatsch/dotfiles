@@ -1,0 +1,26 @@
+#!/bin/bash
+# Takes URL to watch as Argument. Will create a file in the folder
+# to compare the last state with the current one.
+# RECIPIENT env var is mail address
+
+URL=$1
+FILENAME=$(echo "$URL" | sed -e 's,/,*,g')
+
+if [ ! -e "$FILENAME" ]; then
+    curl "$URL" > "$FILENAME"
+fi
+
+curl "$URL" > "$FILENAME.new"
+
+DIFF=$(diff -u "$FILENAME" "$FILENAME.new")
+
+[ $? -ne 0 ] && echo sent && \
+sendmail -t <<EOF
+To: $RECIPIENT
+From: url-watcher
+Subject: $URL has changed.
+
+"$DIFF"
+EOF
+
+mv "$FILENAME.new" "$FILENAME"
