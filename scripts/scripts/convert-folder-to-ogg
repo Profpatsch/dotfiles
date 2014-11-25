@@ -1,0 +1,9 @@
+FT="ogg"
+echo $1
+FOLDER=$(dirname "$1")
+NEW_FOLDER="${FOLDER}_${FT}"
+mkdir ${NEW_FOLDER}
+
+for f in "$(ls FOLDER)"; do
+  echo oggenc ${FOLDER}${f} -q 6 -o ${NEW_FOLDER}/$(basename ${f} .${FT})
+done
