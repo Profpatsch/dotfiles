@@ -1,4 +1,4 @@
-!/bin/sh
+#!/bin/sh
 #
 # ~/.xinitrc
 #
@@ -17,6 +17,7 @@ xset -b
 # set hold key delay
 xset r rate 250 35
 
+setxkbmap de neo
 # swap Super (Win) and Alt
 setxkbmap -option altwin:swap_alt_win
 
@@ -29,6 +30,10 @@ xset m 8/3
 # set mouse speeds      device  threshold  accel  deccel
 # touchpad
 #xinput set-ptr-feedback 13 	18 	   13 	  5
+
+# Set right resolution (b/c of UXA-mode in /etc/X11/xorg.conf.d/30-intel.conf)
+xrandr --output LVDS1 --mode 1440x900
+xrandr --output VGA1 --mode 1280x1024
 
 # Set X program settings
 [[ -f ~/.Xresources ]] && xrdb -merge ~/.Xresources
@@ -47,24 +52,28 @@ touch ~/.Xdbus
 chmod 600 ~/.Xdbus
 env | grep DBUS_SESSION_BUS_ADDRESS > ~/.Xdbus
 echo 'export DBUS_SESSION_BUS_ADDRESS' >> ~/.Xdbus 
+
+# Automounting (gvfs, udiskie, udev)
+udiskie -2 &
   
+
 # Autostart
-# file manager daemon
-#thunar --daemon & # No significant speed-up
-# music playing daemon
-mpd
-# mpd scrobbler
-mpdscribble
-# skype
-#skype &
 # pidgin chat
 pidgin &
 # redshift (auto color temperature for night.)
-toggle-redshift
+toggle-redshift &
+# notifications
+dunst &
 # Network manager
-#nm-applet &
-# dropbox
+nm-applet &
+# News reader
+liferea &
+# Dropbox
 dropboxd &
+
+
+# Background
+set-background
 
 # exec gnome-session
 # exec startkde
@@ -75,4 +84,4 @@ dropboxd &
 
 # Put some environment variables in the config
 ~/.i3/config-config
-exec i3 -c ~/.i3/config_catted >> ~/.logs/i3.log 2>&1 #i3 with logging
+exec i3 -c ~/.i3/config_catted >> ~/.logs/i3.log #i3 with logging

@@ -70,6 +70,10 @@
 
 !-!
 
+!! Emacs settings
+
+Emags.font: Inconsolata
+
 !! urxvt settings
 
 ! General

@@ -5,3 +5,4 @@ i3/.i3/config.env
 backup/.backup/packages.aur
 backup/.backup/packages.pac
 backup/.backup/installed_packages
+scripts/scripts/mdpress
