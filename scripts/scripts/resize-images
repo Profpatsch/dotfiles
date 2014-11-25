@@ -1,0 +1,8 @@
+#!/usr/bin/bash
+
+echo "$*"
+#gm mogrify -resize 50% "$*"
+
+for file in $@; do
+  gm mogrify -resize 50% "${file}"
+done
