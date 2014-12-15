@@ -4,7 +4,7 @@
 
 # directories and commands
 set alias_file       = ~/.mutt/alias         # alias file
-set header_cache     = ~/.mutt/cache/headers # where to store headers        
+set header_cache     = ~/.cache/mutt # where to store headers        
 set mailcap_path     = ~/.mailcap            # entrys for filetypes
 set signature        = ~/.mutt/sig           # my signature file
 set tmpdir           = ~/.mutt/temp          # where to keep temp files
@@ -85,6 +85,8 @@ set crypt_replyencrypt = yes
 set crypt_replysignencrypted = yes
 # Attempt to verify email signatures automatically
 set crypt_verify_sig = yes
+# Decrypt inline PGP
+set pgp_auto_decode = yes
 
 # headers to show
 ignore *                                 # ignore all headers
