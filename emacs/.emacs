@@ -20,32 +20,33 @@ Return a list of installed packages or nil for every package not installed."
 (package-initialize)
 
 ;;; MELPA package repository
-(add-to-list 'package-archives
-  '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(setq package-enable-at-startup nil)
-(package-initialize)
+;(add-to-list 'package-archives
+;  '("melpa" . "http://melpa.milkbox.net/packages/") t)
+;(setq package-enable-at-startup nil)
+;(package-initialize)
 
-(ensure-package-installed 'melpa)
+;(ensure-package-installed 'melpa)
 ;; TODO write a function to make this local (argument to ensure-package-installed?)
-(setq package-archive-enable-alist '(("melpa" melpa powerline yasnippet haskell-mode python-environment geiser)))
+;(setq package-archive-enable-alist '(("melpa" melpa powerline yasnippet haskell-mode python-environment geiser)))
 
 (ensure-package-installed 'evil 'evil-leader)
 (require 'evil)
 (require 'evil-leader)
 
 ;;; Start emacs as a server
-(server-start)
+;(server-start)
 
 ;;;; LOOK
-(ensure-package-installed 'powerline 'solarized-theme)
+(ensure-package-installed 'solarized-theme)
 
 (set-face-attribute 'default nil :font "Inconsolata" :height 130)
 ; server font bug
 (add-to-list 'default-frame-alist '(font . "Inconsolata-12"))
 (blink-cursor-mode 0)
 (load-theme 'solarized-dark t)
-(require 'powerline)
-(powerline-center-evil-theme)
+;(ensure-package-installed 'powerline)
+;(require 'powerline)
+;(powerline-center-evil-theme)
 
 ;;; buffers with the same name get folder prefixed
 (require 'uniquify)
@@ -67,34 +68,10 @@ Return a list of installed packages or nil for every package not installed."
 (global-undo-tree-mode)
 (defalias 'yes-or-no-p 'y-or-n-p) ;; No typing yes please
 (setq-default indent-tabs-mode nil) ;; Death to non-smart tabs
+(setq-default fill-column 80)
 
 ;;;; Save on focus lost in X11
-;;; depreciates in Emacs 24.4
-(when
-   (and (featurep 'x) window-system)
- (defvar on-blur--saved-window-id 0 "Last known focused window.")
- (defvar on-blur--timer nil "Timer refreshing known focused window.")
- (defun on-blur--refresh ()
-   "Runs on-blur-hook if emacs has lost focus."
-   (let* ((active-window (x-window-property
-                          "_NET_ACTIVE_WINDOW" nil "WINDOW" 0 nil t))
-          (active-window-id (if (numberp active-window)
-                                active-window
-                              (string-to-number
-                               (format "%x00%x"
-                                       (car active-window)
-                                       (cdr active-window)) 16)))
-          (emacs-window-id (string-to-number
-                            (frame-parameter nil 'outer-window-id))))
-     (when (and
-            (= emacs-window-id on-blur--saved-window-id)
-            (not (= active-window-id on-blur--saved-window-id)))
-       (run-hooks 'on-blur-hook))
-     (setq on-blur--saved-window-id active-window-id)
-     (run-with-timer 1 nil 'on-blur--refresh)))
- (add-hook 'on-blur-hook #'(lambda () (save-some-buffers t)))
- (on-blur--refresh))
-
+(add-hook 'focus-out-hook (lambda () (save-some-buffers t)))
 
 ;;; scroll one line at a time (less "jumpy" than defaults)
 (setq mouse-wheel-scroll-amount '(2 ((shift) . 1))) ;; two lines at a time
@@ -143,6 +120,7 @@ Return a list of installed packages or nil for every package not installed."
 (eldoc-mode 1) ; enable globally
 
 ;;;; company-mode
+(ensure-package-installed 'company)
 (add-hook 'after-init-hook 'global-company-mode)
 
 ;;;; auto-complete (replaced by company-mode
@@ -184,7 +162,14 @@ Return a list of installed packages or nil for every package not installed."
   "j" 'paredit-join-sexps)
 
 (evil-define-key 'insert paredit-mode-map
-  (kbd "C-w") 'paredit-backward-kill-word)
+  (kbd "C-w") 'paredit-backward-kill-word
+  (kbd "C-e") 'paredit-forward-slurp-sexp)
+
+
+;;;; Comint (REPLs)
+(require 'comint)
+(define-key comint-mode-map (kbd "C-n") 'comint-next-matching-input-from-input)
+(define-key comint-mode-map (kbd "C-p") 'comint-previous-matching-input-from-input)
 
 
 ;;;; PLUGINS
@@ -213,8 +198,8 @@ Return a list of installed packages or nil for every package not installed."
 ;;; smex
 (require 'smex)
 (smex-initialize)
-(global-set-key (kbd "M-x") 'smex)
-(global-set-key (kbd "M-X") 'smex-major-mode-commands)
+;(global-set-key (kbd "M-x") 'smex)
+;(global-set-key (kbd "M-X") 'smex-major-mode-commands)
 ;; This is your old M-x.
 (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
 (smex-auto-update 60)
@@ -231,6 +216,8 @@ Return a list of installed packages or nil for every package not installed."
   (interactive)
   (evil-open-below 0)
   (evil-normal-state))
+; Normal undo is way too coarse in evil
+(setq evil-want-fine-undo t) ;;TODO: new version: "fine" option?
 
 (defun describe-function-at-point-active-window ()
   (interactive)
@@ -239,18 +226,16 @@ Return a list of installed packages or nil for every package not installed."
       (describe-function symb))
     (other-window 1)))
 
-(defun evil-undefine ()
- (interactive)
- (let (evil-mode-map-alist)
-   (call-interactively (key-binding (this-command-keys)))))
-
-(define-key evil-normal-state-map (kbd "TAB") 'evil-undefine)
+; can this be removed?
+;; (define-key evil-normal-state-map (kbd "TAB") 'indent-for-tab-command)
+;; (define-key evil-normal-state-map (kbd "M-.") 'find-tag)
 (setq normal-state-mappings '(
     ("RET" . evil-empty-line-below)
     ("K"   . describe-function-at-point-active-window)
     ("]d"  . find-function-at-point)
     ("TAB" . evil-undefine) ;; Don’t block <tab>, damnit!
     ("SPC" . evil-toggle-fold)
+    ("M-." . find-tag)
     ))
 
 (let ((keys normal-state-mappings))
@@ -303,6 +288,7 @@ Return a list of installed packages or nil for every package not installed."
 (require 'scpaste)
 (setq scpaste-http-destination "https://bigmac.caelum.uberspace.de/paste"
       scpaste-scp-destination "bigmac@uberspace:html/paste"
+      scpaste-scp-pubkey "~/.ssh/uberspace_rsa.pub"
       scpaste-user-name "Profpatsch"
       scpaste-user-address "http://profpatsch.de")
 
@@ -319,7 +305,6 @@ Return a list of installed packages or nil for every package not installed."
 ;;;; Autopair
 (ensure-package-installed 'autopair)
 (require 'autopair)
-(autopair-global-mode)
 
 ;;;; fill-column-indicator
 (ensure-package-installed 'fill-column-indicator)
@@ -331,9 +316,9 @@ Return a list of installed packages or nil for every package not installed."
 
 ;;;; FUEL (Factor)
 ;; from the official distribution, since the MELPA-version isn’t up-to-date
-(add-to-list 'load-path "/usr/lib/factor/misc/fuel")
-;; (ensure-package-installed 'fuel)
-(require 'factor-mode)
+;(add-to-list 'load-path "/usr/lib/factor/misc/fuel")
+;(ensure-package-installed 'fuel)
+;(require 'factor-mode)
 
 
 ;;;; Flycheck
@@ -360,7 +345,11 @@ Return a list of installed packages or nil for every package not installed."
 ;; Run lacarte-execute-command and hit TAB
 (ensure-package-installed 'lacarte)
 (require 'lacarte)
+
 (global-set-key (kbd "C-c m") 'lacarte-execute-command)
+
+;;;; Ack
+(ensure-package-installed 'ack)
 
 
 ;;;; LANGUAGES
@@ -453,7 +442,7 @@ Return a list of installed packages or nil for every package not installed."
 (add-hooks-to-mode 'python-mode-hook
                    '(yas-minor-mode-on
                      (lambda ()
-                       (autopair-mode 't)
+                       ;; (autopair-mode 't)
                        (setq fill-column 80))))
 
 ;;; python shell options
@@ -495,17 +484,18 @@ Return a list of installed packages or nil for every package not installed."
   "r" 'python-shell-send-buffer
   )
 
-(ensure-package-installed 'flycheck-pyflakes)
-(add-hook 'python-mode-hook 'flycheck-mode)
+;(ensure-package-installed 'flycheck-pyflakes)
+;(add-hook 'python-mode-hook 'flycheck-mode)
 
 
 ;;;; Haskell
 
 (ensure-package-installed 'haskell-mode)
+(require 'haskell-mode)
+(require 'haskell-interactive-mode)
 (add-hooks-to-mode 'haskell-mode-hook
                    '(turn-on-haskell-indentation
-                     turn-on-haskell-doc-mode
-                     haskell-auto-insert-module-template))
+                     turn-on-haskell-doc-mode))
 (custom-set-variables
  '(haskell-process-suggest-remove-import t)
  '(haskell-process-suggest-hoogle-imports t)
@@ -528,17 +518,22 @@ Return a list of installed packages or nil for every package not installed."
   "p" 'previous-error)
 
 
+
 ;;;; Asciidoc
 ;; use Vim, stupid
+(mapc (lambda (x) (add-to-list 'auto-mode-alist `(,x . visual-line-mode)))
+      '("\\.asciidoc\\'" "\\.adoc\\'"))
 
 ;;;; Markdown
 (ensure-package-installed 'markdown-mode)
+(require 'markdown-mode)
 
 (autoload 'markdown-mode "markdown-mode"
-   "Major mode for editing Markdown files" t)
-(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.mdown\\'" . markdown-mode))
+  "Major mode for editing Markdown files" t)
+(mapc (lambda (x) (add-to-list 'auto-mode-alist `(,x . markdown-mode)))
+      '("\\.markdown\\'" "\\.md\\'" "\\.mdown\\'"))
+;; (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+(add-hook 'markdown-mode-hook 'visual-lines-mode)
 
 
 ;;;; Javascript
@@ -554,6 +549,7 @@ Return a list of installed packages or nil for every package not installed."
 (add-hook 'coffee-mode-hook 'flymake-coffee-load)
 (add-to-list 'auto-mode-alist '("\\.em\\'" . coffee-mode))
 (add-to-list 'auto-mode-alist '("\\.hbs\\'" . html-mode))
+(setq coffee-tab-width 4)
 
 ;;;; Go
 
@@ -574,8 +570,18 @@ Return a list of installed packages or nil for every package not installed."
 
 (ensure-package-installed 'geiser)
 (add-hook 'scheme-mode-hook 'enabe-paredit-mode)
+(setq geiser-guile-load-init-file-p t)
+
+;;;; Nix-Expressions
+(eval-after-load 'tramp '(add-to-list 'tramp-remote-path "/run/current-system/sw/bin"))
+(load "~/.emacs.d/scripts/nix-mode-1.0/nix-mode")
+(require 'nix-mode)
 
 
+
+;;;; Extempore
+
+(add-to-list 'auto-mode-alist '("\\.xtm$" . extempore-mode))
 
 
 (provide '.emacs)
