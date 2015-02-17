@@ -52,12 +52,12 @@
    XF86Display
 
 # Enable second screen right of this screen
-"xrandr --auto && xrandr --output VGA1 --right-of LVDS1"
+"xrandr --auto && xrandr --output VGA1 --right-of LVDS1 && set-background"
     m:0x40 + c:167
     Mod4 + XF86Forward 
 
 #screen autoconfig
-"xrandr --auto"
+"xrandr --auto && set-background"
     m:0x40 + c:166
     Mod4 + XF86Back 
 
@@ -79,7 +79,8 @@
 
 #Raise volume
 "pactl set-sink-volume 0 -- +2dB"
-   XF86AudioRaiseVolume
+    m:0x0 + c:123
+    XF86AudioRaiseVolume 
 
 #Lower volume
 "pactl set-sink-volume 0 -- -2dB"
@@ -110,6 +111,18 @@
 "mpc random"
     m:0x0 + c:172
     XF86AudioPlay 
+
+#neo->de
+"setxkbmap -option altwin:swap_alt_win de"
+   Mod4 + ssharp
+
+#de->neo
+"setxkbmap -option altwin:swap_alt_win de neo"
+   Mod4 + udiaeresis
+
+# open openlab
+"doorctl open"
+   Mod4 + o
 
 #
 # End of xbindkeys configuration
