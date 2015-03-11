@@ -172,6 +172,11 @@ Return a list of installed packages or nil for every package not installed."
 (define-key comint-mode-map (kbd "C-p") 'comint-previous-matching-input-from-input)
 
 
+;;;; Edebug
+(add-hook 'edebug-mode-hook 'turn-off-evil-mode)
+(define-key (kbd "C-M-1") 'edebug-defun)
+
+
 ;;;; PLUGINS
 
 (add-to-list 'load-path "~/.emacs.d/scripts")
@@ -218,6 +223,8 @@ Return a list of installed packages or nil for every package not installed."
   (evil-normal-state))
 ; Normal undo is way too coarse in evil
 (setq evil-want-fine-undo t) ;;TODO: new version: "fine" option?
+; Search for symbols instead of words
+(setq-default evil-symbol-word-search t)
 
 (defun describe-function-at-point-active-window ()
   (interactive)
@@ -297,6 +304,11 @@ Return a list of installed packages or nil for every package not installed."
 (ensure-package-installed 'yasnippet)
 
 (require 'yasnippet)
+(setq yas-snippet-dirs
+      '("~/.emacs.d/snippets"
+        "~/.emacs.d/snippets/yasnippet-snippets"))
+(add-hooks-to-mode 'prog-mode-hook'(yas-minor-mode
+                                    yas-reload-all))
 ;; (defun ac-common-setup ()
 ;;   (setq ac-sources (add-to-list 'ac-sources 'ac-source-yasnippet)))
 ;; (add-hook 'auto-complete-mode-hook 'ac-common-setup)
@@ -328,7 +340,16 @@ Return a list of installed packages or nil for every package not installed."
 (require 'flycheck-haskell)
 (add-hook 'after-init-hook #'global-flycheck-mode)
 (custom-set-variables
- '(flycheck-idle-check-delay 2))
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(flycheck-idle-check-delay 2)
+ '(haskell-process-auto-import-loaded-modules t)
+ '(haskell-process-log t)
+ '(haskell-process-suggest-hoogle-imports t)
+ '(haskell-process-suggest-remove-import t)
+ '(haskell-process-type (quote ghci)))
 
 
 ;;;; Emmet (fast XML)
@@ -496,12 +517,7 @@ Return a list of installed packages or nil for every package not installed."
 (add-hooks-to-mode 'haskell-mode-hook
                    '(turn-on-haskell-indentation
                      turn-on-haskell-doc-mode))
-(custom-set-variables
- '(haskell-process-suggest-remove-import t)
- '(haskell-process-suggest-hoogle-imports t)
- '(haskell-process-auto-import-loaded-modules t)
- '(haskell-process-log t)
- '(haskell-process-type 'ghci))
+
 (define-key haskell-mode-map (kbd "SPC") 'haskell-mode-contextual-space)
 (define-key haskell-mode-map (kbd "C-c C-i") 'haskell-process-do-info)
 (define-key haskell-mode-map (kbd "C-c C-t") 'haskell-process-do-type)
