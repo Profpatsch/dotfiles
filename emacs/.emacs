@@ -11,6 +11,10 @@ Return a list of installed packages or nil for every package not installed."
            (package-install package)
          nil)))
    packages))
+
+(defun add-hooks-to-mode (mode-hook functions)
+  (dolist (hook functions)
+    (add-hook mode-hook hook)))
  
 (require 'package)
 ;; Marmalade package repository
@@ -174,7 +178,7 @@ Return a list of installed packages or nil for every package not installed."
 
 ;;;; Edebug
 (add-hook 'edebug-mode-hook 'turn-off-evil-mode)
-(define-key (kbd "C-M-1") 'edebug-defun)
+(define-key emacs-lisp-mode-map (kbd "C-M-1") 'edebug-defun)
 
 
 ;;;; PLUGINS
@@ -307,8 +311,8 @@ Return a list of installed packages or nil for every package not installed."
 (setq yas-snippet-dirs
       '("~/.emacs.d/snippets"
         "~/.emacs.d/snippets/yasnippet-snippets"))
-(add-hooks-to-mode 'prog-mode-hook'(yas-minor-mode
-                                    yas-reload-all))
+;(add-hooks-to-mode 'prog-mode-hook'(yas-minor-mode
+                                    ;yas-reload-all))
 ;; (defun ac-common-setup ()
 ;;   (setq ac-sources (add-to-list 'ac-sources 'ac-source-yasnippet)))
 ;; (add-hook 'auto-complete-mode-hook 'ac-common-setup)
@@ -375,10 +379,6 @@ Return a list of installed packages or nil for every package not installed."
 
 ;;;; LANGUAGES
 
-
-(defun add-hooks-to-mode (mode-hook functions)
-  (dolist (hook functions)
-    (add-hook mode-hook hook)))
 
 
 ;;;; elisp
