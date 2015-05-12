@@ -52,3 +52,5 @@
 	tool = gvimdiff
 [push]
 	default = simple
+[pull]
+	rebase = true
