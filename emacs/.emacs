@@ -376,6 +376,10 @@ Return a list of installed packages or nil for every package not installed."
 ;;;; Ack
 (ensure-package-installed 'ack)
 
+;;;; Magit
+(evil-leader/set-key
+  "m" 'magit-status)
+
 
 ;;;; LANGUAGES
 
