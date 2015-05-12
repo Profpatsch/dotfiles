@@ -1,0 +1,2 @@
+# nix type
+--type-set=nix:ext:nix
