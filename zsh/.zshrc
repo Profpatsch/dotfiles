@@ -16,6 +16,7 @@ autoload -U zsh-mime-setup
 zsh-mime-setup
 
 # fasd
+eval "$(fasd --init auto)"
 alias v='f -e choose-editor' # quick opening files with the enabled editor
 alias m='f -e vlc' # quick opening files with mplayer
 alias o='a -e xdg-open' # quick opening files with xdg-open
