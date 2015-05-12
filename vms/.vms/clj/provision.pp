@@ -10,6 +10,10 @@ package { "vim": }
 package { "git": }
 
 
+exec { "update_apt":
+    command => "/usr/bin/apt-get update --fix-missing", }
+exec { "binaries_to_path"
+    command => "export PATH=$PATH:/vagrant", }
 
 # Clojure
 exec { "install_leiningen":
@@ -22,7 +26,12 @@ exec { "install_drip":
     creates => "/usr/bin/drip",
 }
 
-exec { "cljs-repl_to_path":
-    command => "echo \"export PATH=${PATH}:/vagrant/cljs-repl\" >> /etc/profile",
-    onlyif  => "[ -n \"$(which cljs-repl)\" ]"
+package {"install_jre":
+    name => "default-jdk",
 }
+
+#exec { "cljs-repl_to_path":
+    #command => "echo \"export PATH=${PATH}:/vagrant/cljs-repl\" >> /etc/profile",
+    #onlyif  => "[ -n \"$(which cljs-repl)\" ]",
+    #path    => [],
+#}
