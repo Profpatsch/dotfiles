@@ -229,16 +229,6 @@ nnoremap <leader>z mzzMzvzz10<c-e>`z:Pulse<cr>
 " }}}
 " }}}
 " Mappings for the leader {{{
-" Files {{{
-" Open todo list
-nnoremap <leader>todo :e ~/.todo<CR>
-" Save session to ~
-nnoremap <leader>ssg :mks! ~/.sess<CR>
-nnoremap <leader>slg :so ~/.sess<CR>
-" Save session to .
-nnoremap <leader>ssl :mks! ./.sess<CR>
-nnoremap <leader>sll :so ./.sess<CR>
-" }}}
 " Change global working dir to current file
 nnoremap <leader>cd :cd %:p:h<CR>
 " Quickly set filetype
@@ -410,7 +400,8 @@ autocmd BufNewFile,BufRead * setlocal tags+=./tags " Set tags of the current fol
 
 " Filetypes for extensions {{{
 autocmd BufNewFile,BufRead *.muttrc setlocal filetype=muttrc
-autocmd BufNewFile,BufRead *.mail setlocal filetype=mail"}}}
+autocmd BufNewFile,BufRead *.mail setlocal filetype=mail
+autocmd BufNewFile,BufRead *.scss setlocal filetype=sass"}}}
 
 " Language support (should be in .vim/after/ftplugin/) {{{
 "" ----------------------------------------------------
