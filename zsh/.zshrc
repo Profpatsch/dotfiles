@@ -27,7 +27,6 @@ alias ....='cd ../../..'
 alias .....='cd ../../../..'
 alias findn='find . -iname '
 alias diff='colordiff '
-alias news='newsbeuter '
 #alias cl='wc -l ' # Count Lines
 # Own “programs” (fancy for: cheap alias names)
 alias cd2flac='abcde -c ~/.abcde_flac.conf'
