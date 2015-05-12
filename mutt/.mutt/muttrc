@@ -5,6 +5,7 @@
 # directories and commands
 set alias_file       = ~/.mutt/alias         # alias file
 set header_cache     = ~/.cache/mutt # where to store headers        
+set message_cachedir = ~/.cache/mutt/messages # store messages, too
 set mailcap_path     = ~/.mailcap            # entrys for filetypes
 set signature        = ~/.mutt/sig           # my signature file
 set tmpdir           = ~/.mutt/temp          # where to keep temp files
