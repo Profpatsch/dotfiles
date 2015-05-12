@@ -7,3 +7,4 @@ backup/.backup/packages.pac
 backup/.backup/installed_packages
 scripts/scripts/mdpress
 /picard/
+/scripts/scripts/private/

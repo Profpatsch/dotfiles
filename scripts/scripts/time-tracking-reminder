@@ -1,0 +1,4 @@
+#!/usr/bin/bash
+
+[[ $(hamster current) == "No activity" ]] \
+    && notify-send --expire-time 1000 "Working on nothing!"
