@@ -62,7 +62,7 @@ alias gb='git branch '
 alias gc='git commit '
 alias gcm='git commit -m '
 alias gd='git diff '
-alias go='git checkout '
+#alias go='git checkout '
 alias gk='gitk --all&'
 alias gx='gitx --all '
 alias gcam='git commit -a -m '
@@ -77,7 +77,7 @@ alias gra='git rebase --abort'
 # svn
 alias sc='svn commit '
 alias scm='svn commit -m '
-alias ss='svn status ' # Don’t need no sockets. ;)
+#alias ss='svn status ' # Don’t need no sockets. ;)
 # vim
 # open new files in already running session of gvim
 alias gvim='choose-editor '
@@ -96,7 +96,6 @@ alias standby='systemctl suspend'
 
 # Arch
 alias pacclean='pacman -Rs $(pacman -Qqtd)' # Removes all orphan packages
-alias install='sudo pacman -S '
 compdef _yaourt yaourt=pacman
 
 # Debian-like
