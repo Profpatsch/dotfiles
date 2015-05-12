@@ -38,26 +38,17 @@ plugins=(
 	 archlinux
 	 colored-man
 	 cp
-	 dircycle
-	 emoji-clock
 	 extract
 	 fasd
 	 git
 	 gitignore
-	 github
-	 heroku
-	 lein
+	 haskell
 	 mosh
-	 pip
 	 python
 	 rsync
+         serve
 	 systemd
 	 taskwarrior
-	 #tmux
-	 vagrant
-	 virtualenv
-	 #virtualenvwrapper
-	 web-search
 	 )
 
 
