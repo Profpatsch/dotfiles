@@ -110,6 +110,10 @@ go_libs="-lm"
 go_flags="-g -Wall -include ~/scripts/allheaders.h -O3"
 alias goc="c99 -xc '-' $go_libs $go_flags"
 
+# Python
+export WORKON_HOME=~/.virtualenvs
+source /usr/bin/virtualenvwrapper.sh
+
 # OPAM configuration
 . /home/philip/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
 
