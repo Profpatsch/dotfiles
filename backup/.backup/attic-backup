@@ -1,0 +1,27 @@
+#!/bin/sh
+REPOSITORY=/run/media/philip/Seagate/backup.attic
+home="/home/philip"
+VER="$1"
+
+# Backup all of /home and /etc except a few
+# excluded directories
+attic create --stats                            \
+    $REPOSITORY::nyx-`date +%Y-%m-%d-$VER`      \
+    /home                                       \
+    /etc                                        \
+    --exclude ${home}/Downloads                 \
+    --exclude ${home}/Music                     \
+    --exclude ${home}/backup                    \
+    --exclude "${home}/VirtualBox VMs"          \
+    --exclude ${home}/.cabal                    \
+    --exclude ${home}/.cabal-sandboxes          \
+    --exclude ${home}/.cache                    \
+    --exclude ${home}/.m2                       \
+    --exclude ${home}/.lein                     \
+    --exclude ${home}/.npm                      \
+    --exclude ${home}/.builds                   \
+    --exclude ${home}/.local/share/Trash
+
+# Use the `prune` subcommand to maintain 7 daily, 4 weekly
+# and 6 monthly archives and one per year.
+attic prune -v $REPOSITORY --keep-daily=7 --keep-weekly=4 --keep-monthly=6 --keep-yearly 1000
