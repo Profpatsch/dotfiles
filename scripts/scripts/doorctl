@@ -1,0 +1,26 @@
+#!/usr/bin/env python
+
+import sys
+import urllib.request
+import keyring
+
+token = keyring.get_password("openlab_sphincter", "Profpatsch")
+
+if __name__ == '__main__':
+    
+    action = ''
+
+    try:
+        action = sys.argv[1]
+    except:
+        sys.exit('usage: doorctl open/close/state')
+
+    try:
+        url = 'https://labctl.openlab-augsburg.de/sphincter/?action='+action+'&token='+token
+        http_obj = urllib.request.urlopen(url)
+        result = http_obj.read()
+
+        print('response: ' + result.decode())
+    
+    except IOError:
+        sys.exit('could not reach host')
