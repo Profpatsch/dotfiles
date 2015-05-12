@@ -9,6 +9,7 @@ emacs
 electrum
 elinks
 evince
+feh
 file-roller
 filezilla
 geeqie
@@ -29,6 +30,7 @@ libreoffice-calc
 libreoffice-gnome
 libreoffice-impress
 libreoffice-writer
+liferea
 lilyterm
 lxappearance
 mediainfo
@@ -49,8 +51,10 @@ perl-mail-sendmail
 picard
 pidgin-encryption
 pidgin-otr
+pkgbuild-introspection
 purple-plugin-pack
 python-docs
+python2-gnomekeyring
 ranger-git
 raw-thumbnailer
 redshift
@@ -72,6 +76,7 @@ truecrypt
 tumbler
 unison
 vim-systemd
+virtualenvwrapper
 vlc
 weechat
 xbindkeys
@@ -113,6 +118,7 @@ cups
 dmenu
 dnsutils
 dos2unix
+dunst
 expac
 faience-icon-theme
 fasd
