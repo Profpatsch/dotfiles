@@ -39,6 +39,9 @@ alias followl='tail -n50 -f ~/.logs/*'
 alias syncnyx='unison nyx -logfile ~/.logs/unison.log'
 alias busy='rnd_file=$(find /usr/include -type f -size +5k | sort -R | head -n 1) && vim +$((RANDOM%$(wc -l $rnd_file | cut -f1 -d" "))) $rnd_file' # makes you look busy
 alias cf='find | wc -l ' # Count Files in directory recursively
+alias tb='nc termbin.com 9999'
+alias xclipc='xclip -selection clipboard '
+alias imclip='function { imup "$1" | xclipc }'
 
 # Global convenience stuff
 alias -g G='| grep '
