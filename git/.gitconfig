@@ -10,11 +10,18 @@
 	editor = vim
 
 [merge]
-	tool = splice
+	tool = kdiff3
 
 [mergetool "splice"]
 	cmd = "gvim -f $BASE $LOCAL $REMOTE $MERGED -c 'SpliceInit'"
 	trustExitCode = true
+
+[mergetool "ediff"]
+  cmd = emacsclient -c -a \"\"  --eval \"(ediff-merge-files-with-ancestor \\\"$LOCAL\\\" \\\"$REMOTE\\\" \\\"$BASE\\\" nil \\\"$MERGED\\\")\"
+
+[mergetool "kdiff3"]
+    keepBackup = false
+    trustExitCode = false
 
 [alias]
 	co = checkout
