@@ -86,6 +86,8 @@ alias vims='vim -S .sess '
 # graphics magick
 alias gmc='gm convert '
 alias crop='gm convert - -gravity Center -crop '
+# vagrant
+alias vus='vagrant up && vagrant ssh'
 
 # typos
 alias l¿='ls ' # Haha, Neo. ;)
@@ -103,7 +105,7 @@ alias sa='sudo aptitude '
 alias sapti='sudo aptitude install '
 
 # ls colors solarized
-eval `dircolors ~/.config/terminator/solarized/dircolors.ansi-dark`
+# eval `dircolors ~/.config/terminator/solarized/dircolors.ansi-dark`
 
 # C
 go_libs="-lm"
