@@ -604,5 +604,12 @@ Return a list of installed packages or nil for every package not installed."
 (add-to-list 'auto-mode-alist '("\\.xtm$" . extempore-mode))
 
 
+;;;; Vala
+(add-hook 'vala-mode-hook (lambda ()
+                           (setq indent-tabs-mode nil)
+                           (setq c-basic-offset 4)
+                           (setq tab-width 4)))
+
+
 (provide '.emacs)
 ;;; .emacs ends here
