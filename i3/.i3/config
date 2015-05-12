@@ -190,10 +190,12 @@ bindsym $mod+udiaeresis [urgent="latest"] focus
 bindsym $mod+Shift+q move workspace to output right
 # moves current window to the next output
 bindsym $mod+Shift+f move container to output right
+
+# XBINDKEYSRC
 # Second screen right
-bindsym $mod+XF86Forward exec "xrandr --auto && xrandr --output VGA1 --right-of LVDS1"
+#bindsym $mod+XF86Forward exec "xrandr --auto && xrandr --output VGA1 --right-of LVDS1 && set-background"
 # Only one screen
-bindsym $mod+XF86Back exec "xrandr --auto"
+#bindsym $mod+XF86Back exec "xrandr --auto && set-background"
 # }}}
 # }}}
 
