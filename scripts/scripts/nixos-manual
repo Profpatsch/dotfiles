@@ -1,0 +1,12 @@
+#!/bin/sh
+# build the current nixos manual and open the given file.
+# nixos <file> <path-to-nixpkgs>
+# where <file> is e.g. index or options
+
+WHAT=$1
+NIXPKGS=$2
+
+cd "$NIXPKGS"
+STOREPATH=$(nix-build nixos/release.nix -A manual.x86_64-linux | tail -n 1)
+
+xdg-open "$STOREPATH/share/doc/nixos/$WHAT.html"
