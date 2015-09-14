@@ -146,6 +146,9 @@ set listchars=tab:▸\ ,eol:¬ " Use the same symbols as TextMate for tabstops a
 set showbreak=↪ " Shows a little hint at the beginning of a broken line
 set colorcolumn=+1
 
+" Syntax hilighting
+syntax on
+
 " Resize splits when the window is resized
 au VimResized * :wincmd =
 "-------------------------------------}}}
