@@ -162,6 +162,8 @@ layers configuration."
   (setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
   ;;; set meta to alt key
   (setq x-super-keysym 'meta)
+  ;;;; Save on focus lost in X11
+  (add-hook 'focus-out-hook (lambda () (save-some-buffers t)))
 )
 
 ;; Do not write anything past this comment. This is where Emacs will
