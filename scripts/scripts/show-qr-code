@@ -1,4 +1,4 @@
-#! /usr/bin/bash
+#!/bin/sh
 
 TMP=$(mktemp)
 qrencode -s 8 -o $TMP -t PNG ${1}
