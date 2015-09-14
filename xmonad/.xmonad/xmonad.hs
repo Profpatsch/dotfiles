@@ -14,8 +14,8 @@ type KeyMap = M.Map (KeyMask, KeySym) (X ())
 main = statusBar cmd pp strutsKey myConfig >>= xmonad
   where
     cmd = "xmobar --bottom --font xft:sans-10"
-    -- toggle bar visible
-    strutsKey = \_ -> (noModMask, xK_VoidSymbol)
+    -- toggle bar visible (todo: Add to other keybindings)
+    strutsKey = \_ -> (mod4Mask, xK_b)
     pp = defaultPP
          -- no title pls
          { ppTitle = \x -> mempty }
@@ -26,7 +26,7 @@ myConfig = conf { modMask = mod4Mask
                 , layoutHook = layout
                 }
            `additionalKeysP`
-           [ ("M-e", sendMessage $ Toggle FULL)
+           [ ("M-e", sendMessage $ Toggle NBFULL)
              -- i3-like keybindings, because I’m spoiled
            , ("M-S-x", kill)
              -- exchange M-Ret and M-S-Ret
