@@ -1,0 +1,1 @@
+../../../dotfiles/abcde/.config/fish/functions/cd2flac.fish
