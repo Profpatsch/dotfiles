@@ -1,2 +1,6 @@
 text/html; chromium %s; nametemplate=%s.html
 text/html; elinks -dump-charset utf-8 -dump %s; nametemplate=%s.html; copiousoutput
+
+application/onsong; cat %s | dos2unix | less;
+
+application/pdf; zathura %s

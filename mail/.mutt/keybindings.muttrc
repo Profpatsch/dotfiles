@@ -7,7 +7,7 @@ bind index i           noop
 bind index <space>     collapse-thread # Toggle thread
 macro index c    <change-folder>?  "Directly jump to folder list, please. Thankyou."
 
-macro index ä  "<enter-command>unset wait_key<enter>!notmuch new<enter>!offlineimap -q<enter><enter-command>set wait_key<enter>"  "Get the latest mail."
+macro index ä  "<enter-command>unset wait_key<enter>!offlineimap -q<enter>!notmuch new &<enter><enter-command>set wait_key<enter>"  "Get the latest mail."
 
 # Search all mail with notmuch-mutt
 macro index <F8> \
