@@ -2,54 +2,47 @@
 
 import re
 import sys
-import os
-import keyring
 import subprocess
-# import getpass
-
-# class Keyring(object):
-#     def __init__(self, name, server, protocol):
-#         self._name = name
-#         self._server = server
-#         self._protocol = protocol
-#         self._keyring = 'imap'
-
-#     # def has_credentials(self):
-#     #     try:
-#     #         attrs = {"server": self._server, "protocol": self._protocol}
-#     #         items = gkey.find_items_sync(gkey.ITEM_NETWORK_PASSWORD, attrs)
-#     #         return len(items) > 0
-#     #     except gkey.DeniedError:
-#     #         return False
-
-#     def get_password(self, user):
-#         attrs = {"server": self._server, "protocol": self._protocol,
-#                 "user": user}
-#         items = gkey.find_items_sync(gkey.ITEM_NETWORK_PASSWORD, attrs)
-#         return items[0].secret
-
-#     def set_credentials(self, (user, pw)):
-#         attrs = {
-#                 "user": user,
-#                 "server": self._server
-#                 "protocol": self._protocol,
-#             }
-#         gkey.item_create_sync(self._keyring,
-#                 gkey.ITEM_NETWORK_PASSWORD, self._name, attrs, pw, True)
 
 def get_password(server, username):
-    # print(server + " " + username)
-    # pw = keyring.get_password(server, username)
-    # return(pw)
-    home = os.environ['HOME']
-    pw = subprocess.check_output(["gpg2", "--no-tty", "-q", "-d", "{}/.config/mailpasswords/{}.asc".format(home, username)])
-    return pw.strip()
+    import os
+    import os.path
+    import fcntl
+    import hashlib
+
+    home = os.path.expanduser("~")
+    password_file = "{}/.config/mailpasswords/{}.asc".format(home, username)
+
+    # create dir for cache
+    cachedir = os.getenv("XDG_CACHE_HOME", os.path.join(home, ".cache/unlock-gpg-keys"))
+    try:
+        os.makedirs(cachedir)
+    except:
+        pass
+    # create file lock for the password file
+    cachefile = "{}/{}".format(cachedir, hashlib.sha256(password_file).hexdigest())
+    with open(cachefile, 'w') as f:
+        print("file {} opened".format(cachefile))
+        fcntl.flock(f, fcntl.LOCK_EX)
+        print("file {} locked".format(cachefile))
+        pw = decrypt_file(password_file)
+        print("password read from {}".format(password_file))
+        return pw.strip()
+
+def decrypt_file(password_file):
+    import gpgme
+    import io
+    with open(password_file, 'rb') as f:
+        c = gpgme.Context()
+        plain = io.BytesIO()
+        encrypted = io.BytesIO(f.read())
+        c.decrypt(encrypted, plain)
+        return plain.getvalue().decode()
 
 
 def set_password(server, username, password):
     # keyring.set_password(server, username, password)
     raise NotImplemented()
-
 
 # def oimaptransfolder_acc1(foldername):
 #     if(foldername == "INBOX"):
