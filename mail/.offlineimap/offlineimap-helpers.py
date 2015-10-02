@@ -4,11 +4,11 @@ import re
 import sys
 import subprocess
 
+
 def get_password(server, username):
     import os
     import os.path
     import fcntl
-    import hashlib
 
     home = os.path.expanduser("~")
     password_file = "{}/.config/mailpasswords/{}.asc".format(home, username)
@@ -20,7 +20,9 @@ def get_password(server, username):
     except:
         pass
     # create file lock for the password file
-    cachefile = "{}/{}".format(cachedir, hashlib.sha256(password_file).hexdigest())
+    print(password_file)
+    cachefile = "{}/{}".format(cachedir, "lock")
+    print(cachefile)
     with open(cachefile, 'w') as f:
         print("file {} opened".format(cachefile))
         fcntl.flock(f, fcntl.LOCK_EX)
