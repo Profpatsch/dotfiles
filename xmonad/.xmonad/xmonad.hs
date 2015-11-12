@@ -1,21 +1,22 @@
+import Control.Applicative ((<*))
 import qualified Data.Map as M
 import Data.Monoid ((<>))
 
 import XMonad
+import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.DynamicLog
-import XMonad.Hooks.ManageDocks
+import XMonad.Hooks.ManageDocks (manageDocks, avoidStruts, docksEventHook, ToggleStruts(..))
 import XMonad.Layout.MultiToggle (mkToggle1, Toggle(..))
 import XMonad.Layout.MultiToggle.Instances (StdTransformers(..))
 import qualified XMonad.StackSet as W
 import XMonad.Util.EZConfig (additionalKeysP, removeKeysP)
+import XMonad.Util.SpawnOnce (spawnOnce)
 
 type KeyMap = M.Map (KeyMask, KeySym) (X ())
 
-main = statusBar cmd pp strutsKey myConfig >>= xmonad
+main = xmonad . ewmh $ myConfig
   where
-    cmd = "xmobar --bottom --font xft:sans-10"
     -- toggle bar visible (todo: Add to other keybindings)
-    strutsKey = \_ -> (mod4Mask, xK_b)
     pp = defaultPP
          -- no title pls
          { ppTitle = \x -> mempty }
@@ -24,6 +25,9 @@ myConfig = conf { modMask = mod4Mask
                 , terminal = term
                 , focusedBorderColor = "#859900"
                 , layoutHook = layout
+                , manageHook = manageDocks
+                , handleEventHook = docksEventHook
+                , startupHook = spawnOnce "taffybar"
                 }
            `additionalKeysP`
            [ ("M-e", sendMessage $ Toggle NBFULL)
@@ -31,7 +35,10 @@ myConfig = conf { modMask = mod4Mask
            , ("M-S-x", kill)
              -- exchange M-Ret and M-S-Ret
            , ("M-<Return>", spawn term)
-           , ("M-S-<Return>", windows W.swapMaster)]
+           , ("M-S-<Return>", windows W.swapMaster)
+             -- toogle toolbar(s)
+           , ("M-b", sendMessage ToggleStruts)
+           ]
            `removeKeysP`
            [
              -- previous kill command
@@ -42,10 +49,11 @@ myConfig = conf { modMask = mod4Mask
   where
     conf = defaultConfig
     mod = modMask conf
-    term = "lilyterm"
+    -- TODO: meh
+    term = "lilyterm -x fish"
 
 -- copied from Xmonad.Config
-layout = toggleFullscreen $ tiled ||| Mirror tiled
+layout = avoidStruts $ toggleFullscreen $ tiled ||| Mirror tiled
   where
      -- default tiling algorithm partitions the screen into two panes
      tiled   = Tall nmaster delta ratio
