@@ -11,6 +11,7 @@ import XMonad.Layout.MultiToggle.Instances (StdTransformers(..))
 import qualified XMonad.StackSet as W
 import XMonad.Util.EZConfig (additionalKeysP, removeKeysP, additionalKeys)
 import XMonad.Util.SpawnOnce (spawnOnce)
+import XMonad.Util.Cursor (setDefaultCursor)
 
 type KeyMap = M.Map (KeyMask, KeySym) (X ())
 
@@ -24,6 +25,7 @@ myConfig = conf { modMask = mod
                 , manageHook = manageDocks
                 , handleEventHook = docksEventHook
                 , startupHook = spawnOnce "taffybar"
+                                <> setDefaultCursor xC_heart
                 , workspaces = workspaceNames
                 }
            `additionalKeysP` (
