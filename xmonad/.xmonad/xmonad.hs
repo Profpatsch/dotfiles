@@ -3,52 +3,57 @@ import qualified Data.Map as M
 import Data.Monoid ((<>))
 
 import XMonad
-import XMonad.Hooks.EwmhDesktops
-import XMonad.Hooks.DynamicLog
+import XMonad.Actions.UpdatePointer (updatePointer, PointerPosition(..))
+import XMonad.Hooks.EwmhDesktops (ewmh)
 import XMonad.Hooks.ManageDocks (manageDocks, avoidStruts, docksEventHook, ToggleStruts(..))
 import XMonad.Layout.MultiToggle (mkToggle1, Toggle(..))
 import XMonad.Layout.MultiToggle.Instances (StdTransformers(..))
 import qualified XMonad.StackSet as W
-import XMonad.Util.EZConfig (additionalKeysP, removeKeysP)
+import XMonad.Util.EZConfig (additionalKeysP, removeKeysP, additionalKeys)
 import XMonad.Util.SpawnOnce (spawnOnce)
 
 type KeyMap = M.Map (KeyMask, KeySym) (X ())
 
 main = xmonad . ewmh $ myConfig
-  where
-    -- toggle bar visible (todo: Add to other keybindings)
-    pp = defaultPP
-         -- no title pls
-         { ppTitle = \x -> mempty }
 
-myConfig = conf { modMask = mod4Mask
+myConfig = conf { modMask = mod
                 , terminal = term
                 , focusedBorderColor = "#859900"
                 , layoutHook = layout
+                , logHook = updatePointer $ Nearest
                 , manageHook = manageDocks
                 , handleEventHook = docksEventHook
                 , startupHook = spawnOnce "taffybar"
+                , workspaces = workspaceNames
                 }
-           `additionalKeysP`
-           [ ("M-e", sendMessage $ Toggle NBFULL)
-             -- i3-like keybindings, because I’m spoiled
-           , ("M-S-x", kill)
-             -- exchange M-Ret and M-S-Ret
-           , ("M-<Return>", spawn term)
-           , ("M-S-<Return>", windows W.swapMaster)
-             -- toogle toolbar(s)
-           , ("M-b", sendMessage ToggleStruts)
-           ]
+           `additionalKeysP` (
+             [ ("M-e", sendMessage $ Toggle NBFULL)
+                 -- i3-like keybindings, because I’m spoiled
+             , ("M-S-x", kill)
+                 -- exchange M-Ret and M-S-Ret
+             , ("M-<Return>", spawn term)
+             , ("M-S-<Return>", windows W.swapMaster)
+                 -- toogle toolbar(s)
+             , ("M-b", sendMessage ToggleStruts)
+             ]
+             ++
+             [ (otherModMasks ++ "M-" ++ [key], action tag)
+               | (tag, key)  <- zip workspaceNames "123456789"
+               , (otherModMasks, action) <- [ ("", windows . W.view) -- was W.greedyView
+                                            , ("S-", windows . W.shift)]
+             ]
+           )
            `removeKeysP`
-           [
-             -- previous kill command
-             "M-S-c"
-             -- It is way to easy to kill everything by default
-           , "M-S-q" ]
-           -- `exchangeKeys` ((mod, xK_Return), (mod .|. shiftMask, xK_Return))
+             [
+               -- previous kill command
+               "M-S-c"
+               -- It is way to easy to kill everything by default
+             , "M-S-q"
+             ]
   where
     conf = defaultConfig
-    mod = modMask conf
+    workspaceNames = workspaces conf
+    mod = mod4Mask
     -- TODO: meh
     term = "lilyterm -x fish"
 
