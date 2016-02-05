@@ -3,7 +3,6 @@ import qualified Data.Map as M
 import Data.Monoid ((<>))
 
 import XMonad
-import XMonad.Actions.UpdatePointer (updatePointer, PointerPosition(..))
 import XMonad.Hooks.EwmhDesktops (ewmh)
 import XMonad.Hooks.ManageDocks (manageDocks, avoidStruts, docksEventHook, ToggleStruts(..))
 import XMonad.Layout.MultiToggle (mkToggle1, Toggle(..))
@@ -21,7 +20,6 @@ myConfig = conf { modMask = mod
                 , terminal = term
                 , focusedBorderColor = "#859900"
                 , layoutHook = layout
-                , logHook = updatePointer $ Nearest
                 , manageHook = manageDocks
                 , handleEventHook = docksEventHook
                 , startupHook = spawnOnce "taffybar"
@@ -41,7 +39,7 @@ myConfig = conf { modMask = mod
              ++
              [ (otherModMasks ++ "M-" ++ [key], action tag)
                | (tag, key)  <- zip workspaceNames "123456789"
-               , (otherModMasks, action) <- [ ("", windows . W.view) -- was W.greedyView
+               , (otherModMasks, action) <- [ ("", windows . W.greedyView)
                                             , ("S-", windows . W.shift)]
              ]
            )
@@ -57,7 +55,7 @@ myConfig = conf { modMask = mod
     workspaceNames = workspaces conf
     mod = mod4Mask
     -- TODO: meh
-    term = "lilyterm -x fish"
+    term = "lilyterm"
 
 -- copied from Xmonad.Config
 layout = avoidStruts $ toggleFullscreen $ tiled ||| Mirror tiled
