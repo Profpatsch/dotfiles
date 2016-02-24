@@ -62,7 +62,8 @@
     Mod4 + XF86Back 
 
 #Screenshot
-"import $SCREENSHOT.jpg"
+# TODO: Folder? Date?
+"import ~/Pictures/screenshot.png"
    Print
 
 #Full screen
