@@ -1,0 +1,8 @@
+theme = solarized_dark
+
+attachment_prefix = ~/Downloads
+
+[bindings]
+
+#ctrl q = exit
+#q = bclose
