@@ -1,4 +1,0 @@
-#!/usr/bin/bash
-
-#gm mogrify -resize 50% "$@"
-gm mogrify -resize 50% "${1}"

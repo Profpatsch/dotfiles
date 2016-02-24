@@ -1,8 +1,0 @@
-#!/bin/bash
-
-# Starts redshift if it doesn’t run, ends it if it does.
-
-pkill -x redshift
-if [ $? -eq 1 ]; then
-  redshift -l 48:10 & # -t 6000:3700 &
-fi
