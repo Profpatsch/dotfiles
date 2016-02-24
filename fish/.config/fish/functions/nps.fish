@@ -1,3 +1,3 @@
 function nps --description 'nix-env package search'
-	nix-env -qaP | grep -i $argv;
+	nix-env -qaP --description | grep -i $argv;
 end
