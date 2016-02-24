@@ -1,13 +1,15 @@
-#!/usr/bin/env python3
+#!/usr/bin/env nix-shell
+#! nix-shell -i python3 -p pass python3
 
 import sys
 import urllib.request
-import keyring
+import subprocess as sub
 
-token = keyring.get_password("openlab_sphincter", "Profpatsch")
+token = sub.check_output(["pass", "offline/openlabSphincter"]) \
+           .decode().splitlines()[0]
 
 if __name__ == '__main__':
-    
+
     action = ''
 
     try:
@@ -21,6 +23,6 @@ if __name__ == '__main__':
         result = http_obj.read()
 
         print('response: ' + result.decode())
-    
+
     except IOError:
         sys.exit('could not reach host')
