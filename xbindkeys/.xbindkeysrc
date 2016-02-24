@@ -78,12 +78,12 @@
    Control + Alt + Print
 
 #Raise volume
-"pactl set-sink-volume 0 +2dB"
+"pactl set-sink-volume $(pactl info | sed -n 's/Default Sink: \(.*\)$/\1/p') +2dB"
     m:0x0 + c:123
     XF86AudioRaiseVolume 
 
 #Lower volume
-"pactl set-sink-volume 0 -2dB"
+"pactl set-sink-volume $(pactl info | sed -n 's/Default Sink: \(.*\)$/\1/p') -2dB"
     m:0x0 + c:122
     XF86AudioLowerVolume 
 
