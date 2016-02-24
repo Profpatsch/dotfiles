@@ -201,8 +201,8 @@ Return a list of installed packages or nil for every package not installed."
 
 ;;;; imenu
 
-(add-to-list 'load-path "~/.emacs.d/scripts/imenu-anywhere")
-(require 'imenu-anywhere)
+;(add-to-list 'load-path "~/.emacs.d/scripts/imenu-anywhere")
+;(require 'imenu-anywhere)
 
 ;;; smex
 (require 'smex)

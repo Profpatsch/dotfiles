@@ -19,26 +19,33 @@
      ;; ----------------------------------------------------------------
      ;; emacs
      (auto-completion :variables
+                      auto-completion-return-key-behavior nil
+                      auto-completion-tab-key-behavior 'complete
                       auto-completion-enable-help-tooltip t
                       auto-completion-enable-snippets-in-popup t)
-     emacs-lisp
-     git
-     scala
-     syntax-checking
-     ;; languages
-     haskell
-     ;; modes
+     ; markup
+     html
      org
-     ;themes-megapack
+     ; languages
+     emacs-lisp
+     haskell
+     purescript
+     nixos
+     scala
+     ; emacs
+     syntax-checking
+     themes-megapack
+     ; misc
+     git
      )
    ;; List of additional packages that will be installed wihout being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages then consider to create a layer, you can also put the
    ;; configuration in `dotspacemacs/config'.
    dotspacemacs-additional-packages
-     '(nix-mode nixos-options company-nixos-options helm-nixos-options)
+     '(graphviz-dot-mode)
    ;; A list of packages and/or extensions that will not be install and loaded.
-   dotspacemacs-excluded-packages '()
+   dotspacemacs-excluded-packages '(smartparens)
    ;; If non-nil spacemacs will delete any orphan packages, i.e. packages that
    ;; are declared in a layer which is not a member of
    ;; the list `dotspacemacs-configuration-layers'
@@ -70,10 +77,9 @@ before layers configuration."
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
    dotspacemacs-themes '(solarized-light
+                         graham
                          solarized-dark
-                         leuven
-                         monokai
-                         zenburn)
+                         )
    ;; If non nil the cursor color matches the state color.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
@@ -164,6 +170,22 @@ layers configuration."
   (setq x-super-keysym 'meta)
   ;;;; Save on focus lost in X11
   (add-hook 'focus-out-hook (lambda () (save-some-buffers t)))
+
+  ;; org-mode
+  (add-hook 'org-mode-hook 'auto-fill-mode)
+  (with-eval-after-load 'org
+    (setq org-startup-indented nil)
+  )
+
+  ;; org-babel
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (dot . t)))
+  ;; don’t ask for dot
+  (defun my-org-confirm-babel-evaluate (lang body)
+    (not (string= lang "dot")))
+  (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
 )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -185,6 +207,9 @@ layers configuration."
  '(cua-normal-cursor-color "#839496")
  '(cua-overwrite-cursor-color "#b58900")
  '(cua-read-only-cursor-color "#859900")
+ '(custom-safe-themes
+   (quote
+    ("58c6711a3b568437bab07a30385d34aacf64156cc5137ea20e799984f4227265" default)))
  '(diary-entry-marker (quote font-lock-variable-name-face))
  '(emms-mode-line-icon-image-cache
    (quote
@@ -232,6 +257,7 @@ static char *gnus-pointer[] = {
 \"###....####.######\",
 \"###..######.######\",
 \"###########.######\" };")))
+ '(graphviz-dot-view-command "dot -T png %s | feh -")
  '(haskell-process-args-ghci (quote ("")))
  '(haskell-process-path-ghci
    "nix-shell -A env --pure --command \"ghci -fdefer-type-errors -ferror-spans\"")
@@ -259,6 +285,42 @@ static char *gnus-pointer[] = {
    (quote
     ("#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36")))
  '(magit-diff-use-overlays nil)
+ '(org-clock-clocktable-default-properties (quote (:maxlevel 4 :scope file)))
+ '(org-structure-template-alist
+   (quote
+    (("n" "#+NAME: ")
+     ("s" "#+BEGIN_SRC ?
+
+#+END_SRC")
+     ("e" "#+BEGIN_EXAMPLE
+?
+#+END_EXAMPLE")
+     ("q" "#+BEGIN_QUOTE
+?
+#+END_QUOTE")
+     ("v" "#+BEGIN_VERSE
+?
+#+END_VERSE")
+     ("V" "#+BEGIN_VERBATIM
+?
+#+END_VERBATIM")
+     ("c" "#+BEGIN_CENTER
+?
+#+END_CENTER")
+     ("l" "#+BEGIN_LaTeX
+?
+#+END_LaTeX")
+     ("L" "#+LaTeX: ")
+     ("h" "#+BEGIN_HTML
+?
+#+END_HTML")
+     ("H" "#+HTML: ")
+     ("a" "#+BEGIN_ASCII
+?
+#+END_ASCII")
+     ("A" "#+ASCII: ")
+     ("i" "#+INDEX: ?")
+     ("I" "#+INCLUDE: %file ?"))))
  '(paradox-github-token t)
  '(pos-tip-background-color "#073642")
  '(pos-tip-foreground-color "#93a1a1")
@@ -266,6 +328,9 @@ static char *gnus-pointer[] = {
  '(rainbow-identifiers-cie-l*a*b*-saturation 40)
  '(ring-bell-function (quote ignore) t)
  '(safe-local-variable-values (quote ((hindent-style . "chris-done"))))
+ '(scala-indent:align-forms t)
+ '(scala-indent:align-parameters t)
+ '(scala-indent:default-run-on-strategy scala-indent:operator-strategy)
  '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#073642" 0.2))
  '(term-default-bg-color "#002b36")
  '(term-default-fg-color "#839496")
@@ -291,6 +356,7 @@ static char *gnus-pointer[] = {
      (340 . "#268fc6")
      (360 . "#268bd2"))))
  '(vc-annotate-very-old-color nil)
+ '(web-mode-markup-indent-offset 2)
  '(weechat-color-list
    (quote
     (unspecified "#002b36" "#073642" "#990A1B" "#dc322f" "#546E00" "#859900" "#7B6000" "#b58900" "#00629D" "#268bd2" "#93115C" "#d33682" "#00736F" "#2aa198" "#839496" "#657b83"))))
