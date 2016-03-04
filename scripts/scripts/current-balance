@@ -1,0 +1,16 @@
+#!/usr/bin/env nix-shell
+#!nix-shell -i bash -p aqbanking gnupg bc
+
+PIN="$HOME/.config/banking/pinfile.asc"
+
+# fetch balance
+# extract part with balance
+# extract balance itself
+# replace the escaped /
+bal=$(aqbanking-cli -P <(gpg2 --decrypt "$PIN" 2>/dev/null) request --balance 2>/dev/null \
+    | grep -A4 bookedBalance \
+    | sed -ne 's/^.*char value="\(.*\)"/\1/p' \
+    | sed 's:%2F:/:')
+
+# calculate the result with precision 2
+echo "scale=2; $bal" | bc
