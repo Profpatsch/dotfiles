@@ -14,10 +14,12 @@ import XMonad.Util.Cursor (setDefaultCursor)
 
 type KeyMap = M.Map (KeyMask, KeySym) (X ())
 
+data Mode = Normal | Presentation
+
 main = xmonad . ewmh $ myConfig
 
 myConfig = conf { modMask = mod
-                , terminal = term
+                , terminal = term Normal
                 , focusedBorderColor = "#859900"
                 , layoutHook = layout
                 , manageHook = manageDocks
@@ -31,9 +33,10 @@ myConfig = conf { modMask = mod
                  -- i3-like keybindings, because I’m spoiled
              , ("M-S-x", kill)
                  -- exchange M-Ret and M-S-Ret
-             , ("M-<Return>", spawn term)
+             , ("M-<Return>", spawn $ term Normal)
+             , ("C-M-<Return>", spawn $ term Presentation)
              , ("M-S-<Return>", windows W.swapMaster)
-                 -- toogle toolbar(s)
+             -- toogle toolbar(s)
              , ("M-b", sendMessage ToggleStruts)
              ]
              ++
@@ -55,7 +58,9 @@ myConfig = conf { modMask = mod
     workspaceNames = workspaces conf
     mod = mod4Mask
     -- TODO: meh
-    term = "lilyterm"
+    term :: Mode -> String
+    term Normal = "lilyterm"
+    term Presentation = "lilyterm -u ~/.config/lilyterm/pres.conf"
 
 -- copied from Xmonad.Config
 layout = avoidStruts $ toggleFullscreen $ tiled ||| Mirror tiled
