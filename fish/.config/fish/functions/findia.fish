@@ -4,5 +4,5 @@ function findia --description 'find case insensitive anywhere (globbing)' --argu
         set more $argv[2..-1]
     end
 
-    command find -L -iname "*$search*" $more
+    command find -iname "*$search*" $more
 end
