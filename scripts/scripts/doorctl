@@ -17,12 +17,9 @@ if __name__ == '__main__':
     except:
         sys.exit('usage: doorctl open/close/state')
 
-    try:
-        url = 'https://labctl.openlab-augsburg.de/sphincter/?action='+action+'&token='+token
-        http_obj = urllib.request.urlopen(url)
-        result = http_obj.read()
-
-        print('response: ' + result.decode())
-
-    except IOError:
-        sys.exit('could not reach host')
+    url = 'https://labctl.openlab-augsburg.de/sphincter/?action='+action+'&token='+token
+    print(url)
+    http_obj = urllib.request.urlopen(url)
+    result = http_obj.read()
+    
+    print('response: ' + result.decode())
