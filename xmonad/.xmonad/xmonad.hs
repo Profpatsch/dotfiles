@@ -38,6 +38,11 @@ myConfig = conf { modMask = mod
              , ("M-S-<Return>", windows W.swapMaster)
              -- toogle toolbar(s)
              , ("M-b", sendMessage ToggleStruts)
+             -- open simple exec dmenu
+             -- TODO integrate with nixos-config
+             , ("M-u", spawn "dmenu_run")
+             -- open password dmenu
+             , ("M-p", spawn "passmenu")
              ]
              ++
              [ (otherModMasks ++ "M-" ++ [key], action tag)
