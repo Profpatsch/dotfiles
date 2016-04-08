@@ -36,11 +36,11 @@
 
 
 # Map standby to the standby key (sigh).
-"i3lock -u --image=/home/philip/.i3/spike_spiegel.jpg.png && systemctl suspend"
+"alock -bg shade:blur=65 -i frame:width=3"
    XF86Sleep
 
-# Lock the screen via i3lock.and blank the screen
-"xset dpms force off && i3lock -u --image=/home/philip/.i3/spike_spiegel.jpg.png"
+# Lock the screen via alock
+"alock -bg shade:blur=65 -i frame:width=3"
    XF86ScreenSaver
 
 #Kill window
