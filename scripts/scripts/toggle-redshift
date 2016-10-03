@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+if [[ -z "$(pgrep redshift)" ]]; then
+  redshift -l 48:10 &
+else
+  pkill redshift
+fi
