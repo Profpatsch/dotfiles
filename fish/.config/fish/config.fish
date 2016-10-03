@@ -4,3 +4,4 @@ set fish_color_autosuggestion "yellow"
 set -e fish_greeting
 
 set -x PATH ~/scripts $PATH
+
