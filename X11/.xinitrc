@@ -35,9 +35,6 @@ xset m 8/3
 xrandr --output LVDS1 --mode 1440x900
 xrandr --output VGA1 --mode 1280x1024
 
-# Set X program settings
-[[ -f ~/.Xresources ]] && xrdb -merge ~/.Xresources
-
 # Start a D-Bus session
 source /etc/X11/xinit/xinitrc.d/30-dbus
 # Start GNOME Keyring
@@ -58,16 +55,12 @@ udiskie -2 &
   
 
 # Autostart
-# pidgin chat
-pidgin &
 # redshift (auto color temperature for night.)
 toggle-redshift &
 # notifications
 dunst &
 # Network manager
 nm-applet &
-# News reader
-liferea &
 # Dropbox
 dropboxd &
 
