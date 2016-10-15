@@ -24,8 +24,8 @@ myConfig = conf { modMask = mod
                 , layoutHook = layout
                 , manageHook = manageDocks
                 , handleEventHook = docksEventHook
-                , startupHook = spawnOnce "taffybar"
-                                <> setDefaultCursor xC_heart
+                , startupHook = --Spawnonce "taffybar" <>
+                                setDefaultCursor xC_heart
                 , workspaces = workspaceNames
                 }
            `additionalKeysP` (
@@ -40,9 +40,9 @@ myConfig = conf { modMask = mod
              , ("M-b", sendMessage ToggleStruts)
              -- open simple exec dmenu
              -- TODO integrate with nixos-config
-             , ("M-u", spawn "dmenu_run")
+             -- , ("M-u", spawn "dmenu_run")
              -- open password dmenu
-             , ("M-p", spawn "passmenu")
+             -- , ("M-p", spawn "passmenu --type")
              ]
              ++
              [ (otherModMasks ++ "M-" ++ [key], action tag)
