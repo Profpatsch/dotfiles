@@ -1,17 +1,15 @@
-#!/usr/bin/python3
-
 import re
 import sys
-import subprocess
+import subprocess as s
 
 
-def get_password(server, username):
+def get_password(username):
     import os
     import os.path
     import fcntl
 
     home = os.path.expanduser("~")
-    password_file = "{}/.config/mailpasswords/{}.asc".format(home, username)
+    #password_file = "{}/.config/mailpasswords/{}.asc".format(home, username)
 
     # create dir for cache
     cachedir = os.getenv("XDG_CACHE_HOME", os.path.join(home, ".cache/unlock-gpg-keys"))
@@ -20,15 +18,15 @@ def get_password(server, username):
     except:
         pass
     # create file lock for the password file
-    print(password_file)
     cachefile = "{}/{}".format(cachedir, "lock")
     print(cachefile)
     with open(cachefile, 'w') as f:
         print("file {} opened".format(cachefile))
         fcntl.flock(f, fcntl.LOCK_EX)
         print("file {} locked".format(cachefile))
-        pw = decrypt_file(password_file)
-        print("password read from {}".format(password_file))
+	pw = s.check_output(["pass", "email/{}".format(username)]).strip()
+        #pw = decrypt_file(password_file)
+        #print("password read from {}".format(password_file))
         return pw.strip()
 
 def decrypt_file(password_file):
