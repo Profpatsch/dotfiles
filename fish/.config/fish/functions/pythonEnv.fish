@@ -1,5 +1,5 @@
 function pythonEnv --description 'start a nix-shell with the given python packages' --argument pythonVersion
-  if set -q argv[2]
+	if set -q argv[2]
     set argv $argv[2..-1]
   end
   set argv python $argv
@@ -7,5 +7,5 @@ function pythonEnv --description 'start a nix-shell with the given python packag
     set ppkgs $ppkgs "python"$pythonVersion"Packages.$el"
   end
 
-  nix-shell -p $ppkgs
+  nix-shell -p pythonFull $ppkgs
 end

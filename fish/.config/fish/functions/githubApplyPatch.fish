@@ -1,3 +1,3 @@
 function githubApplyPatch --argument link
-	git apply (curl "$link".patch | psub)
+	git apply (curl -L "$link.patch" | psub)
 end
