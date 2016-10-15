@@ -36,20 +36,40 @@
 
 
 # Map standby to the standby key (sigh).
-"alock -bg shade:blur=65 -i frame:width=3"
+# TODO: replace with xtrlock
+"alock"
    XF86Sleep
 
 # Lock the screen via alock
-"alock -bg shade:blur=65 -i frame:width=3"
+# TODO as above
+"alock"
    XF86ScreenSaver
 
-#Kill window
+# lockscreen, but no standby on lid close
+# TODO: This doesn’t work with recent systemd
+# "systemd-inhibit --what=handle-lid-switch alock"
+#    XF86WebCam
+
+# Kill window
 "xkill"
    XF86Battery
 
-#Redshift
+# Redshift
 "toggle-redshift"
    XF86Display
+
+# dmenu
+"dmenu_run"
+    Mod4 + u
+
+# passmenu
+# TODO typing doesn’t work with special chars
+"passmenu --type"
+    Mod4 + p
+
+# display infos
+"display-infos"
+    Mod4 + a
 
 # Enable second screen right of this screen
 "xrandr --auto && xrandr --output VGA1 --right-of LVDS1 && set-background"
