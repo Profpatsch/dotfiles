@@ -1,0 +1,16 @@
+directory = ~/seeding
+
+session = ~/seeding/session
+
+schedule = watch_directory,5,5,load_start=~/seeding/watch/*.torrent
+schedule = untied_directory,5,5,stop_untied=
+schedule = tied_direcory,5,5,start_tied=
+
+schedule = low_diskspace,5,60,close_low_diskspace=300M
+
+port_range = 6891-6891
+
+encryption = allow_incoming,try_outgoing,enable_retry
+
+dht = disable
+peer_exchange = no
