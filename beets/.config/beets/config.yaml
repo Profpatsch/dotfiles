@@ -1,0 +1,28 @@
+import:
+  move: yes
+  languages: [ "en", "de", "jp" ]
+# none_rec_action: skip
+directory: ~/Music/sorted
+
+per_disc_numbering: yes
+paths:
+  default: $albumartist/$album%aunique{}/$track $title
+  singleton: Non-Album/$artist/$title
+  comp: Compilations/$album%aunique{}/$track $title
+
+convert:
+  format: ogg
+  copy_album_art: yes
+  album_art_maxwidth: 1000
+  never_convert_lossy_files: yes
+  formats:
+    ogg: ffmpeg -i $source -y -vn -acodec libvorbis -aq 5 $dest 
+
+alternatives:
+  converted:
+    directory: ~/Music/converted
+    formats: ogg mp3 aac
+    query: artist:"misty edwards" or artist:"tim hughes" 
+
+
+plugins: embedart fetchart ftintitle mbsync replaygain lyrics mbsubmit convert alternatives
