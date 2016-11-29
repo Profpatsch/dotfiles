@@ -9,7 +9,9 @@ that might be worth a look as well.
 
 They are managed with [GNU stow][stow]. To try out the config files for one 
 program, pull the repo, cd into it and type `stow <name of program>`. It will 
-inform you if there are existing config files you need to backup.
+inform you if there are existing config files you need to backup. Dotfiles with
+sensitive contents are in a different repo, managed with stow as well, meaning
+some parts of a working config might be missing here.
 
 I’m a native user of the [neo layout][neowiki], so some shortcuts could reflect 
 that. ([Neo homepage][neo] (German))  On another note, why are you still typing 
