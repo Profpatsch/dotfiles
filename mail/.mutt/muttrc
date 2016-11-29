@@ -14,7 +14,7 @@ set editor           = "vim +/^$"             # use vim and skip to first blank 
 # main options
 set mbox_type       = Maildir         # mailbox type
 set folder          = ~/.Mail         # mailbox location
-set spoolfile       = "+/Privat/INBOX"# GMail is default inbox
+set spoolfile       = "+/privat/INBOX"# GMail is default inbox
 source ~/.mutt/accounts/accounts.muttrc # file specifying which mailboxes to check
 set timeout         = 5               # idle time before scanning
 set sort_alias      = alias           # sort alias file by alias
@@ -97,9 +97,9 @@ hdr_order from: to: cc: date: subject:   # and in this order
 # account specific sources
 # Example:
 # folder-hook GMail/* source ~/.mutt/gmail.muttrc
-folder-hook /Privat/* source ~/.mutt/accounts/Privat.muttrc
-folder-hook /Mail/*   source ~/.mutt/accounts/Mail.muttrc
-folder-hook /Derpymail/* source ~/.mutt/accounts/Derpymail.muttrc
+folder-hook /privat/* source ~/.mutt/accounts/privat.muttrc
+folder-hook /mail/*   source ~/.mutt/accounts/mail.muttrc
+#folder-hook /Derpymail/* source ~/.mutt/accounts/Derpymail.muttrc
 
 # always sourced
 source $alias_file                        # required for functionality
