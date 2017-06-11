@@ -34,8 +34,39 @@
 #keystate_capslock = enable
 
 
+# hardware stuff
 
-# Map standby to the standby key (sigh).
+#Raise volume
+"pactl set-sink-volume $(pactl info | sed -n 's/Default Sink: \(.*\)$/\1/p') +2dB"
+    m:0x0 + c:123
+    XF86AudioRaiseVolume 
+
+#Lower volume
+"pactl set-sink-volume $(pactl info | sed -n 's/Default Sink: \(.*\)$/\1/p') -2dB"
+    m:0x0 + c:122
+    XF86AudioLowerVolume 
+
+# Mute/Unmute microphone
+"pactl set-source-mute alsa_input.pci-0000_00_1b.0.analog-stereo toggle"
+    XF86AudioMicMute
+
+# Change between headphones/speaker output
+#"pactl set-sink-port $(pactl info | sed -n 's/Default Sink: \(.*\)$/\1/p')
+
+# Increase screen brightness
+"backlight inc"
+    Mod4 + Delete
+    Xf86MonBrightnessUp
+
+# Decrease screen Brightness
+"backlight dec"
+    Mod4 + Insert
+    Xf86MonBrightnessDown
+
+
+# lockscreen
+
+# lock on standby
 # TODO: replace with xtrlock
 "alock"
    XF86Sleep
@@ -46,9 +77,11 @@
    XF86ScreenSaver
 
 # lockscreen, but no standby on lid close
-# TODO: This doesn’t work with recent systemd
-# "systemd-inhibit --what=handle-lid-switch alock"
-#    XF86WebCam
+"systemd-inhibit --what=handle-lid-switch alock"
+   XF86WebCam
+
+
+# helpers (should probably move to window manager config)
 
 # Kill window
 "xkill"
@@ -64,22 +97,28 @@
 
 # passmenu
 # TODO typing doesn’t work with special chars
-"passmenu --type"
+"passmenu"
     Mod4 + p
 
 # display infos
 "display-infos"
     Mod4 + a
 
-# Enable second screen right of this screen
-"xrandr --auto && xrandr --output VGA1 --right-of LVDS1 && set-background"
-    m:0x40 + c:167
-    Mod4 + XF86Forward 
 
-#screen autoconfig
-"xrandr --auto && set-background"
-    m:0x40 + c:166
-    Mod4 + XF86Back 
+# monitor settings
+
+# enable home setup 
+"monitor-home && set-background"
+    m:0x40 + c:117
+    Mod4 + Next 
+
+# enable only laptop monitor
+"monitor-laptop-only && set-background"
+    m:0x40 + c:112
+    Mod4 + Prior 
+
+
+# screenshots
 
 #Screenshot
 # TODO: Folder? Date?
@@ -98,40 +137,8 @@
 "import -window root $SCREENSHOT.jpg && imup $SCREENSHOT.jpg | xclip -selection clipboard"
    Control + Alt + Print
 
-#Raise volume
-"pactl set-sink-volume $(pactl info | sed -n 's/Default Sink: \(.*\)$/\1/p') +2dB"
-    m:0x0 + c:123
-    XF86AudioRaiseVolume 
 
-#Lower volume
-"pactl set-sink-volume $(pactl info | sed -n 's/Default Sink: \(.*\)$/\1/p') -2dB"
-    m:0x0 + c:122
-    XF86AudioLowerVolume 
-
-#mpd next
-"mpc next"
-    m:0x0 + c:171
-    XF86AudioNext 
-
-#mpd previous
-"mpc prev"
-    m:0x0 + c:173
-    XF86AudioPrev 
-
-#mpd single
-"mpc single"
-    m:0x0 + c:174
-    XF86AudioStop 
-
-#mpd play/pause
-"mpc toggle"
-    m:0x0 + c:121
-    XF86AudioMute 
-
-#mpd random toggle
-"mpc random"
-    m:0x0 + c:172
-    XF86AudioPlay 
+# input layouts
 
 #neo->de
 "setxkbmap -option altwin:swap_alt_win de"
@@ -141,9 +148,12 @@
 "setxkbmap -option altwin:swap_alt_win de neo"
    Mod4 + udiaeresis
 
+
+# misc
+
 # open openlab
 "doorctl open"
-   Mod4 + o
+   Mod4 + Shift + o
 
 #
 # End of xbindkeys configuration
