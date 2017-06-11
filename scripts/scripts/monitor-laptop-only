@@ -1,0 +1,11 @@
+#!/bin/sh
+# only laptop monitor active
+
+# disable every monitor except LVDS1
+for output in $(xrandr --query | grep "\(dis\)*connected" | cut -d' ' -f 1); do
+    if [ "$output" != LVDS1 ]; then
+        xrandr --output "$output" --off
+    fi
+done
+
+xrandr --output LVDS1 --auto
