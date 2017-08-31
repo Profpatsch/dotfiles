@@ -1,0 +1,52 @@
+#!/usr/bin/env nix-shell
+#!nix-shell -i runhaskell -p "haskellPackages.ghcWithPackages (hp: [ hp.protolude hp.turtle hp.async-pool ])" "sox.override { enableLame = true; }"
+{-# LANGUAGE LambdaCase, NoImplicitPrelude, OverloadedStrings #-}
+import Protolude hiding (FilePath, (<>), (%), fold)
+import Turtle
+import qualified Data.Text as Text
+import Data.Optional (Optional(Default))
+import qualified Control.Foldl as Fold
+import qualified Filesystem.Path.CurrentOS as FP
+import qualified Control.Concurrent.Async.Pool as Pool
+
+
+main = sh $ do
+  (inpath, outpath) <- options "simple converter script" $ (,)
+                <$> argPath "infolder" Default
+                <*> argPath "outfolder" Default
+  mktree outpath
+  infiles <- flip fold Fold.list $ do
+    f <- lstree inpath
+    guardM (not . isDirectory <$> stat f)
+    pure f
+  let action infile = do
+        let (Just outfile) = (outpath </>) <$> stripPrefix (inpath </> "") infile
+        mktree (FP.directory outfile)
+        soxiCheckType infile >>= \case
+          (Nothing) -> do
+            cp infile outfile
+            pure $ format ("moved " % fp % " to " %fp% "\n") infile outfile
+          (Just tp) -> do
+            convertToMp3 infile tp (FP.replaceExtension outfile "mp3")
+            pure $ format ("converted from " %fp% " to " %fp% "\n") infile (FP.replaceExtension outfile "mp3")
+  finished <- liftIO $ Pool.withTaskGroup 5 $ \tg ->
+    Pool.mapTasks tg $ map action infiles
+  select finished >>= printf s
+
+convertToMp3 :: MonadIO io => FilePath -> Text -> FilePath -> io ()
+convertToMp3 inf infType outf =
+  proc "sox" ["--type", infType, toT inf, "--compression", "128.2", toT outf] empty >>= \case
+    (ExitSuccess) -> pass
+    (ExitFailure _) -> printf ("warning: sox failed for file " %fp% "\n") inf
+
+toT path = case FP.toText path of
+  (Left e) -> panic $ format ("file path " %fp% " is corrupt! " %s) path e
+  (Right t) -> t
+
+soxiCheckType :: MonadIO io => FilePath -> io (Maybe Text)
+soxiCheckType path =
+  procStrictWithErr "soxi" ["-t", toT path] empty >>= pure . \case
+    (ExitFailure 1, _, _) -> Nothing
+    (ExitSuccess, "", _) -> panic "soxi returned empty output"
+    (ExitSuccess, out, _) -> Just $ Text.strip out
+    (ExitFailure c, _, e) -> panic $ format ("unknown soxi exit code ("%d%"): "%s) c e
