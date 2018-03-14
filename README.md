@@ -17,6 +17,17 @@ I’m a native user of the [neo layout][neowiki], so some shortcuts could reflec
 that. ([Neo homepage][neo] (German))  On another note, why are you still typing 
 querty anyway? It’s a big pile of shit, to put it nicely.
 
+## License
+
+Since I publish these files in the hope that they are useful, everything (unless
+otherwise noted) is under
+
+```
+Creative Commons CC0 1.0
+```
+
+Full license text: https://creativecommons.org/publicdomain/zero/1.0/legalcode
+
 [arch]: https://archlinux.org/
 [nixos]: https://nixos.org/
 [vuizvui]: https://github.com/openlab-aux/vuizvui/blob/master/machines/profpatsch/katara.nix
