@@ -34,12 +34,14 @@ esac
 case "$mime" in
   text/html)
     # open in browser
-    ${BROWSER:?chromium} "$FILE" ;;
+    ${BROWSER:-chromium} "$FILE" ;;
   text/*)
     # open with EDITOR envvar
     ${EDITOR:?envvar not set} "$FILE" ;;
   image/*)
     feh "$FILE" ;;
+  application/pdf)
+    zathura "$FILE" ;;
   application/pgp-keys)
     gpg --import --import-options show-only "$FILE" ;;
   *)
