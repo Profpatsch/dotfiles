@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+set -e
+
+# partially taken from
+# https://github.com/march-linux/mimi/blob/master/xdg-open
+
+FILE="$1"
+mime=
+
+# match on protocols
+# if you want to match files reliably, start with file://
+case "$FILE" in
+  http://*|https://*)
+    mime=text/html
+    ;;
+  magnet:*)
+    mime=application/x-bittorrent
+    ;;
+  irc:*)
+    mime=x-scheme-handler/irc
+    ;;
+  *)
+    # it’s a file
+
+    # strip possible protocol
+    FILE=${FILE#file://}
+    mime=$(file -E --brief --mime-type "$FILE") \
+      || (echo "$mime" 1>&2; exit 1)
+      # ^ echo the error message of file
+    ;;
+esac
+
+case "$mime" in
+  text/html)
+    # open in browser
+    ${BROWSER:?chromium} "$FILE" ;;
+  text/*)
+    # open with EDITOR envvar
+    ${EDITOR:?envvar not set} "$FILE" ;;
+  image/*)
+    feh "$FILE" ;;
+  application/pgp-keys)
+    gpg --import --import-options show-only "$FILE" ;;
+  *)
+    # open dmenu and ask for program to open with
+    $(dmenu_path | dmenu) "$FILE";;
+esac
