@@ -14,6 +14,9 @@ case "$FILE" in
   http://*|https://*)
     mime=text/html
     ;;
+  mailto:*)
+    mime=special/mailaddress
+    ;;
   magnet:*)
     mime=application/x-bittorrent
     ;;
@@ -32,6 +35,8 @@ case "$FILE" in
 esac
 
 case "$mime" in
+  special/mailaddress)
+    emacsclient -e "(url-mailto (url-generic-parse-url \"$FILE\"))" ;;
   text/html)
     # open in browser
     ${BROWSER:-chromium} "$FILE" ;;
