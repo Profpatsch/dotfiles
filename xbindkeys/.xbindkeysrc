@@ -68,13 +68,13 @@
 
 # lock on standby
 # TODO: replace with xtrlock
-"alock"
-   XF86Sleep
+"alock & systemctl suspend"
+   Mod4 + F1
 
 # Lock the screen via alock
 # TODO as above
 "alock"
-   XF86ScreenSaver
+   Mod4 + F8
 
 # lockscreen, but no standby on lid close
 "systemd-inhibit --what=handle-lid-switch alock"
@@ -136,6 +136,11 @@
 #Full screen with upload
 "import -window root $SCREENSHOT.jpg && imup $SCREENSHOT.jpg | xclip -selection clipboard"
    Control + Alt + Print
+
+# qr code
+
+"show-qr-code $(xclip -out -selection clipboard)"
+  Control + Mod4 + q
 
 
 # input layouts
