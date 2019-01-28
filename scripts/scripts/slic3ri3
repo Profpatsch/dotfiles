@@ -1,4 +1,26 @@
 #!/usr/bin/env nix-shell
 #!nix-shell -i sh -p slic3r
-slic3r --gcode-flavor reprap --bed-temperature 60 --start-gcode "G28" --temperature 230 --filament-diameter 1.69 --first-layer-bed-temperature 65 --first-layer-temperature 235 --bridge-speed 40 --external-perimeter-speed 40 --first-layer-speed 50% --infill-speed 60 --layer-height 0.3 --perimeter-speed 60 --perimeters 2 --fill-pattern honeycomb --travel-speed 100 --top-solid-infill-speed 40 --nozzle-diameter 0.4 --retract-length 4 --end-gcode "G28 X G28 Y M84" "$@"
-
+slic3r \
+  --gcode-flavor reprap \
+  --bed-temperature 60 \
+  --start-gcode "G28" \
+  --temperature 230 \
+  --filament-diameter 1.75 \
+  --extrusion-multiplier 1.15 \
+  --first-layer-bed-temperature 65 \
+  --first-layer-temperature 235 \
+  --bridge-speed 40 \
+  --external-perimeter-speed 40 \
+  --first-layer-speed 50% \
+  --infill-speed 40 \
+  --top-solid-infill-speed 25 \
+  --solid-infill-every-layers 5 \
+  --layer-height 0.3 \
+  --perimeter-speed 60 \
+  --perimeters 3 \
+  --fill-pattern honeycomb \
+  --travel-speed 100 \
+  --nozzle-diameter 0.4 \
+  --retract-length 4 \
+  --end-gcode "G28 X G28 Y M104 S0 M84" \
+  "$@"
