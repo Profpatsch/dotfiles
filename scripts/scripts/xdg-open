@@ -34,15 +34,21 @@ case "$FILE" in
     ;;
 esac
 
+browser="${BROWSER:-chromium}"
+
 case "$mime" in
   special/mailaddress)
-    emacsclient -e "(url-mailto (url-generic-parse-url \"$FILE\"))" ;;
+    emacsclient \
+      --create-frame \
+      --eval "(url-mailto (url-generic-parse-url \"$FILE\"))" ;;
   text/html)
     # open in browser
-    ${BROWSER:-chromium} "$FILE" ;;
+    ${browser} "$FILE" ;;
   text/*)
     # open with EDITOR envvar
     ${EDITOR:?envvar not set} "$FILE" ;;
+  image/gif)
+    ${browser} "$FILE" ;; 
   image/*)
     feh "$FILE" ;;
   application/pdf)
