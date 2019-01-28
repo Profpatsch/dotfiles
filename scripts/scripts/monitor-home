@@ -8,4 +8,4 @@ xrandr --addmode DP3 1920x1080
 xrandr \
     --output DP3   --mode 1920x1080 --primary     --pos 1150x620 \
     --output DP2   --mode 1920x1080 --rotate left --pos 0x0 \
-    --output LVDS1 --mode 1600x900                --pos 600x1920
+    --output LVDS1 --mode 1600x900                --pos 3200x1600
