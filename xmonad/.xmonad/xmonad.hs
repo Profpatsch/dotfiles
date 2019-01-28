@@ -31,15 +31,15 @@ myConfig = conf { modMask = mod
            `additionalKeysP` (
              [ -- fullscreen
                ("M-e", sendMessage $ Toggle NBFULL)
-                 -- i3-like keybindings, because I’m spoiled
+               -- i3-like keybindings, because I’m spoiled
              , ("M-S-x", kill)
-                 -- exchange M-Ret and M-S-Ret
+               -- exchange M-Ret and M-S-Ret
              , ("M-<Return>", spawn $ term Normal)
              , ("C-M-<Return>", spawn $ term Presentation)
              , ("M-S-<Return>", windows W.swapMaster)
-             -- toogle toolbar(s)
+               -- toogle toolbar(s)
              , ("M-b", sendMessage ToggleStruts)
-             -- open simple exec dmenu
+               -- open simple exec dmenu
              ]
              ++
              -- something something workspaces
@@ -52,7 +52,7 @@ myConfig = conf { modMask = mod
              -- mod-{w,e,r} %! Switch to physical/Xinerama screens 1, 2, or 3
              -- mod-shift-{w,e,r} %! Move client to screen 1, 2, or 3
              [ ("M-v", focusToScreen 0)
-             , ("M-l", focusToScreen 1)
+             -- , ("M-l", focusToScreen 1)
              , ("M-c", focusToScreen 2)
              , ("M-S-v", windowToScreen 0)
              , ("M-S-l", windowToScreen 1)
