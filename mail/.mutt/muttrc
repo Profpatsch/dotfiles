@@ -88,6 +88,8 @@ set crypt_replysignencrypted = yes
 set crypt_verify_sig = yes
 # Decrypt inline PGP
 set pgp_auto_decode = yes
+# ignore S/MIME (takes too long to invoke)
+set crypt_autosmime = no
 
 # headers to show
 ignore *                                 # ignore all headers
@@ -111,9 +113,7 @@ source ~/.mutt/mailinglists.muttrc        # subscribed and known mailinglists
 # macros
 macro index \Cr "<tag-prefix><clear-flag>N" "mark tagged messages as read"
 macro index B   "<limit>~b "                "search message bodies"
+macro index \;   "<tag-prefix>" "tag prefix"
 
 # save a decoded copy in ~
 macro index P   "<pipe-message>cat > ~/"    "save message as"
-
-# quick-sync ~/Mail immediately with offlineimap
-macro index Z   "<shell-escape>offlineimap -q -o<enter>" "sync IMAP"
