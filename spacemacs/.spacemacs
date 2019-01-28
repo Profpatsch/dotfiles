@@ -46,35 +46,36 @@ values."
                       auto-completion-enable-snippets-in-popup t
                       auto-completion-private-snippets-directory "~/.config/spacemacs/scompany-backends-LaTeX-modenippets")
      ; markup
-     html
-     org
-     markdown
+     ;; html
+     (org :variables
+          org-enable-reveal-js-support t)
+     ;; markdown
      ; languages
+     rust
      emacs-lisp
      haskell
-     ;; purescript
+     ;; ocaml
+     ;; elm
      go
      ;; javascript
-     purescript
-     shell-scripts
+     ;; purescript
      nixos
-     graphviz
+     ;; graphviz
      ;scala
+     ;; rust
      ; emacs
      syntax-checking
-     latex
+     ;; latex
      themes-megapack
      ; misc
      git
-     ;rust
-
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
    dotspacemacs-additional-packages
-     '(graphviz-dot-mode paredit nix-sandbox magit-annex magit-gh-pulls)
+     '(graphviz-dot-mode nix-sandbox magit-annex dhall-mode)
    ;; A list of packhttps://shop.spreadshirt.com/spacemacs-shop/ages that cannot be updated.
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.
@@ -82,6 +83,9 @@ values."
      smartparens
       ; sucks, can be disabled
      company-auctex
+     ; this acts like ESC in insert mode when you hit fd in .1 sec
+     ; kind of distracting for my typing speed & working with file handles. :P
+     evil-escape
    )
    ;; Defines the behaviour of Spacemacs when installing packages.
    ;; Possible values are `used-only', `used-but-keep-unused' and `all'.
@@ -150,18 +154,21 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(solarized-light
-                         alect-light
-                         graham
+   dotspacemacs-themes '(railscasts
+                         solarized-light
                          birds-of-paradise-plus
                          junio
+                         molokai
+                         sanityinc-tomorrow-blue
+                         graham
+                         ;; stopped at molokai
                          )
    ;; If non nil the cursor color matches the state color.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
 
-   dotspacemacs-default-font '("Hasklig" :size 15 :weight normal :width normal :powerline-scale 1.1)
+   dotspacemacs-default-font '("Hasklig" :size 12.5 :weight normal :width normal :powerline-scale 1.1)
    ;; dotspacemacs-default-font '(("Fira Code" :size 15 :weight normal :width normal :powerline-scale 1.1)
    ;;                             ("Fira Code Symbol" :size 15))
 
@@ -321,7 +328,8 @@ values."
    ;; delete only whitespace for changed lines or `nil' to disable cleanup.
    ;; (default nil)
    dotspacemacs-whitespace-cleanup nil
-   ))
+   )
+  )
 
 (defun dotspacemacs/user-init ()
   "Initialization function for user code.
@@ -331,13 +339,15 @@ executes.
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
   )
-(defun dotspacemacs/user-config ()
+
+ (defun dotspacemacs/user-config ()
   "Configuration function.
  This function is called at the very end of Spacemacs initialization after
 Layers configuration."
 
   ;; first things first
   (setq lexical-binding t)
+  (add-to-list 'load-path "/home/philip/kot/emacs/include")
 
   ;;; scroll one line at a time (less "jumpy" than defaults)
   (setq mouse-wheel-scroll-amount '(2 ((shift) . 1))) ;; two lines at a time
@@ -347,6 +357,23 @@ Layers configuration."
   (setq x-super-keysym 'meta)
   ;;;; Save on focus lost in X11
   (add-hook 'focus-out-hook (lambda () (save-some-buffers t)))
+
+  ;;; copy (kill-ring-save) & paste (yank)
+  (global-set-key (kbd "C-<f12>") 'clipboard-kill-ring-save)
+  (global-set-key (kbd "C-<f11>") 'clipboard-yank)
+
+  ;;; Hitting Enter in normal mode should insert a blank line
+  ;;; and move to that line
+  (defun my-insert-line-and-move-down ()
+    (interactive)
+    (spacemacs/evil-insert-line-below 1)
+    (evil-next-line))
+  (define-key evil-normal-state-map (kbd "RET") 'my-insert-line-and-move-down)
+
+  ;; text-mode
+
+  (add-hook 'text-mode-hook
+            (lambda () (set-fill-column 70)))
 
   ;; org-mode
   (add-hook 'org-mode-hook 'auto-fill-mode)
@@ -359,7 +386,11 @@ Layers configuration."
   ;; nxml-mode
   (add-hook 'nxml-mode-hook 'auto-fill-mode)
 
-  ;; comany-mode
+  ;; yaml files
+  (add-to-list 'auto-mode-alist '("\\.yaml\\'" . conf-mode))
+  (add-to-list 'auto-mode-alist '("\\.yml\\'" . conf-mode))
+
+  ;; company-mode
   ; delete with C-w, even when completion window is open
   ;(define-key company-active-map (kbd "C-w") 'evil-delete-backward-word) TODO: company-active-map not defined?
 
@@ -373,10 +404,26 @@ Layers configuration."
     (not (string= lang "dot")))
   (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
 
+  ;; bazel
+
+  (define-derived-mode bazel-mode python-mode "Bazel"
+    "Major mode for editing Bazel files."
+    :group 'bazel
+
+    (setq-local comment-use-syntax t)
+    (setq-local comment-start "#")
+    (setq-local comment-end "")
+    (setq-local indent-tabs-mode nil))
+
+  (add-to-list 'auto-mode-alist '("\\.bazel\\'" . bazel-mode))
+  (add-to-list 'auto-mode-alist '("\\.bzl\\'" . bazel-mode))
+  (add-to-list 'auto-mode-alist '("WORKSPACE\\'" . bazel-mode))
+  (add-to-list 'auto-mode-alist '("BUILD\\'" . bazel-mode))
+
   ;; maven
   (define-minor-mode maven-mode "")
   (add-hook 'nxml-mode-hook 'maven-mode)
-  (add-hook 'maven-mode-hook (lambda () (yas-activate-extra-mode 'maven-mode)))
+  ;; (add-hook 'maven-mode-hook (lambda () (yas-activate-extra-mode 'maven-mode)))
 
   (setq flycheck-command-wrapper-function
           (lambda (command) (apply 'nix-shell-command (nix-current-sandbox) command))
@@ -514,20 +561,96 @@ codepoints starting from codepoint-start."
   ;; (add-hook 'haskell-mode-hook 'my-ghc-mod-env)
   ;; (add-hook 'haskell-mode-hook 'my-stack-env)
 
+  ; TODO
+  ;; (defun mwheel-filter-click-events ()
+  ;;   "Discard `mouse-wheel-click-event' while scrolling the mouse."
+  ;;   (if (cl-some (lambda (ev) (event-basic-type last-input-event) ev)
+  ;;                `(mouse-wheel-click-event
+  ;;                  ,(intern "mouse-6")
+  ;;                  ,(intern "mouse-7")))
+  ;;       (setq this-command 'ignore)))
 
 
   ;; nix-mode
+  (require 'nix-prefetch)
   (defun my-insert-random-sha256 ()
     (interactive)
     (-> (concat "echo '" (int-to-string (random)) "' | sha256sum | cut -d' ' -f1")
         (shell-command-to-string)
         (s-trim-right)
         (insert)))
+  (defun my-nix-yank-prefetch-url-unpack ()
+    (interactive)
+    (nix-prefetch-yank-hash 'nix-prefetch-url-unpack))
   (spacemacs/set-leader-keys-for-major-mode 'nix-mode
-    "s" 'my-insert-random-sha256)
+    "s" 'my-insert-random-sha256
+    "U" 'my-nix-yank-prefetch-url-unpack)
 
+  ;; mu4e
+  (require 'mu4e)
+  (setq mail-user-agent 'mu4e-user-agent
+        mu4e-confirm-quit nil
+
+        mu4e-context-policy 'pick-first
+        mu4e-compose-context-policy nil
+        mu4e-compose-complete-only-after "2018-01-01"
+
+        ; TODO https://github.com/djcb/mu/issues/1250
+        mu4e-view-html-plaintext-ratio-heuristic most-positive-fixnum
+        mu4e-view-show-addresses t
+
+        mu4e-sent-folder "/Sent"
+        mu4e-drafts-folder "/Drafts"
+        mu4e-refile-folder "/Archive"
+        mu4e-compose-signature "Written with Emacs (mu4e) on NixOS.\n\
+Q: Why is this email five sentences or less?\n\
+A: http://five.sentenc.es/\n\
+May take up to five days to read your message. If it’s urgent, call me."
+
+        mu4e-update-interval 300
+
+        auth-sources '("~/dotfiles-private/mail/authinfo")
+        smtpmail-auth-supported '(login)
+
+        message-send-mail-function 'smtpmail-send-it
+        smtpmail-smtp-server "smtprelaypool.ispgateway.de"
+        smtpmail-smtp-service 465
+        smtpmail-stream-type 'ssl
+
+        ;; TODO add a shortcut for mml-secure-message-encrypt-pgpmime
+        mml-secure-openpgp-encrypt-to-self t
+
+        ;; fix for mbsync UID problem (nman isync mbsync)
+        mu4e-change-filenames-when-moving t
+
+        mu4e-bookmarks
+        `(("flag:unread AND NOT flag:trashed AND NOT maildir:/Archive" "Unread messages" 117)
+         ("date:today..now" "Today's messages (all)" 116)
+         ("date:7d..now AND not flag:trashed AND NOT (maildir:/Archive OR maildir:/Sent)" "Last 7 days (inbox)" 119)
+         ("mime:image/*" "Messages with images" 112))
+
+        mu4e-user-mail-address-list '("mail@profpatsch.de")
+
+        mu4e-contexts
+        `(,(make-mu4e-context
+            :name "Mail"
+            :enter-func (lambda () (mu4e-message "Entering Mail context"))
+            :leave-func (lambda () (mu4e-message "Leaving Mail context"))
+            ;;
+            :match-func (lambda (msg)
+                          (when msg
+                            (mu4e-message-contact-field-matches
+                             msg
+                             :to "mail@profpatsch.de")))
+            :vars '((user-mail-address  . "mail@profpatsch.de")
+                    (user-full-name     . "Profpatsch")
+                    (mu4e-maildir       . "~/.Mail/mail")
+                    (smtpmail-smtp-user . "mail@profpatsch.de")
+                    )
+            )
+          )
+        )
 )
-
 
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -546,25 +669,30 @@ codepoints starting from codepoint-start."
      (output-dvi "xdvi")
      (output-pdf "Zathura")
      (output-html "xdg-open"))))
- '(ahs-case-fold-search nil t)
- '(ahs-default-range (quote ahs-range-whole-buffer) t)
- '(ahs-idle-interval 0.25 t)
+ '(ahs-case-fold-search nil)
+ '(ahs-default-range (quote ahs-range-whole-buffer))
+ '(ahs-idle-interval 0.25)
  '(ahs-idle-timer 0 t)
- '(ahs-inhibit-face-list nil t)
+ '(ahs-inhibit-face-list nil)
  '(ansi-color-faces-vector
    [default default default italic underline success warning error])
- '(ansi-color-names-vector
-   ["#eee8d5" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#839496"])
  '(ansi-term-color-vector
    [unspecified "#1F1611" "#660000" "#144212" "#EFC232" "#5798AE" "#BE73FD" "#93C1BC" "#E6E1DC"] t)
+ '(background-color "#202020")
+ '(background-mode dark)
+ '(beacon-color "#ff9da4")
  '(compilation-message-face (quote default))
+ '(create-lockfiles nil)
  '(cua-global-mark-cursor-color nil)
  '(cua-normal-cursor-color nil)
  '(cua-overwrite-cursor-color "")
  '(cua-read-only-cursor-color "#859900")
+ '(cursor-color "#cccccc")
+ '(custom-enabled-themes (quote (graham)))
  '(custom-safe-themes
    (quote
-    ("58c6711a3b568437bab07a30385d34aacf64156cc5137ea20e799984f4227265" default)))
+    ("5a861da19d55874c8f89b3484ab355999aff56a4e78b42507c97f71db23e3b0a" "376f60baab06072d3857de6b603c68408eec171ab286c6e5ba650d1f388265dc" "281cb095f102b3c24071224c7ffa6efdacb6992de407c3a46486c62eff8fe9b3" "09a027de3abc66f41ff2c9f1e0e16d02c68a7d9fd9c2b182075f07ad63330475" "2b437e27d5ee018838a9c175211d4cbecca172e3aaae679971c9dc0afc9061a0" "f8ea94ca9b535a506129213f7143efbc195f5077ec49cc23b7aa0da49c555f0c" "e0d42a58c84161a0744ceab595370cbe290949968ab62273aed6212df0ea94b4" "58c6711a3b568437bab07a30385d34aacf64156cc5137ea20e799984f4227265" default)))
+ '(dhall-type-check-inactivity-timeout 100000000000000000)
  '(diary-entry-marker (quote font-lock-variable-name-face))
  '(emms-mode-line-icon-image-cache
    (quote
@@ -590,8 +718,11 @@ static char *note[] = {
  '(evil-want-Y-yank-to-eol nil)
  '(fci-rule-character-color "#452E2E")
  '(fci-rule-color "#eee8d5" t)
+ '(flycheck-color-mode-line-face-to-color (quote mode-line-buffer-id))
  '(flycheck-pos-tip-mode t)
  '(flycheck-pos-tip-timeout 0)
+ '(foreground-color "#cccccc")
+ '(frame-background-mode (quote dark))
  '(gnus-logo-colors (quote ("#0d7b72" "#adadad")) t)
  '(gnus-mode-line-image-cache
    (quote
@@ -641,7 +772,12 @@ static char *gnus-pointer[] = {
  '(hl-fg-colors
    (quote
     ("#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36")))
+ '(hl-paren-colors (quote ("#2aa198" "#b58900" "#268bd2" "#6c71c4" "#859900")))
+ '(magit-commit-arguments nil)
  '(magit-diff-use-overlays nil)
+ '(magit-dispatch-arguments nil)
+ '(magit-display-buffer-function (quote magit-display-buffer-same-window-except-diff-v1))
+ '(magit-revision-show-gravatars nil)
  '(nrepl-message-colors
    (quote
     ("#dc322f" "#cb4b16" "#b58900" "#546E00" "#B4C342" "#00629D" "#2aa198" "#d33682" "#6c71c4")))
@@ -649,7 +785,7 @@ static char *gnus-pointer[] = {
  '(org-clock-clocktable-default-properties (quote (:maxlevel 4 :scope file)))
  '(org-confirm-babel-evaluate nil)
  '(org-html-html5-fancy t)
- '(org-html-indent t)
+ '(org-html-indent nil)
  '(org-structure-template-alist
    (quote
     (("n" "#+NAME: ")
@@ -687,11 +823,12 @@ static char *gnus-pointer[] = {
      ("I" "#+INCLUDE: %file ?"))))
  '(package-selected-packages
    (quote
-    (winum madhat2r-theme fuzzy go-guru go-eldoc company-go go-mode psci purescript-mode psc-ide spinner autothemer bind-map haml-mode selectric-mode yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode cython-mode company-anaconda anaconda-mode pythonic csv-mode org highlight skewer-mode json-snatcher json-reformat dash-functional tern auctex-latexmk yaml-mode wgrep smex ivy-hydra counsel-projectile counsel swiper ivy insert-shebang hide-comnt undo-tree company-auctex auctex pug-mode f org-projectile org-download intero helm-hoogle git-link evil-ediff dumb-jump request simple-httpd package-build zenburn-theme ws-butler window-numbering web-mode ujelly-theme tao-theme spacemacs-theme spaceline smooth-scrolling shm planet-theme persp-mode page-break-lines orgit organic-green-theme org-repo-todo org-pomodoro alert org-plus-contrib open-junk-file omtose-phellack-theme nix-sandbox neotree naquadah-theme monokai-theme moe-theme material-theme markdown-toc markdown-mode majapahit-theme magit-gitflow leuven-theme less-css-mode js2-refactor js2-mode indent-guide hl-todo hindent help-fns+ helm-themes helm-projectile helm-make projectile helm-descbinds helm-c-yasnippet helm-ag haskell-snippets gruvbox-theme graphviz-dot-mode grandshell-theme gotham-theme google-translate git-messenger expand-region exec-path-from-shell evil-surround evil-search-highlight-persist evil-mc evil-matchit evil-magit evil-iedit-state iedit evil-exchange emmet-mode dracula-theme darktooth-theme company-quickhelp color-theme-sanityinc-tomorrow buffer-move bracketed-paste badwolf-theme auto-yasnippet yasnippet auto-compile apropospriate-theme anti-zenburn-theme ample-theme ace-link ace-jump-helm-line auto-complete avy ghc anzu smartparens haskell-mode flycheck company helm helm-core magit magit-popup git-commit with-editor gh marshal pcache ht hydra s use-package which-key evil dash zonokai-theme zen-and-art-theme web-beautify volatile-highlights vi-tilde-fringe uuidgen underwater-theme twilight-theme twilight-bright-theme twilight-anti-bright-theme tronesque-theme toxi-theme toc-org tangotango-theme tango-plus-theme tango-2-theme tagedit sunny-day-theme sublime-themes subatomic256-theme subatomic-theme stekene-theme spacegray-theme soothe-theme solarized-theme soft-stone-theme soft-morning-theme soft-charcoal-theme smyx-theme smeargle slim-mode seti-theme scss-mode sass-mode reverse-theme restart-emacs rainbow-delimiters railscasts-theme quelpa purple-haze-theme professional-theme powerline popwin popup pkg-info phoenix-dark-pink-theme phoenix-dark-mono-theme pcre2el pastels-on-dark-theme paredit paradox packed org-present org-bullets oldlace-theme occidental-theme obsidian-theme noctilux-theme nix-mode niflheim-theme mustang-theme multiple-cursors move-text monochrome-theme molokai-theme mmm-mode minimal-theme magit-gh-pulls magit-annex macrostep lush-theme lorem-ipsum logito log4e livid-mode linum-relative link-hint light-soap-theme json-mode js-doc jbeans-theme jazz-theme jade-mode ir-black-theme inkpot-theme info+ ido-vertical-mode hungry-delete htmlize hlint-refactor highlight-parentheses highlight-numbers highlight-indentation heroku-theme hemisu-theme helm-swoop helm-nixos-options helm-mode-manager helm-gitignore helm-flx helm-css-scss helm-company hc-zenburn-theme gruber-darker-theme goto-chg golden-ratio gnuplot gntp gitconfig-mode gitattributes-mode git-timemachine gh-md gandalf-theme flycheck-pos-tip flycheck-haskell flx-ido flatui-theme flatland-theme fish-mode firebelly-theme fill-column-indicator farmhouse-theme fancy-battery eyebrowse evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-numbers evil-nerd-commenter evil-lisp-state evil-indent-plus evil-escape evil-args evil-anzu eval-sexp-fu espresso-theme elisp-slime-nav django-theme diminish define-word darkokai-theme darkmine-theme darkburn-theme dakrone-theme cyberpunk-theme company-web company-tern company-statistics company-shell company-nixos-options company-ghci company-ghc company-cabal column-enforce-mode colorsarenice-theme color-theme-sanityinc-solarized coffee-mode cmm-mode clues-theme clean-aindent-mode cherry-blossom-theme busybee-theme bubbleberry-theme birds-of-paradise-plus-theme bind-key auto-highlight-symbol async ample-zen-theme alect-themes aggressive-indent afternoon-theme adaptive-wrap ace-window ac-ispell)))
+    (parent-mode flx reformatter pos-tip nixos-options utop tuareg caml ocp-indent merlin github-search github-clone github-browse-file gist white-sand-theme rebecca-theme org-mime exotica-theme gitignore-mode ghub let-alist epl dhall-mode org-category-capture helm-notmuch notmuch ox-reveal epresent toml-mode racer flycheck-rust seq cargo rust-mode flycheck-elm elm-mode winum madhat2r-theme fuzzy go-guru go-eldoc company-go go-mode psci purescript-mode psc-ide spinner autothemer bind-map haml-mode selectric-mode yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode cython-mode company-anaconda anaconda-mode pythonic csv-mode org highlight skewer-mode json-snatcher json-reformat dash-functional tern auctex-latexmk yaml-mode wgrep smex ivy-hydra counsel-projectile counsel swiper ivy insert-shebang hide-comnt undo-tree company-auctex auctex pug-mode f org-projectile org-download intero helm-hoogle git-link evil-ediff dumb-jump request simple-httpd package-build zenburn-theme ws-butler window-numbering web-mode ujelly-theme tao-theme spacemacs-theme spaceline smooth-scrolling shm planet-theme persp-mode page-break-lines orgit organic-green-theme org-repo-todo org-pomodoro alert org-plus-contrib open-junk-file omtose-phellack-theme nix-sandbox neotree naquadah-theme monokai-theme moe-theme material-theme markdown-toc markdown-mode majapahit-theme magit-gitflow leuven-theme less-css-mode js2-refactor js2-mode indent-guide hl-todo hindent help-fns+ helm-themes helm-projectile helm-make projectile helm-descbinds helm-c-yasnippet helm-ag haskell-snippets gruvbox-theme graphviz-dot-mode grandshell-theme gotham-theme google-translate git-messenger expand-region exec-path-from-shell evil-surround evil-search-highlight-persist evil-mc evil-matchit evil-magit evil-iedit-state iedit evil-exchange emmet-mode dracula-theme darktooth-theme company-quickhelp color-theme-sanityinc-tomorrow buffer-move bracketed-paste badwolf-theme auto-yasnippet yasnippet auto-compile apropospriate-theme anti-zenburn-theme ample-theme ace-link ace-jump-helm-line auto-complete avy ghc anzu smartparens haskell-mode flycheck company helm helm-core magit magit-popup git-commit with-editor gh marshal pcache ht hydra s use-package which-key evil dash zonokai-theme zen-and-art-theme web-beautify volatile-highlights vi-tilde-fringe uuidgen underwater-theme twilight-theme twilight-bright-theme twilight-anti-bright-theme tronesque-theme toxi-theme toc-org tangotango-theme tango-plus-theme tango-2-theme tagedit sunny-day-theme sublime-themes subatomic256-theme subatomic-theme stekene-theme spacegray-theme soothe-theme solarized-theme soft-stone-theme soft-morning-theme soft-charcoal-theme smyx-theme smeargle slim-mode seti-theme scss-mode sass-mode reverse-theme restart-emacs rainbow-delimiters railscasts-theme quelpa purple-haze-theme professional-theme powerline popwin popup pkg-info phoenix-dark-pink-theme phoenix-dark-mono-theme pcre2el pastels-on-dark-theme paredit paradox packed org-present org-bullets oldlace-theme occidental-theme obsidian-theme noctilux-theme nix-mode niflheim-theme mustang-theme multiple-cursors move-text monochrome-theme molokai-theme mmm-mode minimal-theme magit-gh-pulls magit-annex macrostep lush-theme lorem-ipsum logito log4e livid-mode linum-relative link-hint light-soap-theme json-mode js-doc jbeans-theme jazz-theme jade-mode ir-black-theme inkpot-theme info+ ido-vertical-mode hungry-delete htmlize hlint-refactor highlight-parentheses highlight-numbers highlight-indentation heroku-theme hemisu-theme helm-swoop helm-nixos-options helm-mode-manager helm-gitignore helm-flx helm-css-scss helm-company hc-zenburn-theme gruber-darker-theme goto-chg golden-ratio gnuplot gntp gitconfig-mode gitattributes-mode git-timemachine gh-md gandalf-theme flycheck-pos-tip flycheck-haskell flx-ido flatui-theme flatland-theme fish-mode firebelly-theme fill-column-indicator farmhouse-theme fancy-battery eyebrowse evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-numbers evil-nerd-commenter evil-lisp-state evil-indent-plus evil-escape evil-args evil-anzu eval-sexp-fu espresso-theme elisp-slime-nav django-theme diminish define-word darkokai-theme darkmine-theme darkburn-theme dakrone-theme cyberpunk-theme company-web company-tern company-statistics company-shell company-nixos-options company-ghci company-ghc company-cabal column-enforce-mode colorsarenice-theme color-theme-sanityinc-solarized coffee-mode cmm-mode clues-theme clean-aindent-mode cherry-blossom-theme busybee-theme bubbleberry-theme birds-of-paradise-plus-theme bind-key auto-highlight-symbol async ample-zen-theme alect-themes aggressive-indent afternoon-theme adaptive-wrap ace-window ac-ispell)))
  '(paradox-github-token t)
  '(pos-tip-background-color "#073642")
  '(pos-tip-foreground-color "#93a1a1")
  '(pos-tip-use-relative-coordinates t)
+ '(projectile-enable-caching t)
  '(psc-ide-add-import-on-completion t t)
  '(psc-ide-rebuild-on-save nil t)
  '(rainbow-identifiers-cie-l*a*b*-lightness 25)
@@ -712,6 +849,7 @@ static char *gnus-pointer[] = {
  '(term-default-fg-color "#839496")
  '(tooltip-hide-delay 0)
  '(vc-annotate-background nil)
+ '(vc-annotate-background-mode nil)
  '(vc-annotate-color-map
    (quote
     ((20 . "#dc322f")
@@ -746,4 +884,4 @@ static char *gnus-pointer[] = {
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(default ((t (:background "#232323" :foreground "#E6E1DC")))))

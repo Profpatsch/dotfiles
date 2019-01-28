@@ -2,7 +2,7 @@
 #!nix-shell -i sh -p qrencode gtkdialog
 
 TMP=$(mktemp)
-qrencode -s 8 -o $TMP -t PNG ${1}
+qrencode -s 8 -o $TMP -t PNG "${1}"
 
 export DIALOG='
 <vbox>
