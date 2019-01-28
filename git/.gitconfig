@@ -1,8 +1,3 @@
-[user]
-	name = Profpatsch
-	email = mail@profpatsch.de
-	signingkey = 0x22247CDF
-
 [core]
 	autocrlf = input
 	safecrlf = true
@@ -11,6 +6,7 @@
 
 [merge]
 	tool = kdiff3
+	confictStyle = diff3
 
 [mergetool "splice"]
 	cmd = "gvim -f $BASE $LOCAL $REMOTE $MERGED -c 'SpliceInit'"
@@ -54,3 +50,5 @@
 	default = simple
 [pull]
 	rebase = true
+[github]
+	user = Profpatsch
