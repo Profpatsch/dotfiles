@@ -44,6 +44,8 @@ case "$mime" in
   text/html)
     # open in browser
     ${browser} "$FILE" ;;
+  text/xml)
+    ${browser} "$FILE" ;;
   text/*)
     # open with EDITOR envvar
     ${EDITOR:?envvar not set} "$FILE" ;;
