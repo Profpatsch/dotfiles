@@ -75,7 +75,7 @@ values."
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
    dotspacemacs-additional-packages
-     '(graphviz-dot-mode nix-sandbox magit-annex dhall-mode)
+     '(graphviz-dot-mode nix-sandbox magit-annex dhall-mode direnv)
    ;; A list of packhttps://shop.spreadshirt.com/spacemacs-shop/ages that cannot be updated.
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.
@@ -369,6 +369,9 @@ Layers configuration."
     (spacemacs/evil-insert-line-below 1)
     (evil-next-line))
   (define-key evil-normal-state-map (kbd "RET") 'my-insert-line-and-move-down)
+  ;;; direnv integration
+  (add-hook 'prog-mode-hook
+            (lambda () (direnv-mode)))
 
   ;; text-mode
 
