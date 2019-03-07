@@ -362,13 +362,6 @@ Layers configuration."
   (global-set-key (kbd "C-<f12>") 'clipboard-kill-ring-save)
   (global-set-key (kbd "C-<f11>") 'clipboard-yank)
 
-  ;;; Hitting Enter in normal mode should insert a blank line
-  ;;; and move to that line
-  (defun my-insert-line-and-move-down ()
-    (interactive)
-    (spacemacs/evil-insert-line-below 1)
-    (evil-next-line))
-  (define-key evil-normal-state-map (kbd "RET") 'my-insert-line-and-move-down)
   ;;; direnv integration
   (add-hook 'prog-mode-hook
             (lambda () (direnv-mode)))
