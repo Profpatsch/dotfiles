@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# TODO: --dry-run to display what would be opened and why
+
 set -e
 
 # partially taken from
@@ -50,13 +52,17 @@ case "$mime" in
     # open with EDITOR envvar
     ${EDITOR:?envvar not set} "$FILE" ;;
   image/gif)
-    ${browser} "$FILE" ;; 
+    ${browser} "$FILE" ;;
+  image/svg+xml)
+    inkscape "$FILE" ;;
   image/*)
     feh "$FILE" ;;
   application/pdf)
     zathura "$FILE" ;;
   application/pgp-keys)
     gpg --import --import-options show-only "$FILE" ;;
+  inode/directory)
+    lilyterm --execute ranger "$FILE" ;;
   *)
     # open dmenu and ask for program to open with
     $(dmenu_path | dmenu) "$FILE";;
