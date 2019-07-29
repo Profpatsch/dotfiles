@@ -28,7 +28,7 @@ set -euo pipefail
 
 SCRIPT="$1"
 shift
-ARGS="$@"
+ARGS=( "$@" )
 
 CACHE_DIR="$(xdg-cache-home)/nix-cache-binary"
 CACHE_DB="$CACHE_DIR/cdb"
@@ -36,14 +36,14 @@ CACHE_DB_TMP="$CACHE_DIR/cdb.tmp"
 mkdir -p "$CACHE_DIR"
 
 # second line
-nixpkgs_package_expr=$(cat "$SCRIPT" | head -n2 | tail -n1 | sed 's/^#!//')
+nixpkgs_package_expr=$(sed -n -e '2s/^#!//p' "$SCRIPT")
 # third line
-binary_path=$(cat "$SCRIPT" | head -n3 | tail -n1 | sed 's/^#!//')
+binary_path=$(sed -n -e '3s/^#!//p' "$SCRIPT")
 
 mkdir -p $HOME/.cache/nix-cache-binary
 
 function check_store_path {
-    [ -e "$1" ] && printf "%s" "$1" || return 100
+    [ -e "$1" ] && printf '%s' "$1" || return 100
 }
 
 function cdb_get {
@@ -62,12 +62,12 @@ function cdb_get {
 }
 
 function byte_length {
-    printf "%s" "$1" | wc --bytes
+    printf '%s' "$1" | wc --bytes
 }
 
 # always inserts from the top, so older entries are shadowed
 function cdb_insert {
-    ( printf "+%i,%i:%s->%s\n" $(byte_length "$1") $(byte_length "$2") "$1" "$2";
+    ( printf '+%i,%i:%s->%s\n' $(byte_length "$1") $(byte_length "$2") "$1" "$2";
       [ -f "$CACHE_DB" ] && <"$CACHE_DB" cdbdump || printf "\n";
     ) | cdbmake "$CACHE_DB" "$CACHE_DB_TMP"
 }
@@ -88,13 +88,10 @@ case $ret in
 esac
 
 TMP_SCRIPT="$(mktemp -d)/script"
-function cleanup {
-  rm "$TMP_SCRIPT"
-}
-trap cleanup EXIT
+trap 'rm "$TMP_SCRIPT"' EXIT
 
 # Remove our shebang and execute like with binary_path shebang
-printf "#!%s\n" "$path/$binary_path" > "$TMP_SCRIPT"
-<"$SCRIPT" tail -n+4 >> "$TMP_SCRIPT"
+printf '#!%s\n' "$path/$binary_path" > "$TMP_SCRIPT"
+tail -n+4 "$SCRIPT" >> "$TMP_SCRIPT"
 chmod +x "$TMP_SCRIPT"
-"$TMP_SCRIPT" ${ARGS[@]}
+"$TMP_SCRIPT" "${ARGS[@]}"
