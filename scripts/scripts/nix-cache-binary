@@ -26,7 +26,6 @@ set -euo pipefail
 
 # which builds a custom python3 with X11 support enabled.
 
-
 SCRIPT="$1"
 
 CACHE_DIR="$(xdg-cache-home)/nix-cache-binary"
@@ -41,16 +40,30 @@ binary_path=$(cat "$SCRIPT" | head -n3 | tail -n1 | sed 's/^#!//')
 
 mkdir -p $HOME/.cache/nix-cache-binary
 
+function check_store_path {
+    [ -e "$1" ] && printf "%s" "$1" || return 100
+}
+
 function cdb_get {
-    [ -f "$CACHE_DB" ] \
-        && <"$CACHE_DB" cdbget "$1" \
-        || return 100
+    if [ -f "$CACHE_DB" ]; then
+        set +e
+        local store_path=$(<"$CACHE_DB" cdbget "$1")
+        local ret=$?
+        set -e
+        case $ret in
+            0) check_store_path "$store_path" ;;
+            100) return 100 ;;
+        esac
+    else
+      return 100
+    fi
 }
 
 function byte_length {
     printf "%s" "$1" | wc --bytes
 }
 
+# always inserts from the top, so older entries are shadowed
 function cdb_insert {
     ( printf "+%i,%i:%s->%s\n" $(byte_length "$1") $(byte_length "$2") "$1" "$2";
       [ -f "$CACHE_DB" ] && <"$CACHE_DB" cdbdump || printf "\n";
