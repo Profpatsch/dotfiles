@@ -27,6 +27,8 @@ set -euo pipefail
 # which builds a custom python3 with X11 support enabled.
 
 SCRIPT="$1"
+shift
+ARGS="$@"
 
 CACHE_DIR="$(xdg-cache-home)/nix-cache-binary"
 CACHE_DB="$CACHE_DIR/cdb"
@@ -95,4 +97,4 @@ trap cleanup EXIT
 printf "#!%s\n" "$path/$binary_path" > "$TMP_SCRIPT"
 <"$SCRIPT" tail -n+4 >> "$TMP_SCRIPT"
 chmod +x "$TMP_SCRIPT"
-"$TMP_SCRIPT"
+"$TMP_SCRIPT" ${ARGS[@]}
