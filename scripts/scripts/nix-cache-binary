@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# This piece of crap from hell can be put into a shebang line like so:
+
+#!/usr/bin/env nix-cache-binary
+#!python3
+#!bin/python3
+
+# and it will use nix-build to build the nix string on the second line
+# and then call the generated nix path, suffixed by the third line.
+#
+# The calls are cached in a cdb (keyed by the given nix string),
+# which means the second/third/whatever time will re-use the already
+# built path. If the path vanishes (e.g. because of a nix garbage collect)
+# the nix-build is called again.
+#
+# Use if you don’t care which <nixpkgs> you need exactly, just some nixpkgs
+# and some command from the given derivation/nix expression.
+#
+# Another example:
+
+#!/usr/bin/env nix-cache-binary
+#!python3.override { x11Support = true; }
+#!bin/python3
+
+# which builds a custom python3 with X11 support enabled.
+
+
+SCRIPT="$1"
+
+CACHE_DIR="$(xdg-cache-home)/nix-cache-binary"
+CACHE_DB="$CACHE_DIR/cdb"
+CACHE_DB_TMP="$CACHE_DIR/cdb.tmp"
+mkdir -p "$CACHE_DIR"
+
+# second line
+nixpkgs_package_expr=$(cat "$SCRIPT" | head -n2 | tail -n1 | sed 's/^#!//')
+# third line
+binary_path=$(cat "$SCRIPT" | head -n3 | tail -n1 | sed 's/^#!//')
+
+mkdir -p $HOME/.cache/nix-cache-binary
+
+function cdb_get {
+    [ -f "$CACHE_DB" ] \
+        && <"$CACHE_DB" cdbget "$1" \
+        || return 100
+}
+
+function byte_length {
+    printf "%s" "$1" | wc --bytes
+}
+
+function cdb_insert {
+    ( printf "+%i,%i:%s->%s\n" $(byte_length "$1") $(byte_length "$2") "$1" "$2";
+      [ -f "$CACHE_DB" ] && <"$CACHE_DB" cdbdump || printf "\n";
+    ) | cdbmake "$CACHE_DB" "$CACHE_DB_TMP"
+}
+
+set +e
+maybe_path=$(cdb_get "$nixpkgs_package_expr")
+ret=$?
+set -e
+
+case $ret in
+    0)
+        path="$maybe_path"
+        ;;
+    100)
+        path=$(nix-build -E "with import <nixpkgs> {}; $nixpkgs_package_expr")
+        cdb_insert "$nixpkgs_package_expr" "$path"
+        ;;
+esac
+
+TMP_SCRIPT="$(mktemp -d)/script"
+function cleanup {
+  rm "$TMP_SCRIPT"
+}
+trap cleanup EXIT
+
+# Remove our shebang and execute like with binary_path shebang
+printf "#!%s\n" "$path/$binary_path" > "$TMP_SCRIPT"
+<"$SCRIPT" tail -n+4 >> "$TMP_SCRIPT"
+chmod +x "$TMP_SCRIPT"
+"$TMP_SCRIPT"

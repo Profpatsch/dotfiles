@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+printenv XDG_CACHE_HOME || echo $HOME/.cache
