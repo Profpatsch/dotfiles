@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+NIXPKGS_PACKAGE="$1"
+shift
+COMMAND="$@"
+
+expr=$(cat <<EOF
+{ pkg }:
+with import <vuizvui> {};
+pkgs.buildSandbox pkg {}
+EOF
+)
+
+expr_file=$(cas add-string "$expr")
+
+printf 'import %s { pkg = ( %s ); }' "$expr_file" "$NIXPKGS_PACKAGE"
+
+# grrrr
+nix-shell --show-trace \
+    -p "$(printf 'import %s { pkg = ( %s ); }' "$expr_file" "$NIXPKGS_PACKAGE")" \
+    --run "$COMMAND"

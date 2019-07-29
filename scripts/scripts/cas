@@ -1,0 +1,38 @@
+#!/usr/bin/env nix-cache-binary
+#!python3
+#!bin/python3
+
+import sys
+import tempfile
+# import shutil
+
+def oops(mes):
+   print(mes, file=sys.stderr)
+   sys.exit(1)
+
+if len(sys.argv) < 2:
+   oops("usage: cas [command]")
+
+def cas_add_string(args):
+   # TODO: this has to actually use a cas …
+   if len(args) != 1:
+      oops("add-string: please give exactly one argument with the string you want to add")
+   (_, tmp) = tempfile.mkstemp()
+   with open(tmp, mode='w+b') as f:
+      f.write(args[0].encode())
+   print(tmp)
+
+# def cas_add_file(args):
+   # shutil.copyfileobj(sys.stdin.buffer, f)
+
+cmd = sys.argv[1]
+cmd_args = sys.argv[2:]
+
+cmds = {
+    "add-string": cas_add_string
+}
+
+if cmd in cmds:
+   cmds[cmd](cmd_args)
+else:
+   oops("cmd {} does not exist. Try one of {}".format(cmd, cmds.keys()))
