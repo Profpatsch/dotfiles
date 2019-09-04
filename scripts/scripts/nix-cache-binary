@@ -94,4 +94,6 @@ trap 'rm "$TMP_SCRIPT"' EXIT
 printf '#!%s\n' "$path/$binary_path" > "$TMP_SCRIPT"
 tail -n+4 "$SCRIPT" >> "$TMP_SCRIPT"
 chmod +x "$TMP_SCRIPT"
-"$TMP_SCRIPT" "${ARGS[@]}"
+# prepend the generated nix file bin as well
+env PATH="$path/bin:$PATH" \
+    "$TMP_SCRIPT" "${ARGS[@]}"
