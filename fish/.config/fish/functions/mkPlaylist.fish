@@ -1,4 +1,4 @@
-# Defined in /tmp/fish.IUFLfm/mkPlaylist.fish @ line 2
+# Defined in /tmp/fish.6dQrtG/mkPlaylist.fish @ line 2
 function mkPlaylist
 	set FILE (mktemp --suffix=".m3u")
   for dir in $argv
@@ -9,7 +9,9 @@ function mkPlaylist
          \( -iname "*.cue" \
         -or -iname "*.log" \
         -or -iname "*.png" \
-        -or -iname "*.jpg" \) \) \
+        -or -iname "*.jpg" \
+        -or -iname "*.mp4" \
+        -or -iname "*.mkv" \) \) \
       >> "$FILE"
   end
 	echo "$FILE"
