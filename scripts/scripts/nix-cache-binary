@@ -35,9 +35,9 @@ CACHE_DB="$CACHE_DIR/cdb"
 CACHE_DB_TMP="$CACHE_DIR/cdb.tmp"
 mkdir -p "$CACHE_DIR"
 
-# second line
+# second shebang line
 nixpkgs_package_expr=$(sed -n -e '2s/^#!//p' "$SCRIPT")
-# third line
+# third shebang line
 binary_path=$(sed -n -e '3s/^#!//p' "$SCRIPT")
 
 mkdir -p $HOME/.cache/nix-cache-binary
