@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# It’s essentially passmenu but pipes the output to notify-send.
+# This is useful for crap-sites that don’t allow copying the input.
+
+shopt -s nullglob globstar
+
+typeit=0
+
+prefix=${PASSWORD_STORE_DIR-~/.password-store}
+password_files=( "$prefix"/**/*.gpg )
+password_files=( "${password_files[@]#"$prefix"/}" )
+password_files=( "${password_files[@]%.gpg}" )
+
+password=$(printf '%s\n' "${password_files[@]}" | dmenu "$@")
+
+[[ -n $password ]] || exit
+
+notify-send -t 10000 "$(pass show "$password")"
+
