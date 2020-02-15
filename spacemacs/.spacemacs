@@ -52,10 +52,12 @@ values."
      ;; html
      (org :variables
           org-enable-reveal-js-support t)
-     ;; markdown
+     markdown
      ; languages
-     rust
-     emacs-lisp
+     (rust :variables
+           rust-backend "lsp")
+     lsp
+     ;; emacs-lisp
      haskell
      ;; ocaml
      ;; elm
@@ -67,6 +69,7 @@ values."
      ;scala
      ; emacs
      syntax-checking
+     multiple-cursors
      ;; latex
      themes-megapack
      ; misc
@@ -93,6 +96,8 @@ values."
      ; this acts like ESC in insert mode when you hit fd in .1 sec
      ; kind of distracting for my typing speed & working with file handles. :P
      evil-escape
+     ;; i hate it
+     yasnippet yasnippet-auto
    )
    ;; Defines the behaviour of Spacemacs when installing packages.
    ;; Possible values are `used-only', `used-but-keep-unused' and `all'.
@@ -193,13 +198,14 @@ It should only modify the values of Spacemacs settings."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press `SPC T n' to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(railscasts
-                         solarized-light
+   dotspacemacs-themes '(
                          birds-of-paradise-plus
-                         junio
-                         molokai
-                         sanityinc-tomorrow-blue
-                         graham
+                         ;; solarized-light
+                         ;; junio
+                         ;; molokai
+                         ;; sanityinc-tomorrow-blue
+                         ;; graham
+                         ;; railscasts
                          ;; stopped at molokai
                          )
 
@@ -219,7 +225,7 @@ It should only modify the values of Spacemacs settings."
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
 
-   dotspacemacs-default-font '("Hasklig" :size 12.5 :weight normal :width normal :powerline-scale 1.1)
+   dotspacemacs-default-font '("Hasklig" :size 16.0 :weight normal :width normal :powerline-scale 1.2)
    ;; dotspacemacs-default-font '(("Fira Code" :size 15 :weight normal :width normal :powerline-scale 1.1)
    ;;                             ("Fira Code Symbol" :size 15))
 
@@ -461,6 +467,7 @@ This function is called immediately after `dotspacemacs/init', before layer
 configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
+  (add-to-list 'load-path "/home/philip/kot/emacs/include")
   )
 
 (defun dotspacemacs/user-load ()
@@ -477,7 +484,6 @@ Layers configuration."
 
   ;; first things first
   (setq lexical-binding t)
-  (add-to-list 'load-path "/home/philip/kot/emacs/include")
 
   ;;; scroll one line at a time (less "jumpy" than defaults)
   (setq mouse-wheel-scroll-amount '(2 ((shift) . 1))) ;; two lines at a time
@@ -491,6 +497,18 @@ Layers configuration."
   ;;; copy (kill-ring-save) & paste (yank)
   (global-set-key (kbd "C-<f12>") 'clipboard-kill-ring-save)
   (global-set-key (kbd "C-<f11>") 'clipboard-yank)
+
+  ;;; unsets
+  (defun spacemacs/browse-docs-online-at-point (&rest args)
+    (interactive "P"))
+
+  ;;; user functions
+  (defun current-directory-xdg-open ()
+    "Pass the current directory (pwd) to the \"xdg-open\" command."
+    (interactive)
+    (call-process "xdg-open" nil 0 nil default-directory))
+  (spacemacs/set-leader-keys
+    "oo" 'current-directory-xdg-open)
 
   ;;; direnv integration
   (add-hook 'prog-mode-hook
@@ -508,10 +526,7 @@ Layers configuration."
   (with-eval-after-load 'org
     (setq org-startup-indented nil))
 
-  ;; markdown-mode
-  (add-hook 'markdown-mode-hook 'auto-fill-mode)
-
-  ;; nxml-mode
+  ;; markdown-mod  ;; nxml-mode
   (add-hook 'nxml-mode-hook 'auto-fill-mode)
 
   ;; yaml files
@@ -571,7 +586,8 @@ Layers configuration."
     (message "local ghc-mod is: %S" my-ghc-mod)
     (set (make-local-variable 'ghc-module-command) my-ghc-mod)
     (set (make-local-variable 'ghc-command) my-ghc-mod))
-  (add-hook 'haskell-mode-hook 'my-ghc-mod-setup)
+  ;; TODO: this blooooocks
+  ;; (add-hook 'haskell-mode-hook 'my-ghc-mod-setup)
 
   (defun my-correct-symbol-bounds (pretty-alist)
     "Prepend a TAB character to each symbol in this alist,
@@ -1024,3 +1040,244 @@ static char *gnus-pointer[] = {
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:background "#232323" :foreground "#E6E1DC" :family "Hasklig" :foundry "ADBO" :slant normal :weight normal :height 128 :width normal)))))
+(defun dotspacemacs/emacs-custom-settings ()
+  "Emacs custom settings.
+This is an auto-generated function, do not modify its content directly, use
+Emacs customize menu instead.
+This function is called at the very end of Spacemacs initialization."
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(TeX-view-program-selection
+   (quote
+    (((output-dvi has-no-display-manager)
+      "dvi2tty")
+     ((output-dvi style-pstricks)
+      "dvips and gv")
+     (output-dvi "xdvi")
+     (output-pdf "Zathura")
+     (output-html "xdg-open"))))
+ '(ahs-case-fold-search nil)
+ '(ahs-default-range (quote ahs-range-whole-buffer))
+ '(ahs-idle-interval 0.25)
+ '(ahs-idle-timer 0 t)
+ '(ahs-inhibit-face-list nil)
+ '(ansi-color-faces-vector
+   [default default default italic underline success warning error])
+ '(ansi-term-color-vector
+   [unspecified "#1F1611" "#660000" "#144212" "#EFC232" "#5798AE" "#BE73FD" "#93C1BC" "#E6E1DC"] t)
+ '(background-color "#202020")
+ '(background-mode dark)
+ '(beacon-color "#ff9da4")
+ '(compilation-message-face (quote default))
+ '(create-lockfiles nil)
+ '(cua-global-mark-cursor-color nil)
+ '(cua-normal-cursor-color nil)
+ '(cua-overwrite-cursor-color "")
+ '(cua-read-only-cursor-color "#859900")
+ '(cursor-color "#cccccc")
+ '(custom-enabled-themes (quote (graham)))
+ '(custom-safe-themes
+   (quote
+    ("5a861da19d55874c8f89b3484ab355999aff56a4e78b42507c97f71db23e3b0a" "376f60baab06072d3857de6b603c68408eec171ab286c6e5ba650d1f388265dc" "281cb095f102b3c24071224c7ffa6efdacb6992de407c3a46486c62eff8fe9b3" "09a027de3abc66f41ff2c9f1e0e16d02c68a7d9fd9c2b182075f07ad63330475" "2b437e27d5ee018838a9c175211d4cbecca172e3aaae679971c9dc0afc9061a0" "f8ea94ca9b535a506129213f7143efbc195f5077ec49cc23b7aa0da49c555f0c" "e0d42a58c84161a0744ceab595370cbe290949968ab62273aed6212df0ea94b4" "58c6711a3b568437bab07a30385d34aacf64156cc5137ea20e799984f4227265" default)))
+ '(dhall-type-check-inactivity-timeout 100000000000000000)
+ '(diary-entry-marker (quote font-lock-variable-name-face))
+ '(emms-mode-line-icon-image-cache
+   (quote
+    (image :type xpm :ascent center :data "/* XPM */
+static char *note[] = {
+/* width height num_colors chars_per_pixel */
+\"    10   11        2            1\",
+/* colors */
+\". c #358d8d\",
+\"# c None s None\",
+/* pixels */
+\"###...####\",
+\"###.#...##\",
+\"###.###...\",
+\"###.#####.\",
+\"###.#####.\",
+\"#...#####.\",
+\"....#####.\",
+\"#..######.\",
+\"#######...\",
+\"######....\",
+\"#######..#\" };")))
+ '(evil-want-Y-yank-to-eol nil)
+ '(fci-rule-character-color "#452E2E")
+ '(fci-rule-color "#eee8d5" t)
+ '(flycheck-color-mode-line-face-to-color (quote mode-line-buffer-id))
+ '(flycheck-pos-tip-mode t)
+ '(flycheck-pos-tip-timeout 0)
+ '(foreground-color "#cccccc")
+ '(frame-background-mode (quote dark))
+ '(gnus-logo-colors (quote ("#0d7b72" "#adadad")) t)
+ '(gnus-mode-line-image-cache
+   (quote
+    (image :type xpm :ascent center :data "/* XPM */
+static char *gnus-pointer[] = {
+/* width height num_colors chars_per_pixel */
+\"    18    13        2            1\",
+/* colors */
+\". c #358d8d\",
+\"# c None s None\",
+/* pixels */
+\"##################\",
+\"######..##..######\",
+\"#####........#####\",
+\"#.##.##..##...####\",
+\"#...####.###...##.\",
+\"#..###.######.....\",
+\"#####.########...#\",
+\"###########.######\",
+\"####.###.#..######\",
+\"######..###.######\",
+\"###....####.######\",
+\"###..######.######\",
+\"###########.######\" };")) t)
+ '(graphviz-dot-view-command "dot -T png %s | feh -")
+ '(haskell-indent-spaces 4)
+ '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
+ '(highlight-symbol-colors
+   (--map
+    (solarized-color-blend it "#002b36" 0.25)
+    (quote
+     ("#b58900" "#2aa198" "#dc322f" "#6c71c4" "#859900" "#cb4b16" "#268bd2"))))
+ '(highlight-symbol-foreground-color "#93a1a1")
+ '(highlight-tail-colors
+   (quote
+    (("#073642" . 0)
+     ("#546E00" . 20)
+     ("#00736F" . 30)
+     ("#00629D" . 50)
+     ("#7B6000" . 60)
+     ("#8B2C02" . 70)
+     ("#93115C" . 85)
+     ("#073642" . 100))))
+ '(hl-bg-colors
+   (quote
+    ("#7B6000" "#8B2C02" "#990A1B" "#93115C" "#3F4D91" "#00629D" "#00736F" "#546E00")))
+ '(hl-fg-colors
+   (quote
+    ("#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36")))
+ '(hl-paren-colors (quote ("#2aa198" "#b58900" "#268bd2" "#6c71c4" "#859900")))
+ '(line-move-visual nil)
+ '(lsp-enable-snippet nil)
+ '(magit-commit-arguments nil)
+ '(magit-diff-refine-hunk t)
+ '(magit-diff-use-overlays nil)
+ '(magit-dispatch-arguments nil)
+ '(magit-display-buffer-function (quote magit-display-buffer-same-window-except-diff-v1))
+ '(magit-revision-show-gravatars nil)
+ '(nrepl-message-colors
+   (quote
+    ("#dc322f" "#cb4b16" "#b58900" "#546E00" "#B4C342" "#00629D" "#2aa198" "#d33682" "#6c71c4")))
+ '(org-babel-load-languages (quote ((shell . t) (dot . t))))
+ '(org-clock-clocktable-default-properties (quote (:maxlevel 4 :scope file)))
+ '(org-confirm-babel-evaluate nil)
+ '(org-html-html5-fancy t)
+ '(org-html-indent nil)
+ '(org-structure-template-alist
+   (quote
+    (("n" "#+NAME: ")
+     ("s" "#+BEGIN_SRC ?
+
+#+END_SRC")
+     ("e" "#+BEGIN_EXAMPLE
+?
+#+END_EXAMPLE")
+     ("q" "#+BEGIN_QUOTE
+?
+#+END_QUOTE")
+     ("v" "#+BEGIN_VERSE
+?
+#+END_VERSE")
+     ("V" "#+BEGIN_VERBATIM
+?
+#+END_VERBATIM")
+     ("c" "#+BEGIN_CENTER
+?
+#+END_CENTER")
+     ("l" "#+BEGIN_LaTeX
+?
+#+END_LaTeX")
+     ("L" "#+LaTeX: ")
+     ("h" "#+BEGIN_HTML
+?
+#+END_HTML")
+     ("H" "#+HTML: ")
+     ("a" "#+BEGIN_ASCII
+?
+#+END_ASCII")
+     ("A" "#+ASCII: ")
+     ("i" "#+INDEX: ?")
+     ("I" "#+INCLUDE: %file ?"))))
+ '(package-selected-packages
+   (quote
+    (transient direnv parent-mode flx reformatter pos-tip nixos-options utop tuareg caml ocp-indent merlin github-search github-clone github-browse-file gist white-sand-theme rebecca-theme org-mime exotica-theme gitignore-mode ghub let-alist epl dhall-mode org-category-capture helm-notmuch notmuch ox-reveal epresent toml-mode racer flycheck-rust seq cargo rust-mode flycheck-elm elm-mode winum madhat2r-theme fuzzy go-guru go-eldoc company-go go-mode psci purescript-mode psc-ide spinner autothemer bind-map haml-mode selectric-mode yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode cython-mode company-anaconda anaconda-mode pythonic csv-mode org highlight skewer-mode json-snatcher json-reformat dash-functional tern auctex-latexmk yaml-mode wgrep smex ivy-hydra counsel-projectile counsel swiper ivy insert-shebang hide-comnt undo-tree company-auctex auctex pug-mode f org-projectile org-download intero helm-hoogle git-link evil-ediff dumb-jump request simple-httpd package-build zenburn-theme ws-butler window-numbering web-mode ujelly-theme tao-theme spacemacs-theme spaceline smooth-scrolling shm planet-theme persp-mode page-break-lines orgit organic-green-theme org-repo-todo org-pomodoro alert org-plus-contrib open-junk-file omtose-phellack-theme nix-sandbox neotree naquadah-theme monokai-theme moe-theme material-theme markdown-toc markdown-mode majapahit-theme magit-gitflow leuven-theme less-css-mode js2-refactor js2-mode indent-guide hl-todo hindent help-fns+ helm-themes helm-projectile helm-make projectile helm-descbinds helm-c-yasnippet helm-ag haskell-snippets gruvbox-theme graphviz-dot-mode grandshell-theme gotham-theme google-translate git-messenger expand-region exec-path-from-shell evil-surround evil-search-highlight-persist evil-mc evil-matchit evil-magit evil-iedit-state iedit evil-exchange emmet-mode dracula-theme darktooth-theme company-quickhelp color-theme-sanityinc-tomorrow buffer-move bracketed-paste badwolf-theme auto-yasnippet yasnippet auto-compile apropospriate-theme anti-zenburn-theme ample-theme ace-link ace-jump-helm-line auto-complete avy ghc anzu smartparens haskell-mode flycheck company helm helm-core magit magit-popup git-commit with-editor gh marshal pcache ht hydra s use-package which-key evil dash zonokai-theme zen-and-art-theme web-beautify volatile-highlights vi-tilde-fringe uuidgen underwater-theme twilight-theme twilight-bright-theme twilight-anti-bright-theme tronesque-theme toxi-theme toc-org tangotango-theme tango-plus-theme tango-2-theme tagedit sunny-day-theme sublime-themes subatomic256-theme subatomic-theme stekene-theme spacegray-theme soothe-theme solarized-theme soft-stone-theme soft-morning-theme soft-charcoal-theme smyx-theme smeargle slim-mode seti-theme scss-mode sass-mode reverse-theme restart-emacs rainbow-delimiters railscasts-theme quelpa purple-haze-theme professional-theme powerline popwin popup pkg-info phoenix-dark-pink-theme phoenix-dark-mono-theme pcre2el pastels-on-dark-theme paredit paradox packed org-present org-bullets oldlace-theme occidental-theme obsidian-theme noctilux-theme nix-mode niflheim-theme mustang-theme multiple-cursors move-text monochrome-theme molokai-theme mmm-mode minimal-theme magit-gh-pulls magit-annex macrostep lush-theme lorem-ipsum logito log4e livid-mode linum-relative link-hint light-soap-theme json-mode js-doc jbeans-theme jazz-theme jade-mode ir-black-theme inkpot-theme info+ ido-vertical-mode hungry-delete htmlize hlint-refactor highlight-parentheses highlight-numbers highlight-indentation heroku-theme hemisu-theme helm-swoop helm-nixos-options helm-mode-manager helm-gitignore helm-flx helm-css-scss helm-company hc-zenburn-theme gruber-darker-theme goto-chg golden-ratio gnuplot gntp gitconfig-mode gitattributes-mode git-timemachine gh-md gandalf-theme flycheck-pos-tip flycheck-haskell flx-ido flatui-theme flatland-theme fish-mode firebelly-theme fill-column-indicator farmhouse-theme fancy-battery eyebrowse evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-numbers evil-nerd-commenter evil-lisp-state evil-indent-plus evil-escape evil-args evil-anzu eval-sexp-fu espresso-theme elisp-slime-nav django-theme diminish define-word darkokai-theme darkmine-theme darkburn-theme dakrone-theme cyberpunk-theme company-web company-tern company-statistics company-shell company-nixos-options company-ghci company-ghc company-cabal column-enforce-mode colorsarenice-theme color-theme-sanityinc-solarized coffee-mode cmm-mode clues-theme clean-aindent-mode cherry-blossom-theme busybee-theme bubbleberry-theme birds-of-paradise-plus-theme bind-key auto-highlight-symbol async ample-zen-theme alect-themes aggressive-indent afternoon-theme adaptive-wrap ace-window ac-ispell)))
+ '(paradox-github-token t)
+ '(pos-tip-background-color "#073642")
+ '(pos-tip-foreground-color "#93a1a1")
+ '(pos-tip-use-relative-coordinates t)
+ '(projectile-enable-caching t)
+ '(psc-ide-add-import-on-completion t)
+ '(psc-ide-rebuild-on-save nil)
+ '(racer-rust-src-path nil t)
+ '(rainbow-identifiers-cie-l*a*b*-lightness 25)
+ '(rainbow-identifiers-cie-l*a*b*-saturation 40)
+ '(ring-bell-function (quote ignore))
+ '(rust-format-on-save nil)
+ '(safe-local-variable-values
+   (quote
+    ((eval company-mode -42)
+     (eval company-mode nil)
+     (hindent-style . "chris-done"))))
+ '(scala-indent:align-forms t)
+ '(scala-indent:align-parameters t)
+ '(scala-indent:default-run-on-strategy scala-indent:operator-strategy)
+ '(select-enable-clipboard nil)
+ '(send-mail-function (quote smtpmail-send-it))
+ '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#073642" 0.2))
+ '(term-default-bg-color "#002b36")
+ '(term-default-fg-color "#839496")
+ '(tooltip-hide-delay 0)
+ '(vc-annotate-background nil)
+ '(vc-annotate-background-mode nil)
+ '(vc-annotate-color-map
+   (quote
+    ((20 . "#dc322f")
+     (40 . "#c85d17")
+     (60 . "#be730b")
+     (80 . "#b58900")
+     (100 . "#a58e00")
+     (120 . "#9d9100")
+     (140 . "#959300")
+     (160 . "#8d9600")
+     (180 . "#859900")
+     (200 . "#669b32")
+     (220 . "#579d4c")
+     (240 . "#489e65")
+     (260 . "#399f7e")
+     (280 . "#2aa198")
+     (300 . "#2898af")
+     (320 . "#2793ba")
+     (340 . "#268fc6")
+     (360 . "#268bd2"))))
+ '(vc-annotate-very-old-color nil)
+ '(web-mode-markup-indent-offset 2)
+ '(weechat-color-list
+   (quote
+    (unspecified "#002b36" "#073642" "#990A1B" "#dc322f" "#546E00" "#859900" "#7B6000" "#b58900" "#00629D" "#268bd2" "#93115C" "#d33682" "#00736F" "#2aa198" "#839496" "#657b83")))
+ '(xterm-color-names
+   ["#eee8d5" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#073642"])
+ '(xterm-color-names-bright
+   ["#fdf6e3" "#cb4b16" "#93a1a1" "#839496" "#657b83" "#6c71c4" "#586e75" "#002b36"]))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:background "#232323" :foreground "#E6E1DC" :family "Hasklig" :foundry "ADBO" :slant normal :weight normal :height 128 :width normal)))))
+)
