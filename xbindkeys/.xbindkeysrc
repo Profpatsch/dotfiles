@@ -47,7 +47,8 @@
     XF86AudioLowerVolume 
 
 # Mute/Unmute microphone
-"pactl set-source-mute alsa_input.pci-0000_00_1b.0.analog-stereo toggle"
+#"pactl set-source-mute alsa_input.pci-0000_00_1b.0.analog-stereo toggle"
+"pactl set-source-mute $(pactl info | sed -n 's/Default Source: \(.*\)$/\1/p') toggle"
     XF86AudioMicMute
 
 # Change between headphones/speaker output
@@ -96,19 +97,21 @@
     Mod4 + u
 
 # passmenu
-# TODO typing doesn’t work with special chars
 "passmenu"
     Mod4 + p
 
-# display infos
-"display-infos"
-    Mod4 + a
+# passmenu, but show the password as message
+"passmenu-notify"
+    Mod4 + z
 
+# display infos
+"display-infos-notify"
+    Mod4 + a
 
 # monitor settings
 
-# enable home setup 
-"monitor-home && set-background"
+# enable work setup 
+"monitor-tweag && set-background"
     m:0x40 + c:117
     Mod4 + Next 
 
