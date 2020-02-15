@@ -9,7 +9,7 @@ COMMAND="$@"
 expr=$(cat <<EOF
 { pkg }:
 with import <vuizvui> {};
-pkgs.buildSandbox pkg {}
+pkgs.buildSandbox pkg { }
 EOF
 )
 
@@ -17,5 +17,6 @@ expr_file=$(cas add-string "$expr")
 
 # grrrr
 nix-shell --show-trace \
+    --builders '' \
     -p "$(printf 'import %s { pkg = ( %s ); }' "$expr_file" "$NIXPKGS_PACKAGE")" \
     --run "$COMMAND"
