@@ -1,0 +1,66 @@
+#!/usr/bin/env nix-cache-binary
+#!python3
+#!bin/python3
+
+import sys
+import subprocess as s
+import json
+
+state = sys.argv[1]
+args = sys.argv[2:]
+
+wifiDevs = [ "wlp3s0", "bnep0" ]
+ipRoute = json.loads(s.check_output(["ip", "-j", "route"]))
+
+def call_but_ignore_output(args, ignore):
+    res = s.run(
+        args,
+        stderr=s.PIPE)
+    if res.returncode != 0:
+        if ignore in res.stderr:
+            pass
+        else:
+            sys.stdout.buffer.write(res.stderr)
+            sys.exit(res.returncode)
+
+def set_down():
+    call_but_ignore_output(["nmcli", "con", "down", "hakuwg"], ignore=b"is not an active connection")
+
+wifiDev = None
+wifiGateway = None
+for el in ipRoute:
+    if el['dev'] in wifiDevs and "gateway" in el:
+        wifiDev = el['dev']
+        wifiGateway = el['gateway']
+        print("Using device {} and gateway {}", wifiDev, wifiGateway, file=sys.stderr)
+        break
+assert wifiDev != None
+assert wifiGateway != None
+
+def add_route(ipRange, via):
+    call_but_ignore_output(
+        ["sudo", "ip", "route", "add", ipRange, "via", via, "dev", wifiDev],
+        ignore = b"RTNETLINK answers: File exists"
+    )
+
+if state == "up":
+    set_down()
+
+    if args == []: pass
+    # dunno
+    # elif args == ["ice"]:
+    #     ice_ip = s.check_output(["getent", "hosts", "iceportal.de"]).split(b" ")[0]
+    #     add_route(ice_ip, via=wifiGateway)
+    else:
+        print("what the heck is ", args)
+
+    s.check_call(["nmcli", "con", "up", "hakuwg"])
+    add_route("163.172.44.192/32", via=wifiGateway)
+
+
+elif state == "down":
+    set_down()
+
+else:
+    print("dunno", state)
+
