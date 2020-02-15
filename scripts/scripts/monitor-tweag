@@ -1,7 +1,8 @@
 #!/bin/sh
+set -x
 xrandr --newmode tweag 220.812 2560 2608 2640 2720 1440 1443 1448 1478 -hsync +vsync
-xrandr --addmode DP1 tweag
+xrandr --addmode DP2-2 tweag
 xrandr \
-  --output DP1   --mode tweag    --primary --pos 1600x0 \
+  --output DP2-2 --mode tweag    --primary --pos 1600x0 \
   --output eDP1  --mode 1600x900           --pos 0x900
 set-background

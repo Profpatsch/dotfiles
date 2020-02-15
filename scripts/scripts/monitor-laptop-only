@@ -4,8 +4,10 @@
 # disable every monitor except eDP1
 for output in $(xrandr --query | grep "\(dis\)*connected" | cut -d' ' -f 1); do
     if [ "$output" != eDP1 ]; then
+        echo "disabling $output" >&2
         xrandr --output "$output" --off
     fi
 done
 
+echo "resetting laptop monitor" >&2
 xrandr --output eDP1 --auto
