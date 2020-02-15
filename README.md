@@ -30,7 +30,7 @@ Full license text: https://creativecommons.org/publicdomain/zero/1.0/legalcode
 
 [arch]: https://archlinux.org/
 [nixos]: https://nixos.org/
-[vuizvui]: https://github.com/openlab-aux/vuizvui/blob/master/machines/profpatsch/katara.nix
+[vuizvui]: https://github.com/openlab-aux/vuizvui/blob/master/machines/profpatsch
 [neo]:  https://neo-layout.org/
 [neowiki]: https://en.wikipedia.org/wiki/Keyboard_layout#Neo
 [stow]: https://www.gnu.org/software/stow/
