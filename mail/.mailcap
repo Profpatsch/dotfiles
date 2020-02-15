@@ -1,4 +1,4 @@
-text/html; chromium %s; nametemplate=%s.html
+text/html; firefox %s; nametemplate=%s.html
 text/html; elinks -dump-charset utf-8 -dump %s; nametemplate=%s.html; copiousoutput
 text/*; vim %s;
 
