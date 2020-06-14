@@ -1,3 +1,4 @@
+#!/usr/bin/env execlineb
 #!/bin/sh
 # home monitor setup
 
@@ -8,6 +9,17 @@
 # xrandr --output eDP1 --off --output DP2-1 --off --output DP2-2 --off
 
 #--output DP2-1  --mode 1920x1080 --rotate left --pos 0x0 \
-xrandr --verbose \
-    --output DP2-1  --mode 1920x1080 --primary     --pos 1150x620 \
-    --output eDP1   --mode 1600x900                --pos 3200x1600
+foreground {
+xrandr --verbose
+
+  --output eDP1
+    --mode 1600x900
+    --pos 3200x1600
+
+  --output DP1
+    --left-of eDP1
+    --mode 1920x1080
+    --primary
+    #--pos 1150x620
+}
+set-background
