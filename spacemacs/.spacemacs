@@ -84,7 +84,7 @@ values."
    ;; '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
    dotspacemacs-additional-packages
-     '(graphviz-dot-mode nix-sandbox magit-annex dhall-mode direnv)
+     '(graphviz-dot-mode nix-sandbox magit-annex dhall-mode direnv haskell-mode)
    ;; A list of packhttps://shop.spreadshirt.com/spacemacs-shop/ages that cannot be updated.
    dotspacemacs-frozen-packages '()
 
@@ -468,6 +468,7 @@ configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
   (add-to-list 'load-path "/home/philip/kot/emacs/include")
+  (add-to-list 'load-path "/home/philip/depot/tools/emacs-pkgs/tvl")
   )
 
 (defun dotspacemacs/user-load ()
@@ -502,6 +503,9 @@ Layers configuration."
   (defun spacemacs/browse-docs-online-at-point (&rest args)
     (interactive "P"))
 
+  ;;; depot depot depot
+  (require 'tvl)
+
   ;;; user functions
   (defun current-directory-xdg-open ()
     "Pass the current directory (pwd) to the \"xdg-open\" command."
@@ -532,6 +536,9 @@ Layers configuration."
   ;; yaml files
   (add-to-list 'auto-mode-alist '("\\.yaml\\'" . conf-mode))
   (add-to-list 'auto-mode-alist '("\\.yml\\'" . conf-mode))
+
+  ;; terraform files
+  (add-to-list 'auto-mode-alist '("\\.tf\\'" . conf-mode))
 
   ;; company-mode
   ; delete with C-w, even when completion window is open
@@ -754,10 +761,6 @@ codepoints starting from codepoint-start."
         mu4e-sent-folder "/Sent"
         mu4e-drafts-folder "/Drafts"
         mu4e-refile-folder "/Archive"
-        mu4e-compose-signature "Written with Emacs (mu4e) on NixOS.\n\
-Q: Why is this email five sentences or less?\n\
-A: http://five.sentenc.es/\n\
-May take up to five days to read your message. If it’s urgent, call me."
 
         mu4e-update-interval 300
 
@@ -780,8 +783,6 @@ May take up to five days to read your message. If it’s urgent, call me."
          ("date:today..now" "Today's messages (all)" 116)
          ("date:..now AND not flag:trashed AND NOT (maildir:/Archive OR maildir:/Sent)" "Last 7 days (inbox)" 119)
          ("mime:image/*" "Messages with images" 112))
-
-        mu4e-user-mail-address-list '("mail@profpatsch.de")
 
         mu4e-contexts
         `(,(make-mu4e-context
@@ -1066,6 +1067,8 @@ This function is called at the very end of Spacemacs initialization."
  '(ahs-inhibit-face-list nil)
  '(ansi-color-faces-vector
    [default default default italic underline success warning error])
+ '(ansi-color-names-vector
+   ["#1F1611" "#660000" "#144212" "#EFC232" "#5798AE" "#BE73FD" "#93C1BC" "#E6E1DC"])
  '(ansi-term-color-vector
    [unspecified "#1F1611" "#660000" "#144212" "#EFC232" "#5798AE" "#BE73FD" "#93C1BC" "#E6E1DC"] t)
  '(background-color "#202020")
@@ -1107,7 +1110,7 @@ static char *note[] = {
 \"#######..#\" };")))
  '(evil-want-Y-yank-to-eol nil)
  '(fci-rule-character-color "#452E2E")
- '(fci-rule-color "#eee8d5" t)
+ '(fci-rule-color "#eee8d5")
  '(flycheck-color-mode-line-face-to-color (quote mode-line-buffer-id))
  '(flycheck-pos-tip-mode t)
  '(flycheck-pos-tip-timeout 0)
@@ -1222,11 +1225,12 @@ static char *gnus-pointer[] = {
  '(pos-tip-foreground-color "#93a1a1")
  '(pos-tip-use-relative-coordinates t)
  '(projectile-enable-caching t)
- '(psc-ide-add-import-on-completion t)
- '(psc-ide-rebuild-on-save nil)
+ '(psc-ide-add-import-on-completion t t)
+ '(psc-ide-rebuild-on-save nil t)
  '(racer-rust-src-path nil t)
  '(rainbow-identifiers-cie-l*a*b*-lightness 25)
  '(rainbow-identifiers-cie-l*a*b*-saturation 40)
+ '(require-final-newline t)
  '(ring-bell-function (quote ignore))
  '(rust-format-on-save nil)
  '(safe-local-variable-values
@@ -1243,6 +1247,8 @@ static char *gnus-pointer[] = {
  '(term-default-bg-color "#002b36")
  '(term-default-fg-color "#839496")
  '(tooltip-hide-delay 0)
+ '(tvl-depot-path "/home/philip/depot")
+ '(undo-limit 80000000)
  '(vc-annotate-background nil)
  '(vc-annotate-background-mode nil)
  '(vc-annotate-color-map
@@ -1270,6 +1276,7 @@ static char *gnus-pointer[] = {
  '(weechat-color-list
    (quote
     (unspecified "#002b36" "#073642" "#990A1B" "#dc322f" "#546E00" "#859900" "#7B6000" "#b58900" "#00629D" "#268bd2" "#93115C" "#d33682" "#00736F" "#2aa198" "#839496" "#657b83")))
+ '(ws-butler-global-mode t)
  '(xterm-color-names
    ["#eee8d5" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#073642"])
  '(xterm-color-names-bright
