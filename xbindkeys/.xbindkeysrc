@@ -117,13 +117,13 @@
 
 # monitor settings
 
-# enable work setup 
-"monitor-tweag && set-background"
+# enable only laptop monitor
+"monitor-laptop-only && set-background"
     m:0x40 + c:117
     Mod4 + Next 
 
-# enable only laptop monitor
-"monitor-laptop-only && set-background"
+# enable work setup 
+"monitor-tweag && set-background"
     m:0x40 + c:112
     Mod4 + Prior 
 
