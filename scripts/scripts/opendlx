@@ -1,3 +1,0 @@
-#!/bin/bash
-
-java -jar "/home/philip/Documents/Studium/4.S-13SS - IuM4/Systemnahe/openDLX_Simulator_Doku_Beispiele/Simulator/openDLX.jar" &
