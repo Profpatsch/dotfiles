@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# TODO: inherit tags of the parents
+
+set -euo pipefail
+
+number="$1"
+shift
+
+# TODO: urgs, should use the python API
+new_task_id="$(task add "$@" | sed -nEe 's/.*task ([[:digit:]]+).*/\1/p')"
+task "$number" mod depends:"$new_task_id"
