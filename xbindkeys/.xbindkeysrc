@@ -79,12 +79,12 @@
 
 # lock on standby
 # TODO: replace with xtrlock
-"alock & systemctl suspend"
+"lock-screen & systemctl suspend"
    Mod4 + F1
 
 # Lock the screen via alock
 # TODO as above
-"alock"
+"lock-screen"
    Mod4 + F8
 
 # lockscreen, but no standby on lid close
