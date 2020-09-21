@@ -28,6 +28,9 @@
 
 # Mouse Buttons
 
+# Go back with upper thumb button on Evoluent D
+"xte "key XF86Back""
+    m:0x0 + b:8
 # Back to top with Scroll Wheel on Evoluent D
 "xte "key Home""
     m:0x0 + b:9
