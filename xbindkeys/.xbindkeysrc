@@ -31,12 +31,21 @@
 # Go back with upper thumb button on Evoluent D
 "xte "key XF86Back""
     m:0x0 + b:8
+# Go forward with upper thumb button on Evoluent D & Shift
+"xte "key XF86Forward""
+    Shift + m:0x0 + b:8
 # Back to top with Scroll Wheel on Evoluent D
 "xte "key Home""
     m:0x0 + b:9
+# Go to bottom with Scroll Wheel on Evoluent D & Shift
+"xte "key End""
+    Shift + m:0x0 + b:9
 # Page down with lower thumb button on Evoluent D
 "xte "key Next""
     m:0x0 + b:10
+# Page up with lower thumb button on Evoluent D & Shift
+"xte "key Previous""
+    Shift + m:0x0 + b:10
 
 
 #keystate_numlock = enable
