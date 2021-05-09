@@ -62,6 +62,7 @@ values."
      ;; ocaml
      ;; elm
      go
+     forth
      ;; javascript
      purescript
      nixos
@@ -84,7 +85,16 @@ values."
    ;; '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
    dotspacemacs-additional-packages
-     '(graphviz-dot-mode nix-sandbox magit-annex dhall-mode direnv haskell-mode)
+   '(
+     graphviz-dot-mode
+     dhall-mode
+     direnv
+     haskell-mode
+     tree-sitter
+     diff-hl
+     counsel-jq
+     explain-pause-mode
+     )
    ;; A list of packhttps://shop.spreadshirt.com/spacemacs-shop/ages that cannot be updated.
    dotspacemacs-frozen-packages '()
 
@@ -495,9 +505,68 @@ Layers configuration."
   ;;;; Save on focus lost in X11
   (add-hook 'focus-out-hook (lambda () (save-some-buffers t)))
 
+  ;;; tmp
+
+  (require 'git-link)
+  (defun git-link-commit-cgit (hostname dirname commit)
+    (format "https://%s/%s/commit/?id=%s"
+	          hostname
+	          dirname
+	          commit))
+
+  (defun git-link-commit-cgit-tvl (hostname dirname commit)
+    ;; tvl depot does not have a dirname in its url
+    (format "https://%s/commit/?id=%s"
+	          hostname
+	          commit))
+
+  (add-to-list 'git-link-commit-remote-alist '("code.sterni.lv" git-link-commit-cgit))
+  (add-to-list 'git-link-commit-remote-alist '("code.tvl.fyi" git-link-commit-cgit-tvl))
+
+  ;; https://code.sterni.lv/sm/tree/inet/gopher/hierarchy.nix?id=f9b7232bd359b6d27303e44dc539259918612615#n12
+  (defun git-link-cgit (hostname dirname filename branch commit start end)
+    (format "https://%s/%s/tree/%s?id=%s#n%s"
+            hostname
+            dirname
+            filename
+            commit
+            start
+            ;; no end possible?
+            ))
+
+  (defun git-link-cgit-tvl (hostname dirname filename branch commit start end)
+    ;; tvl depot does not have a dirname in its url
+    (format "https://%s/tree/%s?id=%s#n%s"
+            hostname
+            filename
+            commit
+            start
+            ;; no end possible?
+            ))
+
+  (add-to-list 'git-link-remote-alist '("code.sterni.lv" git-link-cgit))
+  (add-to-list 'git-link-remote-alist '("code.tvl.fyi" git-link-cgit-tvl))
+
   ;;; copy (kill-ring-save) & paste (yank)
   (global-set-key (kbd "C-<f12>") 'clipboard-kill-ring-save)
   (global-set-key (kbd "C-<f11>") 'clipboard-yank)
+
+  ;;; movement
+
+  (defun my-slurp-and-follow ()
+    (interactive)
+    (sp-forward-slurp-sexp)
+    (forward-sexp))
+  (define-key evil-insert-state-map (kbd "C-s") 'my-slurp-and-follow)
+
+  ;; (define-key evil-normal-state-map (kbd "C-<right>") 'sp-forward-parallel-sexp)
+  ;; (define-key evil-normal-state-map (kbd "C-<left>") 'sp-backward-parallel-sexp)
+  ;; (define-key evil-normal-state-map (kbd "C-<down>") 'sp-down-sexp)
+  ;; (define-key evil-normal-state-map (kbd "C-<up>") 'sp-backward-up-sexp)
+
+  ;;; tree sitter
+
+  (require 'tree-sitter)
 
   ;;; unsets
   (defun spacemacs/browse-docs-online-at-point (&rest args)
@@ -539,6 +608,10 @@ Layers configuration."
 
   ;; terraform files
   (add-to-list 'auto-mode-alist '("\\.tf\\'" . conf-mode))
+
+  ;; Typescript/react files
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . javascript-mode))
+  (add-to-list 'auto-mode-alist '("\\.ts\\'" . javascript-mode))
 
   ;; company-mode
   ; delete with C-w, even when completion window is open
@@ -745,6 +818,25 @@ codepoints starting from codepoint-start."
     "s" 'my-insert-random-sha256
     "U" 'my-nix-yank-prefetch-url-unpack)
 
+  ;; add numbers in selection
+  (defun exchange-point-and-mark-nomark ()
+    (exchange-point-and-mark nil))
+  (defun calculator-sum-column (start end)
+    "Adds numbers in rectangle."
+    (interactive "r")
+    (save-excursion
+      (kill-rectangle start end)
+      (exchange-point-and-mark)
+      (yank-rectangle)
+      (set-buffer (get-buffer-create "*calc-sum*"))
+      (erase-buffer)
+      (yank-rectangle)
+      (exchange-point-and-mark-nomark)
+      (let ((sum 0))
+        (while (re-search-forward "[0-9]*\\.?[0-9]+" nil t)
+	        (setq sum (+ sum (string-to-number (match-string 0)))))
+        (message "Sum: %f" sum))))
+
   ;; mu4e
   (require 'mu4e)
   (setq mail-user-agent 'mu4e-user-agent
@@ -753,6 +845,8 @@ codepoints starting from codepoint-start."
         mu4e-context-policy 'pick-first
         mu4e-compose-context-policy nil
         mu4e-compose-complete-only-after "2018-01-01"
+
+        mu4e-headers-include-related 'nil
 
         ; TODO https://github.com/djcb/mu/issues/1250
         mu4e-view-html-plaintext-ratio-heuristic most-positive-fixnum
@@ -764,11 +858,11 @@ codepoints starting from codepoint-start."
 
         mu4e-update-interval 300
 
-        auth-sources '("~/dotfiles-private/mail/authinfo")
+        auth-sources '("~/dotfiles-private/mail/authinfo.gpg")
         smtpmail-auth-supported '(login)
 
         message-send-mail-function 'smtpmail-send-it
-        smtpmail-smtp-server "smtprelaypool.ispgateway.de"
+        smtpmail-smtp-server "smtp.mailbox.org"
         smtpmail-smtp-service 465
         smtpmail-stream-type 'ssl
 
@@ -1052,16 +1146,15 @@ This function is called at the very end of Spacemacs initialization."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(TeX-view-program-selection
-   (quote
-    (((output-dvi has-no-display-manager)
+   '(((output-dvi has-no-display-manager)
       "dvi2tty")
      ((output-dvi style-pstricks)
       "dvips and gv")
      (output-dvi "xdvi")
      (output-pdf "Zathura")
-     (output-html "xdg-open"))))
+     (output-html "xdg-open")))
  '(ahs-case-fold-search nil)
- '(ahs-default-range (quote ahs-range-whole-buffer))
+ '(ahs-default-range 'ahs-range-whole-buffer)
  '(ahs-idle-interval 0.25)
  '(ahs-idle-timer 0 t)
  '(ahs-inhibit-face-list nil)
@@ -1074,22 +1167,21 @@ This function is called at the very end of Spacemacs initialization."
  '(background-color "#202020")
  '(background-mode dark)
  '(beacon-color "#ff9da4")
- '(compilation-message-face (quote default))
+ '(compilation-message-face 'default)
  '(create-lockfiles nil)
  '(cua-global-mark-cursor-color nil)
  '(cua-normal-cursor-color nil)
  '(cua-overwrite-cursor-color "")
  '(cua-read-only-cursor-color "#859900")
  '(cursor-color "#cccccc")
- '(custom-enabled-themes (quote (graham)))
+ '(custom-enabled-themes '(graham))
  '(custom-safe-themes
-   (quote
-    ("5a861da19d55874c8f89b3484ab355999aff56a4e78b42507c97f71db23e3b0a" "376f60baab06072d3857de6b603c68408eec171ab286c6e5ba650d1f388265dc" "281cb095f102b3c24071224c7ffa6efdacb6992de407c3a46486c62eff8fe9b3" "09a027de3abc66f41ff2c9f1e0e16d02c68a7d9fd9c2b182075f07ad63330475" "2b437e27d5ee018838a9c175211d4cbecca172e3aaae679971c9dc0afc9061a0" "f8ea94ca9b535a506129213f7143efbc195f5077ec49cc23b7aa0da49c555f0c" "e0d42a58c84161a0744ceab595370cbe290949968ab62273aed6212df0ea94b4" "58c6711a3b568437bab07a30385d34aacf64156cc5137ea20e799984f4227265" default)))
+   '("5a861da19d55874c8f89b3484ab355999aff56a4e78b42507c97f71db23e3b0a" "376f60baab06072d3857de6b603c68408eec171ab286c6e5ba650d1f388265dc" "281cb095f102b3c24071224c7ffa6efdacb6992de407c3a46486c62eff8fe9b3" "09a027de3abc66f41ff2c9f1e0e16d02c68a7d9fd9c2b182075f07ad63330475" "2b437e27d5ee018838a9c175211d4cbecca172e3aaae679971c9dc0afc9061a0" "f8ea94ca9b535a506129213f7143efbc195f5077ec49cc23b7aa0da49c555f0c" "e0d42a58c84161a0744ceab595370cbe290949968ab62273aed6212df0ea94b4" "58c6711a3b568437bab07a30385d34aacf64156cc5137ea20e799984f4227265" default))
  '(dhall-type-check-inactivity-timeout 100000000000000000)
- '(diary-entry-marker (quote font-lock-variable-name-face))
+ '(diary-entry-marker 'font-lock-variable-name-face)
+ '(diff-hl-flydiff-mode t)
  '(emms-mode-line-icon-image-cache
-   (quote
-    (image :type xpm :ascent center :data "/* XPM */
+   '(image :type xpm :ascent center :data "/* XPM */
 static char *note[] = {
 /* width height num_colors chars_per_pixel */
 \"    10   11        2            1\",
@@ -1107,19 +1199,20 @@ static char *note[] = {
 \"#..######.\",
 \"#######...\",
 \"######....\",
-\"#######..#\" };")))
+\"#######..#\" };"))
  '(evil-want-Y-yank-to-eol nil)
  '(fci-rule-character-color "#452E2E")
- '(fci-rule-color "#eee8d5")
- '(flycheck-color-mode-line-face-to-color (quote mode-line-buffer-id))
+ '(fci-rule-color "#eee8d5" t)
+ '(flycheck-color-mode-line-face-to-color 'mode-line-buffer-id)
  '(flycheck-pos-tip-mode t)
  '(flycheck-pos-tip-timeout 0)
  '(foreground-color "#cccccc")
- '(frame-background-mode (quote dark))
- '(gnus-logo-colors (quote ("#0d7b72" "#adadad")) t)
+ '(frame-background-mode 'dark)
+ '(global-diff-hl-amend-mode t)
+ '(global-diff-hl-mode t)
+ '(gnus-logo-colors '("#0d7b72" "#adadad") t)
  '(gnus-mode-line-image-cache
-   (quote
-    (image :type xpm :ascent center :data "/* XPM */
+   '(image :type xpm :ascent center :data "/* XPM */
 static char *gnus-pointer[] = {
 /* width height num_colors chars_per_pixel */
 \"    18    13        2            1\",
@@ -1139,52 +1232,50 @@ static char *gnus-pointer[] = {
 \"######..###.######\",
 \"###....####.######\",
 \"###..######.######\",
-\"###########.######\" };")) t)
+\"###########.######\" };") t)
  '(graphviz-dot-view-command "dot -T png %s | feh -")
  '(haskell-indent-spaces 4)
- '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
+ '(highlight-changes-colors '("#d33682" "#6c71c4"))
+ '(highlight-parentheses-colors '("#2aa198" "#b58900" "#268bd2" "#6c71c4" "#859900"))
  '(highlight-symbol-colors
    (--map
     (solarized-color-blend it "#002b36" 0.25)
-    (quote
-     ("#b58900" "#2aa198" "#dc322f" "#6c71c4" "#859900" "#cb4b16" "#268bd2"))))
+    '("#b58900" "#2aa198" "#dc322f" "#6c71c4" "#859900" "#cb4b16" "#268bd2")))
  '(highlight-symbol-foreground-color "#93a1a1")
  '(highlight-tail-colors
-   (quote
-    (("#073642" . 0)
+   '(("#073642" . 0)
      ("#546E00" . 20)
      ("#00736F" . 30)
      ("#00629D" . 50)
      ("#7B6000" . 60)
      ("#8B2C02" . 70)
      ("#93115C" . 85)
-     ("#073642" . 100))))
+     ("#073642" . 100)))
  '(hl-bg-colors
-   (quote
-    ("#7B6000" "#8B2C02" "#990A1B" "#93115C" "#3F4D91" "#00629D" "#00736F" "#546E00")))
+   '("#7B6000" "#8B2C02" "#990A1B" "#93115C" "#3F4D91" "#00629D" "#00736F" "#546E00"))
  '(hl-fg-colors
-   (quote
-    ("#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36")))
- '(hl-paren-colors (quote ("#2aa198" "#b58900" "#268bd2" "#6c71c4" "#859900")))
+   '("#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36"))
+ '(hl-paren-colors '("#2aa198" "#b58900" "#268bd2" "#6c71c4" "#859900"))
  '(line-move-visual nil)
  '(lsp-enable-snippet nil)
  '(magit-commit-arguments nil)
  '(magit-diff-refine-hunk t)
  '(magit-diff-use-overlays nil)
  '(magit-dispatch-arguments nil)
- '(magit-display-buffer-function (quote magit-display-buffer-same-window-except-diff-v1))
+ '(magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
  '(magit-revision-show-gravatars nil)
+ '(magit-status-sections-hook
+   '(magit-insert-status-headers magit-insert-merge-log magit-insert-rebase-sequence magit-insert-am-sequence magit-insert-sequencer-sequence magit-insert-bisect-output magit-insert-bisect-rest magit-insert-bisect-log magit-insert-untracked-files magit-insert-unstaged-changes magit-insert-staged-changes magit-insert-stashes magit-insert-unpushed-to-pushremote magit-insert-unpulled-from-pushremote magit-insert-unpulled-from-upstream))
+ '(nix-indent-function 'indent-relative)
  '(nrepl-message-colors
-   (quote
-    ("#dc322f" "#cb4b16" "#b58900" "#546E00" "#B4C342" "#00629D" "#2aa198" "#d33682" "#6c71c4")))
- '(org-babel-load-languages (quote ((shell . t) (dot . t))))
- '(org-clock-clocktable-default-properties (quote (:maxlevel 4 :scope file)))
+   '("#dc322f" "#cb4b16" "#b58900" "#546E00" "#B4C342" "#00629D" "#2aa198" "#d33682" "#6c71c4"))
+ '(org-babel-load-languages '((shell . t) (dot . t)))
+ '(org-clock-clocktable-default-properties '(:maxlevel 4 :scope file))
  '(org-confirm-babel-evaluate nil)
  '(org-html-html5-fancy t)
  '(org-html-indent nil)
  '(org-structure-template-alist
-   (quote
-    (("n" "#+NAME: ")
+   '(("n" "#+NAME: ")
      ("s" "#+BEGIN_SRC ?
 
 #+END_SRC")
@@ -1216,10 +1307,9 @@ static char *gnus-pointer[] = {
 #+END_ASCII")
      ("A" "#+ASCII: ")
      ("i" "#+INDEX: ?")
-     ("I" "#+INCLUDE: %file ?"))))
+     ("I" "#+INCLUDE: %file ?")))
  '(package-selected-packages
-   (quote
-    (transient direnv parent-mode flx reformatter pos-tip nixos-options utop tuareg caml ocp-indent merlin github-search github-clone github-browse-file gist white-sand-theme rebecca-theme org-mime exotica-theme gitignore-mode ghub let-alist epl dhall-mode org-category-capture helm-notmuch notmuch ox-reveal epresent toml-mode racer flycheck-rust seq cargo rust-mode flycheck-elm elm-mode winum madhat2r-theme fuzzy go-guru go-eldoc company-go go-mode psci purescript-mode psc-ide spinner autothemer bind-map haml-mode selectric-mode yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode cython-mode company-anaconda anaconda-mode pythonic csv-mode org highlight skewer-mode json-snatcher json-reformat dash-functional tern auctex-latexmk yaml-mode wgrep smex ivy-hydra counsel-projectile counsel swiper ivy insert-shebang hide-comnt undo-tree company-auctex auctex pug-mode f org-projectile org-download intero helm-hoogle git-link evil-ediff dumb-jump request simple-httpd package-build zenburn-theme ws-butler window-numbering web-mode ujelly-theme tao-theme spacemacs-theme spaceline smooth-scrolling shm planet-theme persp-mode page-break-lines orgit organic-green-theme org-repo-todo org-pomodoro alert org-plus-contrib open-junk-file omtose-phellack-theme nix-sandbox neotree naquadah-theme monokai-theme moe-theme material-theme markdown-toc markdown-mode majapahit-theme magit-gitflow leuven-theme less-css-mode js2-refactor js2-mode indent-guide hl-todo hindent help-fns+ helm-themes helm-projectile helm-make projectile helm-descbinds helm-c-yasnippet helm-ag haskell-snippets gruvbox-theme graphviz-dot-mode grandshell-theme gotham-theme google-translate git-messenger expand-region exec-path-from-shell evil-surround evil-search-highlight-persist evil-mc evil-matchit evil-magit evil-iedit-state iedit evil-exchange emmet-mode dracula-theme darktooth-theme company-quickhelp color-theme-sanityinc-tomorrow buffer-move bracketed-paste badwolf-theme auto-yasnippet yasnippet auto-compile apropospriate-theme anti-zenburn-theme ample-theme ace-link ace-jump-helm-line auto-complete avy ghc anzu smartparens haskell-mode flycheck company helm helm-core magit magit-popup git-commit with-editor gh marshal pcache ht hydra s use-package which-key evil dash zonokai-theme zen-and-art-theme web-beautify volatile-highlights vi-tilde-fringe uuidgen underwater-theme twilight-theme twilight-bright-theme twilight-anti-bright-theme tronesque-theme toxi-theme toc-org tangotango-theme tango-plus-theme tango-2-theme tagedit sunny-day-theme sublime-themes subatomic256-theme subatomic-theme stekene-theme spacegray-theme soothe-theme solarized-theme soft-stone-theme soft-morning-theme soft-charcoal-theme smyx-theme smeargle slim-mode seti-theme scss-mode sass-mode reverse-theme restart-emacs rainbow-delimiters railscasts-theme quelpa purple-haze-theme professional-theme powerline popwin popup pkg-info phoenix-dark-pink-theme phoenix-dark-mono-theme pcre2el pastels-on-dark-theme paredit paradox packed org-present org-bullets oldlace-theme occidental-theme obsidian-theme noctilux-theme nix-mode niflheim-theme mustang-theme multiple-cursors move-text monochrome-theme molokai-theme mmm-mode minimal-theme magit-gh-pulls magit-annex macrostep lush-theme lorem-ipsum logito log4e livid-mode linum-relative link-hint light-soap-theme json-mode js-doc jbeans-theme jazz-theme jade-mode ir-black-theme inkpot-theme info+ ido-vertical-mode hungry-delete htmlize hlint-refactor highlight-parentheses highlight-numbers highlight-indentation heroku-theme hemisu-theme helm-swoop helm-nixos-options helm-mode-manager helm-gitignore helm-flx helm-css-scss helm-company hc-zenburn-theme gruber-darker-theme goto-chg golden-ratio gnuplot gntp gitconfig-mode gitattributes-mode git-timemachine gh-md gandalf-theme flycheck-pos-tip flycheck-haskell flx-ido flatui-theme flatland-theme fish-mode firebelly-theme fill-column-indicator farmhouse-theme fancy-battery eyebrowse evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-numbers evil-nerd-commenter evil-lisp-state evil-indent-plus evil-escape evil-args evil-anzu eval-sexp-fu espresso-theme elisp-slime-nav django-theme diminish define-word darkokai-theme darkmine-theme darkburn-theme dakrone-theme cyberpunk-theme company-web company-tern company-statistics company-shell company-nixos-options company-ghci company-ghc company-cabal column-enforce-mode colorsarenice-theme color-theme-sanityinc-solarized coffee-mode cmm-mode clues-theme clean-aindent-mode cherry-blossom-theme busybee-theme bubbleberry-theme birds-of-paradise-plus-theme bind-key auto-highlight-symbol async ample-zen-theme alect-themes aggressive-indent afternoon-theme adaptive-wrap ace-window ac-ispell)))
+   '(counsel-jq transient direnv parent-mode flx reformatter pos-tip nixos-options utop tuareg caml ocp-indent merlin github-search github-clone github-browse-file gist white-sand-theme rebecca-theme org-mime exotica-theme gitignore-mode ghub let-alist epl dhall-mode org-category-capture helm-notmuch notmuch ox-reveal epresent toml-mode racer flycheck-rust seq cargo rust-mode flycheck-elm elm-mode winum madhat2r-theme fuzzy go-guru go-eldoc company-go go-mode psci purescript-mode psc-ide spinner autothemer bind-map haml-mode selectric-mode yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode cython-mode company-anaconda anaconda-mode pythonic csv-mode org highlight skewer-mode json-snatcher json-reformat dash-functional tern auctex-latexmk yaml-mode wgrep smex ivy-hydra counsel-projectile counsel swiper ivy insert-shebang hide-comnt undo-tree company-auctex auctex pug-mode f org-projectile org-download intero helm-hoogle git-link evil-ediff dumb-jump request simple-httpd package-build zenburn-theme ws-butler window-numbering web-mode ujelly-theme tao-theme spacemacs-theme spaceline smooth-scrolling shm planet-theme persp-mode page-break-lines orgit organic-green-theme org-repo-todo org-pomodoro alert org-plus-contrib open-junk-file omtose-phellack-theme nix-sandbox neotree naquadah-theme monokai-theme moe-theme material-theme markdown-toc markdown-mode majapahit-theme magit-gitflow leuven-theme less-css-mode js2-refactor js2-mode indent-guide hl-todo hindent help-fns+ helm-themes helm-projectile helm-make projectile helm-descbinds helm-c-yasnippet helm-ag haskell-snippets gruvbox-theme graphviz-dot-mode grandshell-theme gotham-theme google-translate git-messenger expand-region exec-path-from-shell evil-surround evil-search-highlight-persist evil-mc evil-matchit evil-magit evil-iedit-state iedit evil-exchange emmet-mode dracula-theme darktooth-theme company-quickhelp color-theme-sanityinc-tomorrow buffer-move bracketed-paste badwolf-theme auto-yasnippet yasnippet auto-compile apropospriate-theme anti-zenburn-theme ample-theme ace-link ace-jump-helm-line auto-complete avy ghc anzu smartparens haskell-mode flycheck company helm helm-core magit magit-popup git-commit with-editor gh marshal pcache ht hydra s use-package which-key evil dash zonokai-theme zen-and-art-theme web-beautify volatile-highlights vi-tilde-fringe uuidgen underwater-theme twilight-theme twilight-bright-theme twilight-anti-bright-theme tronesque-theme toxi-theme toc-org tangotango-theme tango-plus-theme tango-2-theme tagedit sunny-day-theme sublime-themes subatomic256-theme subatomic-theme stekene-theme spacegray-theme soothe-theme solarized-theme soft-stone-theme soft-morning-theme soft-charcoal-theme smyx-theme smeargle slim-mode seti-theme scss-mode sass-mode reverse-theme restart-emacs rainbow-delimiters railscasts-theme quelpa purple-haze-theme professional-theme powerline popwin popup pkg-info phoenix-dark-pink-theme phoenix-dark-mono-theme pcre2el pastels-on-dark-theme paredit paradox packed org-present org-bullets oldlace-theme occidental-theme obsidian-theme noctilux-theme nix-mode niflheim-theme mustang-theme multiple-cursors move-text monochrome-theme molokai-theme mmm-mode minimal-theme magit-gh-pulls magit-annex macrostep lush-theme lorem-ipsum logito log4e livid-mode linum-relative link-hint light-soap-theme json-mode js-doc jbeans-theme jazz-theme jade-mode ir-black-theme inkpot-theme info+ ido-vertical-mode hungry-delete htmlize hlint-refactor highlight-parentheses highlight-numbers highlight-indentation heroku-theme hemisu-theme helm-swoop helm-nixos-options helm-mode-manager helm-gitignore helm-flx helm-css-scss helm-company hc-zenburn-theme gruber-darker-theme goto-chg golden-ratio gnuplot gntp gitconfig-mode gitattributes-mode git-timemachine gh-md gandalf-theme flycheck-pos-tip flycheck-haskell flx-ido flatui-theme flatland-theme fish-mode firebelly-theme fill-column-indicator farmhouse-theme fancy-battery eyebrowse evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-numbers evil-nerd-commenter evil-lisp-state evil-indent-plus evil-escape evil-args evil-anzu eval-sexp-fu espresso-theme elisp-slime-nav django-theme diminish define-word darkokai-theme darkmine-theme darkburn-theme dakrone-theme cyberpunk-theme company-web company-tern company-statistics company-shell company-nixos-options company-ghci company-ghc company-cabal column-enforce-mode colorsarenice-theme color-theme-sanityinc-solarized coffee-mode cmm-mode clues-theme clean-aindent-mode cherry-blossom-theme busybee-theme bubbleberry-theme birds-of-paradise-plus-theme bind-key auto-highlight-symbol async ample-zen-theme alect-themes aggressive-indent afternoon-theme adaptive-wrap ace-window ac-ispell))
  '(paradox-github-token t)
  '(pos-tip-background-color "#073642")
  '(pos-tip-foreground-color "#93a1a1")
@@ -1231,19 +1321,19 @@ static char *gnus-pointer[] = {
  '(rainbow-identifiers-cie-l*a*b*-lightness 25)
  '(rainbow-identifiers-cie-l*a*b*-saturation 40)
  '(require-final-newline t)
- '(ring-bell-function (quote ignore))
- '(rust-format-on-save nil)
+ '(ring-bell-function 'ignore)
+ '(rust-format-on-save t)
  '(safe-local-variable-values
-   (quote
-    ((eval company-mode -42)
+   '((eval company-mode -42)
      (eval company-mode nil)
-     (hindent-style . "chris-done"))))
+     (hindent-style . "chris-done")))
  '(scala-indent:align-forms t)
  '(scala-indent:align-parameters t)
  '(scala-indent:default-run-on-strategy scala-indent:operator-strategy)
  '(select-enable-clipboard nil)
- '(send-mail-function (quote smtpmail-send-it))
+ '(send-mail-function 'smtpmail-send-it)
  '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#073642" 0.2))
+ '(sp-autodelete-closing-pair nil)
  '(term-default-bg-color "#002b36")
  '(term-default-fg-color "#839496")
  '(tooltip-hide-delay 0)
@@ -1252,8 +1342,7 @@ static char *gnus-pointer[] = {
  '(vc-annotate-background nil)
  '(vc-annotate-background-mode nil)
  '(vc-annotate-color-map
-   (quote
-    ((20 . "#dc322f")
+   '((20 . "#dc322f")
      (40 . "#c85d17")
      (60 . "#be730b")
      (80 . "#b58900")
@@ -1270,12 +1359,11 @@ static char *gnus-pointer[] = {
      (300 . "#2898af")
      (320 . "#2793ba")
      (340 . "#268fc6")
-     (360 . "#268bd2"))))
+     (360 . "#268bd2")))
  '(vc-annotate-very-old-color nil)
  '(web-mode-markup-indent-offset 2)
  '(weechat-color-list
-   (quote
-    (unspecified "#002b36" "#073642" "#990A1B" "#dc322f" "#546E00" "#859900" "#7B6000" "#b58900" "#00629D" "#268bd2" "#93115C" "#d33682" "#00736F" "#2aa198" "#839496" "#657b83")))
+   '(unspecified "#002b36" "#073642" "#990A1B" "#dc322f" "#546E00" "#859900" "#7B6000" "#b58900" "#00629D" "#268bd2" "#93115C" "#d33682" "#00736F" "#2aa198" "#839496" "#657b83"))
  '(ws-butler-global-mode t)
  '(xterm-color-names
    ["#eee8d5" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#073642"])
