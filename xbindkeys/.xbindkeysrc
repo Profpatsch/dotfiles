@@ -100,7 +100,6 @@
 "systemd-inhibit --what=handle-lid-switch alock"
    XF86WebCam
 
-
 # helpers (should probably move to window manager config)
 
 # Kill window
@@ -135,7 +134,7 @@
     Mod4 + Next 
 
 # enable work setup 
-"monitor-tweag && set-background"
+"monitor-home && set-background"
     m:0x40 + c:112
     Mod4 + Prior 
 
