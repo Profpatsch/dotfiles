@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+export PATH=$(env NIXPKGS_ALLOW_UNFREE=1 nix-shell -p vscode --run 'dirname $(type -p code)'):"$PATH"
+echo "starting code"
+code "$@"
