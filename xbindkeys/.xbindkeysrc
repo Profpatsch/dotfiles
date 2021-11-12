@@ -76,12 +76,14 @@
 # Increase screen brightness
 "backlight inc"
     Mod4 + Delete
-    Xf86MonBrightnessUp
+"backlight inc"
+    XF86MonBrightnessUp
 
 # Decrease screen Brightness
 "backlight dec"
     Mod4 + Insert
-    Xf86MonBrightnessDown
+"backlight dec"
+    XF86MonBrightnessDown
 
 
 # lockscreen
@@ -97,8 +99,8 @@
    Mod4 + F8
 
 # lockscreen, but no standby on lid close
-"systemd-inhibit --what=handle-lid-switch alock"
-   XF86WebCam
+"systemd-inhibit --what=handle-lid-switch lock-screen"
+   Mod4 + F6
 
 # helpers (should probably move to window manager config)
 
@@ -144,7 +146,7 @@
 #Screenshot
 # TODO: Folder? Date?
 "import ~/Pictures/screenshot.png"
-   Print
+   Control + Print
 
 #Full screen
 "import -window root $SCREENSHOT.jpg"
