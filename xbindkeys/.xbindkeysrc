@@ -165,6 +165,8 @@
 "show-qr-code $(xclip -out -selection clipboard)"
   Control + Mod4 + q
 
+"read-qr-code | xclip -selection clipboard"
+  Control + Shift + Mod4 + q
 
 # input layouts
 
