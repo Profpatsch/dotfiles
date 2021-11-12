@@ -1,22 +1,6 @@
-text/html; firefox %s; nametemplate=%s.html
-text/html; elinks -dump-charset utf-8 -dump %s; nametemplate=%s.html; copiousoutput
-text/*; vim %s;
-
-image/*; feh --fullscreen %s
-
-audio/*; mpv %s
-video/*; mpv %s
-
-application/onsong; cat %s | dos2unix | less;
-application/pdf; zathura %s
-
-application/msword; libreoffice %s
-application/vnd.oasis.opendocument.text; libreoffice %s
-application/vnd.oasis.opendocument.spreadsheet; libreoffice %s
-application/vnd.oasis.opendocument.presentation; libreoffice %s
-application/vnd.oasis.opendocument.graphics; libreoffice %s
-application/vnd.oasis.opendocument.chart; libreoffice %s
-application/vnd.ms-powerpoint; libreoffice %s
-application/vnd.openxmlformats-officedocument.wordprocessingml.document; libreoffice %s
-application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; libreoffice %s
-application/vnd.openxmlformats-officedocument.presentationml.presentation; libreoffice %s
+application/*; xdg-open %s
+audio/*; xdg-open %s
+image/*; xdg-open %s
+video/*; xdg-open %s
+multipart/*; xdg-open %s
+text/*; xdg-open %s
