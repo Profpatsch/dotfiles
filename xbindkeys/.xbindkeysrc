@@ -145,12 +145,12 @@
 
 #Screenshot
 # TODO: Folder? Date?
-"import ~/Pictures/screenshot.png"
+"import ~/Pictures/screenshot.png && xclip -selection clipboard -t image/png ~/Pictures/screenshot.png"
    Control + Print
 
 #Full screen
-"import -window root $SCREENSHOT.jpg"
-   Control + Print
+# "import -window root $SCREENSHOT.jpg"
+#    Control + Print
 
 #With upload
 "import $SCREENSHOT.jpg && imup $SCREENSHOT.jpg | xclip -selection clipboard"
