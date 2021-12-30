@@ -162,7 +162,7 @@
 
 # qr code
 
-"show-qr-code $(xclip -out -selection clipboard)"
+"xclip -out -selection clipboard | show-qr-code"
   Control + Mod4 + q
 
 "read-qr-code | xclip -selection clipboard"
