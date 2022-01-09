@@ -185,5 +185,10 @@
 "doorctl open"
    Mod4 + Shift + o
 
+# fun
+
+"notify-send $(cat /home/philip/depot/users/tazjin/hanebuschtag.txt | shuf | head -n1)"
+  Control + Mod4 + s
+
 #
 # End of xbindkeys configuration
