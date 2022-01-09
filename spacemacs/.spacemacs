@@ -1043,10 +1043,6 @@ codepoints starting from codepoint-start."
  '(cua-overwrite-cursor-color "")
  '(cua-read-only-cursor-color "#859900")
  '(cursor-color "#cccccc")
- '(custom-enabled-themes (quote (graham)))
- '(custom-safe-themes
-   (quote
-    ("5a861da19d55874c8f89b3484ab355999aff56a4e78b42507c97f71db23e3b0a" "376f60baab06072d3857de6b603c68408eec171ab286c6e5ba650d1f388265dc" "281cb095f102b3c24071224c7ffa6efdacb6992de407c3a46486c62eff8fe9b3" "09a027de3abc66f41ff2c9f1e0e16d02c68a7d9fd9c2b182075f07ad63330475" "2b437e27d5ee018838a9c175211d4cbecca172e3aaae679971c9dc0afc9061a0" "f8ea94ca9b535a506129213f7143efbc195f5077ec49cc23b7aa0da49c555f0c" "e0d42a58c84161a0744ceab595370cbe290949968ab62273aed6212df0ea94b4" "58c6711a3b568437bab07a30385d34aacf64156cc5137ea20e799984f4227265" default)))
  '(dhall-type-check-inactivity-timeout 100000000000000000)
  '(diary-entry-marker (quote font-lock-variable-name-face))
  '(emms-mode-line-icon-image-cache
@@ -1281,66 +1277,19 @@ This function is called at the very end of Spacemacs initialization."
  '(cua-normal-cursor-color nil)
  '(cua-overwrite-cursor-color "")
  '(cua-read-only-cursor-color "#859900")
- '(cursor-color "#cccccc")
- '(custom-enabled-themes '(graham))
- '(custom-safe-themes
-   '("5a861da19d55874c8f89b3484ab355999aff56a4e78b42507c97f71db23e3b0a" "376f60baab06072d3857de6b603c68408eec171ab286c6e5ba650d1f388265dc" "281cb095f102b3c24071224c7ffa6efdacb6992de407c3a46486c62eff8fe9b3" "09a027de3abc66f41ff2c9f1e0e16d02c68a7d9fd9c2b182075f07ad63330475" "2b437e27d5ee018838a9c175211d4cbecca172e3aaae679971c9dc0afc9061a0" "f8ea94ca9b535a506129213f7143efbc195f5077ec49cc23b7aa0da49c555f0c" "e0d42a58c84161a0744ceab595370cbe290949968ab62273aed6212df0ea94b4" "58c6711a3b568437bab07a30385d34aacf64156cc5137ea20e799984f4227265" default))
- '(dhall-type-check-inactivity-timeout 100000000000000000)
+ ;; '(cursor-color "#cccccc")
  '(diary-entry-marker 'font-lock-variable-name-face)
  '(diff-hl-flydiff-mode t)
- '(emms-mode-line-icon-image-cache
-   '(image :type xpm :ascent center :data "/* XPM */
-static char *note[] = {
-/* width height num_colors chars_per_pixel */
-\"    10   11        2            1\",
-/* colors */
-\". c #358d8d\",
-\"# c None s None\",
-/* pixels */
-\"###...####\",
-\"###.#...##\",
-\"###.###...\",
-\"###.#####.\",
-\"###.#####.\",
-\"#...#####.\",
-\"....#####.\",
-\"#..######.\",
-\"#######...\",
-\"######....\",
-\"#######..#\" };"))
  '(evil-want-Y-yank-to-eol nil)
  '(fci-rule-character-color "#452E2E")
  '(fci-rule-color "#eee8d5" t)
  '(flycheck-color-mode-line-face-to-color 'mode-line-buffer-id)
  '(flycheck-pos-tip-mode t)
  '(flycheck-pos-tip-timeout 0)
- '(foreground-color "#cccccc")
+ ;; '(foreground-color "#cccccc")
  '(frame-background-mode 'dark)
  '(global-diff-hl-amend-mode t)
  '(global-diff-hl-mode t)
- '(gnus-logo-colors '("#0d7b72" "#adadad") t)
- '(gnus-mode-line-image-cache
-   '(image :type xpm :ascent center :data "/* XPM */
-static char *gnus-pointer[] = {
-/* width height num_colors chars_per_pixel */
-\"    18    13        2            1\",
-/* colors */
-\". c #358d8d\",
-\"# c None s None\",
-/* pixels */
-\"##################\",
-\"######..##..######\",
-\"#####........#####\",
-\"#.##.##..##...####\",
-\"#...####.###...##.\",
-\"#..###.######.....\",
-\"#####.########...#\",
-\"###########.######\",
-\"####.###.#..######\",
-\"######..###.######\",
-\"###....####.######\",
-\"###..######.######\",
-\"###########.######\" };") t)
  '(graphviz-dot-view-command "dot -T png %s | feh -")
  '(haskell-indent-spaces 4)
  '(helm-completion-style 'emacs)
@@ -1436,9 +1385,6 @@ static char *gnus-pointer[] = {
    '((eval company-mode -42)
      (eval company-mode nil)
      (hindent-style . "chris-done")))
- '(scala-indent:align-forms t)
- '(scala-indent:align-parameters t)
- '(scala-indent:default-run-on-strategy scala-indent:operator-strategy)
  '(select-enable-clipboard nil)
  '(send-mail-function 'smtpmail-send-it)
  '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#073642" 0.2))
