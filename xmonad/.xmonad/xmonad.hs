@@ -1,24 +1,22 @@
-import Control.Applicative ((<*))
-import qualified Data.Map as M
-import Data.Monoid ((<>))
+{-# OPTIONS_GHC -Wall #-}
+import Data.Function ((&))
 
 import XMonad
 import XMonad.Hooks.EwmhDesktops (ewmh)
 import XMonad.Hooks.ManageDocks (manageDocks, avoidStruts, docksEventHook, ToggleStruts(..))
 import XMonad.Layout.MultiToggle (mkToggle1, Toggle(..))
 import XMonad.Layout.MultiToggle.Instances (StdTransformers(..))
-import qualified XMonad.StackSet as W
+import qualified XMonad.Layout.Tabbed as Tabbed
+import qualified XMonad.StackSet as StackSet
 import XMonad.Util.EZConfig (additionalKeysP, removeKeysP, additionalKeys)
-import XMonad.Util.SpawnOnce (spawnOnce)
 import XMonad.Util.Cursor (setDefaultCursor)
-
-type KeyMap = M.Map (KeyMask, KeySym) (X ())
 
 data Mode = Normal | Presentation
 
+main :: IO ()
 main = xmonad . ewmh $ myConfig
 
-myConfig = conf { modMask = mod
+myConfig = conf { modMask = modKey
                 , terminal = term Normal
                 , focusedBorderColor = "#859900"
                 , layoutHook = layout
@@ -36,7 +34,7 @@ myConfig = conf { modMask = mod
                -- exchange M-Ret and M-S-Ret
              , ("M-<Return>", spawn $ term Normal)
              , ("C-M-<Return>", spawn $ term Presentation)
-             , ("M-S-<Return>", windows W.swapMaster)
+             , ("M-S-<Return>", windows StackSet.swapMaster)
                -- toogle toolbar(s)
              , ("M-b", sendMessage ToggleStruts)
                -- open simple exec dmenu
@@ -45,8 +43,8 @@ myConfig = conf { modMask = mod
              -- something something workspaces
              [ (otherModMasks ++ "M-" ++ [key], action tag)
                | (tag, key)  <- zip workspaceNames "123456789"
-               , (otherModMasks, action) <- [ ("", windows . W.greedyView)
-                                            , ("S-", windows . W.shift)]
+               , (otherModMasks, action) <- [ ("", windows . StackSet.greedyView)
+                                            , ("S-", windows . StackSet.shift)]
              ]
              ++
              -- mod-{w,e,r} %! Switch to physical/Xinerama screens 1, 2, or 3
@@ -64,8 +62,8 @@ myConfig = conf { modMask = mod
            )
            `additionalKeys`
            -- arrow keys should move as well (hjkl blindness)
-           [ ((mod, xK_Up), windows W.focusUp)
-           , ((mod, xK_Down), windows W.focusDown) ]
+           [ ((modKey, xK_Up), windows StackSet.focusUp)
+           , ((modKey, xK_Down), windows StackSet.focusDown) ]
            `removeKeysP`
              [
                -- previous kill command
@@ -77,19 +75,23 @@ myConfig = conf { modMask = mod
              ]
   where
     conf = def
-    workspaceNames = workspaces conf
-    mod = mod4Mask
+    workspaceNames = conf & workspaces
+    modKey = mod4Mask
     -- TODO: meh
     term :: Mode -> String
     term Normal = "lilyterm"
     term Presentation = "lilyterm -u ~/.config/lilyterm/pres.conf"
 
     toScreen with number = screenWorkspace 0 >>= \ws -> whenJust ws (windows . with)
-    focusToScreen = toScreen W.view
-    windowToScreen = toScreen W.shift
+    focusToScreen = toScreen StackSet.view
+    windowToScreen = toScreen StackSet.shift
 
 -- copied from Xmonad.Config
-layout = avoidStruts $ toggleFullscreen $ tiled ||| Mirror tiled
+layout =
+  (tiled ||| Mirror tiled ||| Tabbed.simpleTabbedBottom)
+  & avoidStruts
+  & Tabbed.addTabsBottom Tabbed.shrinkText def
+  & toggleFullscreen
   where
      -- default tiling algorithm partitions the screen into two panes
      tiled   = Tall nmaster delta ratio
